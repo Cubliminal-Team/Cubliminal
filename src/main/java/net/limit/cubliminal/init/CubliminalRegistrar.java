@@ -72,6 +72,8 @@ public class CubliminalRegistrar implements LimlibRegistrar {
 		// post effects
 		getPostEffects("paranoia", new StaticPostEffect(Cubliminal.id("paranoia")));
 
+		getPostEffects("noclip", new StaticPostEffect(Cubliminal.id("noclip")));
+
 		// worlds
 		getWorld(THE_LOBBY,
 				new LimlibWorld(

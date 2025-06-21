@@ -75,4 +75,8 @@ public class NoclipHudOverlay implements HudRenderCallback {
     public void setAux_renderOverlay(boolean aux_renderOverlay) {
         this.aux_renderOverlay = aux_renderOverlay;
     }
+
+	public boolean shouldRender() {
+		return clippingIntoWall || aux_renderOverlay;
+	}
 }

@@ -55,7 +55,7 @@ public class CubliminalClient implements ClientModInitializer {
 		FogSettings.init();
 		C2SPackets.init();
 
-		HudRenderCallback.EVENT.register(NoclipHudOverlay.INSTANCE);
+		//HudRenderCallback.EVENT.register(NoclipHudOverlay.INSTANCE);
 		HudRenderCallback.EVENT.register(new SanityBarHudOverlay());
 	}
 

@@ -13,7 +13,8 @@
     "client.BackgroundRendererMixin",
     "client.ClientPlayerEntityMixin",
     "client.GameRendererMixin",
-    "client.ItemRendererMixin"
+    "client.ItemRendererMixin",
+    "client.PostProcesserMixin"
   ],
   "injectors": {
     "defaultRequire": 1
