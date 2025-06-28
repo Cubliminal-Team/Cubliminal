@@ -3,6 +3,7 @@ package net.limit.cubliminal.client.render;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.limit.cubliminal.Cubliminal;
+import net.limit.cubliminal.IniterClient;
 import net.minecraft.client.gl.ShaderProgramKey;
 import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.render.RenderLayer;
@@ -13,7 +14,7 @@ import net.minecraft.client.render.VertexFormats;
 import net.minecraft.util.Identifier;
 
 @Environment(EnvType.CLIENT)
-public class RenderLayers {
+public class RenderLayers implements IniterClient {
     public static final ShaderProgramKey RENDERTYPE_CUBLIMINAL_MANILA_SKYBOX = ShaderProgramKeys.register(
             "rendertype_manila_skybox", VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL);
 
@@ -62,9 +63,5 @@ public class RenderLayers {
             builder.add(Identifier.of(texture.getNamespace(), "textures/cubemap/" + texture.getPath() + "_" + i + ".png"), blur, mipmap);
         }
         return builder.build();
-    }
-
-
-    public static void init() {
     }
 }

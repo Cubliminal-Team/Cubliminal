@@ -2,6 +2,7 @@ package net.limit.cubliminal.init;
 
 import net.fabricmc.fabric.api.registry.FuelRegistryEvents;
 import net.limit.cubliminal.Cubliminal;
+import net.limit.cubliminal.Initer;
 import net.minecraft.component.type.AttributeModifierSlot;
 import net.minecraft.component.type.AttributeModifiersComponent;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
@@ -22,7 +23,7 @@ import static net.minecraft.item.Item.BASE_ATTACK_DAMAGE_MODIFIER_ID;
 import static net.minecraft.item.Item.BASE_ATTACK_SPEED_MODIFIER_ID;
 
 
-public class CubliminalItems {
+public class CubliminalItems implements Initer {
 
     public static final Item YELLOW_WALLPAPER = register("yellow_wallpaper", Item::new, new Item.Settings());
     public static final Item CRIMSON_WALLPAPER = register("crimson_wallpaper", Item::new, new Item.Settings());
@@ -65,7 +66,8 @@ public class CubliminalItems {
         }
     }
 
-    public static void init() {
+    @Override
+    public void init() {
         FuelRegistryEvents.BUILD.register((builder, context) -> {
             builder.add(WOODEN_PLANK, 100);
         });

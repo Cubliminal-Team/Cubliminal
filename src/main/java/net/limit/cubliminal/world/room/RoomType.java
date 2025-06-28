@@ -3,6 +3,7 @@ package net.limit.cubliminal.world.room;
 import com.mojang.serialization.Lifecycle;
 import com.mojang.serialization.MapCodec;
 import net.limit.cubliminal.Cubliminal;
+import net.limit.cubliminal.Initer;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.SimpleRegistry;

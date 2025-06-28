@@ -2,12 +2,13 @@ package net.limit.cubliminal.init;
 
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.limit.cubliminal.Cubliminal;
+import net.limit.cubliminal.Initer;
 import net.limit.cubliminal.block.entity.*;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 
-public class CubliminalBlockEntities {
+public class CubliminalBlockEntities implements Initer {
 
 	public static <T extends BlockEntityType<?>> T register(String id, T blockEntityType) {
 		return Registry.register(Registries.BLOCK_ENTITY_TYPE, Cubliminal.id(id), blockEntityType);
@@ -28,7 +29,4 @@ public class CubliminalBlockEntities {
 	public static final BlockEntityType<USBlockBlockEntity> USBLOCK_BLOCK_ENTITY =
 			register("unlimited_structure_block", FabricBlockEntityTypeBuilder.create(USBlockBlockEntity::new, CubliminalBlocks.UNLIMITED_STRUCTURE_BLOCK).build());
 
-
-    public static void init() {
-    }
 }
