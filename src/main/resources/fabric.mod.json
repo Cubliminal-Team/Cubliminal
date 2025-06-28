@@ -9,8 +9,8 @@
 	],
 	"contact": {
 		"homepage": "https://modrinth.com/mod/cubliminal-mod",
-		"sources": "https://github.com/northernlimit/Cubliminal",
-		"issues": "https://github.com/northernlimit/Cubliminal/issues"
+		"sources": "https://github.com/Cubliminal-Team/Cubliminal",
+		"issues": "https://github.com/Cubliminal-Team/Cubliminal/issues"
 	},
 	"license": "GPLv3",
 	"icon": "assets/cubliminal/icon.png",
