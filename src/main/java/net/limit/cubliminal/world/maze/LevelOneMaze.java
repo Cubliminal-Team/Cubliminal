@@ -3,7 +3,7 @@ package net.limit.cubliminal.world.maze;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
 import io.github.jdiemke.triangulation.Edge2D;
-import net.limit.cubliminal.world.room.Room;
+import net.limit.cubliminal.world.room.Door;
 import net.minecraft.util.math.random.Random;
 
 import java.util.ArrayList;
@@ -17,7 +17,7 @@ public class LevelOneMaze extends SpecialMaze {
     private final float bias;
     private final Random random;
     private List<Edge2D> mst;
-    private SetMultimap<Vec2i, Room.DoorInstance> doors;
+    private SetMultimap<Vec2i, Door.Instance> doors;
 
     public LevelOneMaze(int width, int height, boolean[] filter, float bias, Random random) {
         super(width, height);
@@ -115,7 +115,7 @@ public class LevelOneMaze extends SpecialMaze {
         this.mst = new ArrayList<>(mst);
     }
 
-    public void setDoors(SetMultimap<Vec2i, Room.DoorInstance> doors) {
+    public void setDoors(SetMultimap<Vec2i, Door.Instance> doors) {
         this.doors = HashMultimap.create(doors);
     }
 

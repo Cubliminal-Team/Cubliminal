@@ -1,7 +1,10 @@
 {
-  "type": "cubliminal:level_layer_based_structures",
+  "type": "cubliminal:grid_aligned_structures",
   "biomes": [
-    "cubliminal:the_lobby"
+    "cubliminal:deep_aquila_sector",
+    "cubliminal:deep_guild_sector",
+    "cubliminal:deep_ouroboros_sector",
+    "cubliminal:deep_gothic_sector"
   ],
   "step": "underground_structures",
   "spawn_overrides": {},
@@ -12,5 +15,12 @@
   },
   "max_distance_from_center": 80,
   "dimension_padding": 2,
-  "block_filter": "#cubliminal:zombie_str_proof"
+  "block_filter": "#cubliminal:zombie_str_proof",
+  "room": {
+    "type": "cubliminal:single_piece",
+    "id": "rooms:small",
+    "width": 1,
+    "height": 1,
+    "doors": "w_1:s_1"
+  }
 }

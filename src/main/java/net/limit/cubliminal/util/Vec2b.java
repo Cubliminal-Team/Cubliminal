@@ -1,4 +1,4 @@
-package net.limit.cubliminal.world.maze;
+package net.limit.cubliminal.util;
 
 import com.mojang.serialization.Codec;
 import net.ludocrypt.limlib.api.world.maze.MazeComponent.Face;

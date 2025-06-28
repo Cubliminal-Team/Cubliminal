@@ -93,7 +93,7 @@ public class LevelZeroChunkGenerator extends AbstractNbtChunkGenerator implement
 		return CODEC;
 	}
 
-	private void decorateLobby(ChunkRegion region, BlockPos pos) {
+    private void decorateLobby(ChunkRegion region, BlockPos pos) {
 		Random random = Random.create(region.getSeed() + LimlibHelper.blockSeed(pos));
 		int randomInt = random.nextInt(15999);
 

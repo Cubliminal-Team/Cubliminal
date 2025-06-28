@@ -40,7 +40,7 @@ public class Cubliminal implements ModInitializer {
 		return Identifier.of(MOD_ID, id);
 	}
 
-    public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
+    public static final Logger LOGGER = LoggerFactory.getLogger("Cubliminal");
 
 	public static ServerWorld SERVER;
 

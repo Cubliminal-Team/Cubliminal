@@ -53,7 +53,7 @@ public class Level {
         }
     }
 
-    public int calcLayerCount(int verticalRange, int maxLayerCount) {
+    protected int calcLayerCount(int verticalRange, int maxLayerCount) {
         for (int layers = verticalRange / this.layer_height; layers >= 0; layers--) {
             if (layers <= maxLayerCount) {
                 return layers;
