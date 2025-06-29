@@ -16,7 +16,6 @@ import net.limit.cubliminal.event.command.NoclipCommand;
 import net.limit.cubliminal.event.command.SanityCommand;
 import net.limit.cubliminal.init.*;
 import net.limit.cubliminal.event.noclip.NoclipDestination;
-import net.limit.cubliminal.networking.s2c.S2CPackets;
 import net.limit.cubliminal.world.room.RoomRegistry;
 import net.limit.cubliminal.world.room.RoomType;
 import net.minecraft.entity.damage.DamageType;
@@ -62,18 +61,6 @@ public class Cubliminal implements ModInitializer {
 				FabricLoader.getInstance().getEntrypoints("initer", Initer.class);
 
 		plugins.forEach(Initer::init);
-
-
-		//CubliminalItemGroups.init();
-		//CubliminalItems.init();
-		//CubliminalBlocks.init();
-		//CubliminalBiomes.init();
-		//CubliminalStructures.init();
-		//CubliminalSounds.init();
-		//CubliminalEntities.init();
-		//CubliminalEffects.init();
-		//CubliminalBlockEntities.init();
-		//S2CPackets.init();
 
 		NoclipDestination.init();
 		RoomType.init();

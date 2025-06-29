@@ -59,8 +59,6 @@ public class CubliminalClient implements ClientModInitializer {
 
 		plugins.forEach(IniterClient::init);
 
-		//RenderLayers.init();
-		//C2SPackets.init();
 		FogSettings.init();
 
 		//HudRenderCallback.EVENT.register(NoclipHudOverlay.INSTANCE);
