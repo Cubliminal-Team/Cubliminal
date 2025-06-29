@@ -7,7 +7,7 @@ import net.limit.cubliminal.util.MazeUtil;
 import net.limit.cubliminal.util.WeightedHolderSet;
 import net.limit.cubliminal.world.maze.RoomCellState;
 import net.limit.cubliminal.world.maze.SpecialMaze;
-import net.limit.cubliminal.world.maze.Vec2b;
+import net.limit.cubliminal.util.Vec2b;
 import net.ludocrypt.limlib.api.world.Manipulation;
 import net.minecraft.util.math.random.Random;
 
@@ -20,16 +20,14 @@ public class CompositeRoom implements Room {
             Component.CODEC.listOf().fieldOf("components").forGetter(CompositeRoom::components),
             Codec.BYTE.fieldOf("width").forGetter(CompositeRoom::width),
             Codec.BYTE.fieldOf("height").forGetter(CompositeRoom::height),
-            Codec.STRING.fieldOf("doors").forGetter(room -> room.doorData)
+            Codec.STRING.fieldOf("doors").forGetter(CompositeRoom::doorData)
     ).apply(instance, CompositeRoom::new));
 
-    private final String doorData;
     private final List<Component> components;
     private final byte width, height;
     private final List<Door> doors;
 
     public CompositeRoom(List<Component> components, byte width, byte height, String doorData) {
-        this.doorData = doorData;
         this.components = components;
         if (width < 1 || height < 1) {
             throw new IllegalArgumentException("Room width: " + width + " and height: " + height + " must be set above 0");
@@ -53,19 +51,30 @@ public class CompositeRoom implements Room {
         return this.height;
     }
 
+    public String doorData() {
+        return Room.packDoors(doors);
+    }
+
     @Override
-    public RoomType<CompositeRoom> type() {
+    public List<Door> doors() {
+        return this.doors;
+    }
+
+    @Override
+    public RoomType<?> type() {
         return RoomType.COMPOUND_SET;
     }
 
     @Override
-    public List<Door> place(SpecialMaze maze, int x, int y, Vec2b roomDimensions, byte packedManipulation) {
+    public List<Door> place(SpecialMaze maze, int x, int y, Vec2b roomDimensions, byte packedManipulation, boolean generate) {
         Manipulation manipulation = MazeUtil.unpack(packedManipulation);
-        BiFunction<Vec2b, Vec2b, Vec2b> transformation = Room.cornerTransformation(roomDimensions, manipulation);
-        this.components.forEach(component -> {
-            Vec2b transformed = transformation.apply(component.pos(), new Vec2b(component.height(), component.width()));
-            maze.withState(x + transformed.x(), y + transformed.y(), new RoomCellState(new RoomPlacement(component::get, packedManipulation)));
-        });
+        if (generate) {
+            BiFunction<Vec2b, Vec2b, Vec2b> transformation = Room.cornerTransformation(roomDimensions, manipulation);
+            this.components.forEach(component -> {
+                Vec2b transformed = transformation.apply(component.pos(), new Vec2b(component.height(), component.width()));
+                maze.withState(x + transformed.x(), y + transformed.y(), RoomCellState.of(component::get, packedManipulation));
+            });
+        }
         PosTransformation translation = Room.posTransformation(roomDimensions, manipulation);
         RotTransformation rotation = Room.rotTransformation(manipulation);
         List<Door> transformed = new ArrayList<>(this.doors.size());

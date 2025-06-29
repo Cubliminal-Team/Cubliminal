@@ -55,7 +55,7 @@ public class RoomRegistry implements SimpleResourceReloadListener<Map<RegistryKe
         return CompletableFuture.runAsync(() -> {
             ROOMS.clear();
             ROOMS.putAll(rooms);
-            ROOMS.values().forEach(preset -> preset.holder().getValues().forEach(room -> Cubliminal.LOGGER.info("Room: {}", room.toString())));
+            //ROOMS.values().forEach(preset -> preset.holder().getValues().forEach(room -> Cubliminal.LOGGER.info("Room: {}", room.toString())));
         }, executor);
     }
 

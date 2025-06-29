@@ -4,7 +4,7 @@ import com.google.common.collect.SetMultimap;
 import io.github.jdiemke.triangulation.Edge2D;
 import io.github.jdiemke.triangulation.Triangle2D;
 import io.github.jdiemke.triangulation.Vector2D;
-import net.limit.cubliminal.world.room.Room.DoorInstance;
+import net.limit.cubliminal.world.room.Door.Instance;
 import net.ludocrypt.limlib.api.world.maze.MazeComponent.Vec2i;
 import net.minecraft.util.math.random.Random;
 
@@ -12,7 +12,7 @@ import java.util.*;
 
 public class MSTree {
 
-    public static List<Edge2D> buildCorridors(Collection<Vector2D> nodes, SetMultimap<Vec2i, DoorInstance> doors,
+    public static List<Edge2D> buildCorridors(Collection<Vector2D> nodes, SetMultimap<Vec2i, Instance> doors,
                                               List<Triangle2D> triangleSoup, List<Vector2D> connections, Random random) {
         // Build unique edges
         List<Edge2D> edges = new ArrayList<>();
@@ -43,10 +43,10 @@ public class MSTree {
         return mst;
     }
 
-    public static void addEdge(Vector2D a, Vector2D b, List<Edge2D> edges, SetMultimap<Vec2i, DoorInstance> doors,
+    public static void addEdge(Vector2D a, Vector2D b, List<Edge2D> edges, SetMultimap<Vec2i, Instance> doors,
                                List<Vector2D> connections, Random random) {
-        DoorInstance doorA = doors.get(new Vec2i((int) a.x, (int) a.y)).stream().toList().getFirst();
-        DoorInstance doorB = doors.get(new Vec2i((int) b.x, (int) b.y)).stream().toList().getFirst();
+        Instance doorA = doors.get(new Vec2i((int) a.x, (int) a.y)).stream().toList().getFirst();
+        Instance doorB = doors.get(new Vec2i((int) b.x, (int) b.y)).stream().toList().getFirst();
         if (!doorA.roomPos().equals(doorB.roomPos())) {
             add(a, b, edges);
         } else {

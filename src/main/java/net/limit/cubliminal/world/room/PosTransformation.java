@@ -1,6 +1,6 @@
 package net.limit.cubliminal.world.room;
 
-import net.limit.cubliminal.world.maze.Vec2b;
+import net.limit.cubliminal.util.Vec2b;
 
 @FunctionalInterface
 public interface PosTransformation {
