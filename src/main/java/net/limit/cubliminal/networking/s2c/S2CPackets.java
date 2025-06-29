@@ -2,10 +2,11 @@ package net.limit.cubliminal.networking.s2c;
 
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.limit.cubliminal.Initer;
 import net.limit.cubliminal.networking.c2s.NoClipC2SPayload;
 import net.limit.cubliminal.networking.c2s.USBlockC2SPayload;
 
-public class S2CPackets {
+public class S2CPackets implements Initer {
 
     public static void registerPayloads() {
         PayloadTypeRegistry.playC2S().register(NoClipC2SPayload.ID, NoClipC2SPayload.CODEC);
@@ -19,7 +20,8 @@ public class S2CPackets {
         ServerPlayNetworking.registerGlobalReceiver(USBlockC2SPayload.ID, USBlockC2SPayload::receive);
     }
 
-    public static void init() {
+    @Override
+    public void init() {
         registerPayloads();
         registerGlobalReceivers();
     }

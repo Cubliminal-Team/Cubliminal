@@ -2,6 +2,7 @@ package net.limit.cubliminal.init;
 
 import com.mojang.serialization.MapCodec;
 import net.limit.cubliminal.Cubliminal;
+import net.limit.cubliminal.Initer;
 import net.limit.cubliminal.world.biome.source.LevelOneBiomeSource;
 import net.limit.cubliminal.world.biome.source.SimplexBiomeSource;
 import net.limit.cubliminal.world.chunk.LevelOneChunkGenerator;
@@ -15,7 +16,7 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 
-public class CubliminalBiomes {
+public class CubliminalBiomes implements Initer {
     public static final RegistryKey<Biome> THE_LOBBY_BIOME = of(CubliminalRegistrar.THE_LOBBY);
 
 	public static final RegistryKey<Biome> PILLAR_BIOME = of("pillar_biome");
@@ -43,8 +44,8 @@ public class CubliminalBiomes {
 	public static final TagKey<Biome> CAN_NOCLIP_TO = TagKey.of(RegistryKeys.BIOME, Cubliminal.id("can_noclip_to"));
 	public static final TagKey<Biome> DEEP_LEVEL_ONE = TagKey.of(RegistryKeys.BIOME, Cubliminal.id("deep_level_one"));
 
-
-    public static void init() {
+	@Override
+    public void init() {
 		getBiomeSource("simplex_biome_source", SimplexBiomeSource.CODEC);
 		getBiomeSource("level_one_biome_source", LevelOneBiomeSource.CODEC);
 		getChunkGenerator("the_lobby_chunk_generator", LevelZeroChunkGenerator.CODEC);

@@ -9,6 +9,7 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.fabricmc.loader.api.FabricLoader;
 import net.limit.cubliminal.access.PEAccessor;
 import net.limit.cubliminal.config.CubliminalConfig;
 import net.limit.cubliminal.event.command.NoclipCommand;
@@ -33,6 +34,8 @@ import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collection;
+
 public class Cubliminal implements ModInitializer {
 	public static final String MOD_ID = "cubliminal";
 
@@ -53,17 +56,26 @@ public class Cubliminal implements ModInitializer {
 		AutoConfig.register(CubliminalConfig.class, GsonConfigSerializer::new);
 
 		ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(new RoomRegistry());
-		CubliminalItemGroups.init();
-		CubliminalItems.init();
-		CubliminalBlocks.init();
-		CubliminalBiomes.init();
-		CubliminalStructures.init();
-		CubliminalSounds.init();
-		CubliminalEntities.init();
-		CubliminalEffects.init();
-		CubliminalBlockEntities.init();
+
+		// Init Initers
+		Collection<Initer> plugins =
+				FabricLoader.getInstance().getEntrypoints("initer", Initer.class);
+
+		plugins.forEach(Initer::init);
+
+
+		//CubliminalItemGroups.init();
+		//CubliminalItems.init();
+		//CubliminalBlocks.init();
+		//CubliminalBiomes.init();
+		//CubliminalStructures.init();
+		//CubliminalSounds.init();
+		//CubliminalEntities.init();
+		//CubliminalEffects.init();
+		//CubliminalBlockEntities.init();
+		//S2CPackets.init();
+
 		NoclipDestination.init();
-		S2CPackets.init();
 		RoomType.init();
 
 		ServerLifecycleEvents.SERVER_STARTED.register(server -> SERVER = server.getWorld(CubliminalRegistrar.THE_LOBBY_KEY));

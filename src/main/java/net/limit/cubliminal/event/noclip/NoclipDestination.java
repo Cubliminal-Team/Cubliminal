@@ -1,6 +1,7 @@
 package net.limit.cubliminal.event.noclip;
 
 import com.mojang.datafixers.util.Pair;
+import net.limit.cubliminal.Initer;
 import net.limit.cubliminal.init.CubliminalBiomes;
 import net.limit.cubliminal.init.CubliminalBlocks;
 import net.limit.cubliminal.init.CubliminalRegistrar;
@@ -89,7 +90,6 @@ public record NoclipDestination (RegistryKey<World> destination, Function<Server
     public static WorldChunk getChunk(World world, BlockPos pos) {
         return world.getChunk(MathHelper.floor(pos.getX() / 16.0), MathHelper.floor(pos.getZ() / 16.0));
     }
-
 
     public static void init() {
         create(CubliminalRegistrar.THE_LOBBY_KEY, CubliminalRegistrar.HABITABLE_ZONE_KEY, player -> {

@@ -2,6 +2,7 @@ package net.limit.cubliminal.init;
 
 import net.fabricmc.fabric.api.registry.FuelRegistryEvents;
 import net.limit.cubliminal.Cubliminal;
+import net.limit.cubliminal.Initer;
 import net.limit.cubliminal.block.CustomProperties;
 import net.limit.cubliminal.block.custom.*;
 import net.limit.cubliminal.block.custom.template.RotatableBlock;
@@ -30,7 +31,7 @@ import java.util.function.ToIntFunction;
 
 import static net.minecraft.block.Blocks.createLightLevelFromLitBlockState;
 
-public class CubliminalBlocks {
+public class CubliminalBlocks implements Initer {
 
 	private static Block register(String id, Function<AbstractBlock.Settings, Block> blockFactory, AbstractBlock.Settings blockSettings, BiFunction<Block, Item.Settings, BlockItem> itemFactory, Item.Settings itemSettings) {
 		RegistryKey<Item> itemKey = RegistryKey.of(RegistryKeys.ITEM, Cubliminal.id(id));
@@ -454,8 +455,8 @@ public class CubliminalBlocks {
 		return (state) -> state.get(Properties.POWERED) ? litLevel : 0;
 	}
 
-
-    public static void init() {
+	@Override
+    public void init() {
 		FuelRegistryEvents.BUILD.register((builder, context) -> {
 			builder.add(YELLOW_WALLPAPERS.asItem(), 300);
 			builder.add(YELLOW_WALLPAPERS_WALL.asItem(), 300);
