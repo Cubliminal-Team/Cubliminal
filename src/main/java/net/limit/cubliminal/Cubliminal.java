@@ -9,7 +9,6 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
-import net.fabricmc.loader.api.FabricLoader;
 import net.limit.cubliminal.access.PEAccessor;
 import net.limit.cubliminal.config.CubliminalConfig;
 import net.limit.cubliminal.event.command.NoclipCommand;
@@ -33,8 +32,6 @@ import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collection;
-
 public class Cubliminal implements ModInitializer {
 	public static final String MOD_ID = "cubliminal";
 
@@ -57,10 +54,7 @@ public class Cubliminal implements ModInitializer {
 		ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(new RoomRegistry());
 
 		// Init Initers
-		Collection<Initer> plugins =
-				FabricLoader.getInstance().getEntrypoints("initer", Initer.class);
-
-		plugins.forEach(Initer::init);
+		Initer.initialise();
 
 		NoclipDestination.init();
 		RoomType.init();
