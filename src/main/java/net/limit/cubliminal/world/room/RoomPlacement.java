@@ -1,6 +1,5 @@
 package net.limit.cubliminal.world.room;
 
-import net.limit.cubliminal.util.MazeUtil;
 import net.ludocrypt.limlib.api.world.Manipulation;
 import net.minecraft.util.math.random.Random;
 
@@ -13,6 +12,6 @@ public record RoomPlacement(Function<Random, String> id, byte packedManipulation
     }
 
     public Manipulation manipulation() {
-        return MazeUtil.unpack(this.packedManipulation);
+        return Manipulation.unpack(this.packedManipulation);
     }
 }

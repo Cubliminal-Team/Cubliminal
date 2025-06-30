@@ -159,7 +159,7 @@ public interface Room {
     }
 
     default Instance newInstance(Manipulation manipulation, boolean generate) {
-        return new Instance(this, this.width(), this.height(), MazeUtil.pack(manipulation), generate);
+        return new Instance(this, this.width(), this.height(), manipulation.pack(), generate);
     }
 
     record Instance(Room parent, byte width, byte height, byte packedManipulation, boolean generate) {
@@ -169,7 +169,7 @@ public interface Room {
 
         public Instance(Room parent, byte width, byte height, byte packedManipulation, boolean generate) {
             this.parent = parent;
-            this.width = switch (MazeUtil.unpack(packedManipulation).getRotation()) {
+            this.width = switch (Manipulation.unpack(packedManipulation).getRotation()) {
                 case CLOCKWISE_90, COUNTERCLOCKWISE_90 -> {
                     this.height = width;
                     yield height;

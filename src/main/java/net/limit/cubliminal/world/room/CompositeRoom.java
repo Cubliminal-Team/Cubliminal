@@ -67,7 +67,7 @@ public class CompositeRoom implements Room {
 
     @Override
     public List<Door> place(SpecialMaze maze, int x, int y, Vec2b roomDimensions, byte packedManipulation, boolean generate) {
-        Manipulation manipulation = MazeUtil.unpack(packedManipulation);
+        Manipulation manipulation = Manipulation.unpack(packedManipulation);
         if (generate) {
             BiFunction<Vec2b, Vec2b, Vec2b> transformation = Room.cornerTransformation(roomDimensions, manipulation);
             this.components.forEach(component -> {

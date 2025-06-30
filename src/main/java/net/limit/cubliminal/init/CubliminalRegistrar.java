@@ -15,7 +15,7 @@ import net.ludocrypt.limlib.api.LimlibRegistryHooks;
 import net.ludocrypt.limlib.api.LimlibWorld;
 import net.ludocrypt.limlib.api.effects.post.PostEffect;
 import net.ludocrypt.limlib.api.effects.post.StaticPostEffect;
-import net.ludocrypt.limlib.api.effects.sky.LDimensionEffects;
+import net.ludocrypt.limlib.api.effects.sky.LiminalDimensionEffects;
 import net.ludocrypt.limlib.api.effects.sky.StaticDimensionEffects;
 import net.ludocrypt.limlib.api.effects.sound.SoundEffects;
 import net.ludocrypt.limlib.api.effects.sound.reverb.StaticReverbEffect;
@@ -44,7 +44,7 @@ public class CubliminalRegistrar implements LimlibRegistrar {
 	private static final List<Pair<RegistryKey<LimlibWorld>, LimlibWorld>> WORLDS = new ArrayList<>();
 	private static final List<Pair<RegistryKey<SoundEffects>, SoundEffects>> SOUND_EFFECTS = new ArrayList<>();
 	private static final List<Pair<RegistryKey<Skybox>, Skybox>> SKYBOXES = new ArrayList<>();
-	private static final List<Pair<RegistryKey<LDimensionEffects>, LDimensionEffects>> DIMENSION_EFFECTS = new ArrayList<>();
+	private static final List<Pair<RegistryKey<LiminalDimensionEffects>, LiminalDimensionEffects>> DIMENSION_EFFECTS = new ArrayList<>();
 	private static final List<Pair<RegistryKey<PostEffect>, PostEffect>> POST_EFFECTS = new ArrayList<>();
 
 	public static String THE_LOBBY = "the_lobby";
@@ -116,7 +116,7 @@ public class CubliminalRegistrar implements LimlibRegistrar {
 				.forEach((pair) -> registry.add(pair.getFirst(), pair.getSecond(), RegistryEntryInfo.DEFAULT)));
 
 		LimlibRegistryHooks
-			.hook(LDimensionEffects.DIMENSION_EFFECTS_KEY, (infoLookup, registryKey, registry) -> DIMENSION_EFFECTS
+			.hook(LiminalDimensionEffects.DIMENSION_EFFECTS_KEY, (infoLookup, registryKey, registry) -> DIMENSION_EFFECTS
 				.forEach((pair) -> registry.add(pair.getFirst(), pair.getSecond(), RegistryEntryInfo.DEFAULT)));
 
 		LimlibRegistryHooks
@@ -161,9 +161,9 @@ public class CubliminalRegistrar implements LimlibRegistrar {
 		return skybox;
 	}
 
-	private static <D extends LDimensionEffects> D getDimEffects(String id, D dimensionEffects) {
+	private static <D extends LiminalDimensionEffects> D getDimEffects(String id, D dimensionEffects) {
 		DIMENSION_EFFECTS
-			.add(Pair.of(RegistryKey.of(LDimensionEffects.DIMENSION_EFFECTS_KEY, Cubliminal.id(id)), dimensionEffects));
+			.add(Pair.of(RegistryKey.of(LiminalDimensionEffects.DIMENSION_EFFECTS_KEY, Cubliminal.id(id)), dimensionEffects));
 		return dimensionEffects;
 	}
 

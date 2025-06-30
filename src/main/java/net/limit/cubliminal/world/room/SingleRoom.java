@@ -3,7 +3,6 @@ package net.limit.cubliminal.world.room;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.limit.cubliminal.util.MazeUtil;
 import net.limit.cubliminal.world.maze.RoomCellState;
 import net.limit.cubliminal.world.maze.SpecialMaze;
 import net.limit.cubliminal.util.Vec2b;
@@ -65,7 +64,7 @@ public class SingleRoom implements Room {
     @Override
     public List<Door> place(SpecialMaze maze, int x, int y, Vec2b roomDimensions, byte packedManipulation, boolean generate) {
         if (generate) maze.withState(x, y, RoomCellState.of(random -> this.id, packedManipulation));
-        Manipulation manipulation = MazeUtil.unpack(packedManipulation);
+        Manipulation manipulation = Manipulation.unpack(packedManipulation);
         PosTransformation translation = Room.posTransformation(roomDimensions, manipulation);
         RotTransformation rotation = Room.rotTransformation(manipulation);
         List<Door> transformed = new ArrayList<>(this.doors.size());

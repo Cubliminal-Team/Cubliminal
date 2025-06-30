@@ -87,10 +87,10 @@ public record PoissonDiskSampler(int width, int height, int maxSamples) {
     }
 
     private boolean isValid(Vec2i candidate, byte roomWidth, byte roomHeight, boolean[] grid, List<Vec2i> validPositions, boolean hasMapping) {
-        int startX = candidate.getX() - 1;
-        int endX = candidate.getX() + roomWidth + 1;
-        int startY = candidate.getY() - 1;
-        int endY = candidate.getY() + roomHeight + 1;
+        int startX = candidate.x() - 1;
+        int endX = candidate.x() + roomWidth + 1;
+        int startY = candidate.y() - 1;
+        int endY = candidate.y() + roomHeight + 1;
 
         if (startX < 0 || endX >= width || startY < 0 || endY >= height) return false;
 
@@ -110,7 +110,7 @@ public record PoissonDiskSampler(int width, int height, int maxSamples) {
     private void placeRoom(Vec2i candidate, byte roomWidth, byte roomHeight, boolean[] grid) {
         for (int row = 0; row < roomWidth; row++) {
             for (int column = 0; column < roomHeight; column++) {
-                grid[(column + candidate.getY()) * width + row + candidate.getX()] = true;
+                grid[(column + candidate.y()) * width + row + candidate.x()] = true;
             }
         }
     }
