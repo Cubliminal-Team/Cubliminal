@@ -7,7 +7,6 @@ import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientWorldEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
-import net.fabricmc.loader.api.FabricLoader;
 import net.limit.cubliminal.client.hud.NoclipHudOverlay;
 import net.limit.cubliminal.client.hud.SanityBarHudOverlay;
 import net.limit.cubliminal.client.render.FluxCapacitorRenderer;
@@ -19,8 +18,6 @@ import net.limit.cubliminal.event.KeyInputHandler;
 import net.limit.cubliminal.init.*;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
-
-import java.util.Collection;
 
 @Environment(EnvType.CLIENT)
 public class CubliminalClient implements ClientModInitializer {
@@ -54,13 +51,8 @@ public class CubliminalClient implements ClientModInitializer {
 		EntityRendererRegistry.register(CubliminalEntities.SEAT_ENTITY, SeatRenderer::new);
 
 		// Init Initers
-		Collection<IniterClient> plugins =
-				FabricLoader.getInstance().getEntrypoints("initerclient", IniterClient.class);
+		IniterClient.initialise();
 
-		plugins.forEach(IniterClient::init);
-
-		//RenderLayers.init();
-		//C2SPackets.init();
 		FogSettings.init();
 
 		//HudRenderCallback.EVENT.register(NoclipHudOverlay.INSTANCE);
