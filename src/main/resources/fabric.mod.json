@@ -56,7 +56,7 @@
         "minecraft": "~1.21.3",
         "java": ">=21",
         "fabric-api": "*",
-        "limlib": "11.3",
+        "limlib": "11.31",
         "cloth-config": "*"
     },
     "accessWidener": "cubliminal.accesswidener",
