@@ -98,3 +98,105 @@ publishing {
 
 	}
 }
+
+import groovy.json.JsonSlurper
+import groovy.json.JsonOutput
+
+import org.objectweb.asm.*
+
+tasks.register('updateIniters') {
+	dependsOn classes
+
+	doLast {
+		String initerClass = "net.limit.cubliminal.Initer"
+		String initerClientClass = "net.limit.cubliminal.IniterClient"
+
+		// Where compiled .class files live
+		def classesDirs = sourceSets.main.output.classesDirs.files
+
+		List<String> foundIniters = []
+		List<String> foundClientIniters = []
+		List<String> badConstructors = []   // <- keep track of offenders
+
+		classesDirs.each { dir ->
+			dir.eachFileRecurse { f ->
+				if (!f.name.endsWith('.class')) return
+
+				String className = dir.toPath()
+						.relativize(f.toPath())
+						.toString()
+						.replace(File.separator, '.')
+						.replaceAll(/\.class$/, '')
+
+				try {
+					def cr = new ClassReader(f.bytes)
+					cr.accept(new ClassVisitor(Opcodes.ASM9) {
+						boolean isIniter = false
+						boolean isClientIniter = false
+						boolean hasPublicNoArgCtor = false
+
+						@Override
+						void visit(int version, int access, String name,
+								   String signature, String superName, String[] interfaces) {
+							isIniter = interfaces.any { it.replace('/', '.') == initerClass }
+							isClientIniter = interfaces.any { it.replace('/', '.') == initerClientClass }
+						}
+
+						@Override
+						MethodVisitor visitMethod(int access, String name, String desc,
+												  String sig, String[] exc) {
+							if (name == "<init>" && desc == "()V"
+									&& (access & Opcodes.ACC_PUBLIC) != 0) {
+								hasPublicNoArgCtor = true
+							}
+							return super.visitMethod(access, name, desc, sig, exc)
+						}
+
+						@Override
+						void visitEnd() {
+							if (isIniter) {
+								foundIniters << className
+								if (!hasPublicNoArgCtor) {
+									badConstructors << className
+								}
+							}
+							if (isClientIniter) {
+								foundClientIniters << className
+								if (!hasPublicNoArgCtor) {
+									badConstructors << className
+								}
+							}
+						}
+					}, ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES)
+				} catch (Throwable t) {
+					println "Skipping $className due to parse error: ${t.message}"
+				}
+			}
+		}
+
+		/* ---------- fail if any bad constructors ---------- */
+		if (!badConstructors.isEmpty()) {
+			println "\n❌  The following classes implement Initer but lack a *public* no‑arg constructor:"
+			badConstructors.each { println "   - $it" }
+			def badActors = badConstructors.join(', ')
+			throw new GradleException("Initer scan failed: $badActors")
+		}
+
+		/* ---------- write updated entrypoints ---------- */
+		def modJsonFile = file('src/main/resources/fabric.mod.json')
+		def modJson = new JsonSlurper().parseText(modJsonFile.text)
+
+		modJson.entrypoints = modJson.entrypoints ?: [:]
+		modJson.entrypoints.initer = foundIniters.sort()
+		modJson.entrypoints.initerclient = foundClientIniters.sort()
+
+		modJsonFile.text = JsonOutput.prettyPrint(
+                JsonOutput.toJson(modJson))
+
+		println "\n✅  Updated fabric.mod.json with ${foundIniters.size()} Initer implementations and ${foundClientIniters.size()} Client Initer implementations."
+	}
+}
+
+
+
+

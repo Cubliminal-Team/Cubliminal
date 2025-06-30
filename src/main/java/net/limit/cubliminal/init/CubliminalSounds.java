@@ -3,6 +3,7 @@ package net.limit.cubliminal.init;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.limit.cubliminal.Cubliminal;
+import net.limit.cubliminal.Initer;
 import net.limit.cubliminal.client.sound.ConditionedSoundInstance;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -23,7 +24,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collection;
 
 
-public class CubliminalSounds {
+public class CubliminalSounds implements Initer {
 	private static SoundEvent register(String id) {
 		return Registry.register(Registries.SOUND_EVENT, Cubliminal.id(id), SoundEvent.of(Cubliminal.id(id)));
 	}
@@ -94,6 +95,4 @@ public class CubliminalSounds {
 		world.playSound(null, pos, sound, SoundCategory.BLOCKS, 1.0f, 1.0f);
 	}
 
-    public static void init() {
-    }
 }

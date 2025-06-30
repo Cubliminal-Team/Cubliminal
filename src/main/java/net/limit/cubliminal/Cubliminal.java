@@ -15,7 +15,6 @@ import net.limit.cubliminal.event.command.NoclipCommand;
 import net.limit.cubliminal.event.command.SanityCommand;
 import net.limit.cubliminal.init.*;
 import net.limit.cubliminal.event.noclip.NoclipDestination;
-import net.limit.cubliminal.networking.s2c.S2CPackets;
 import net.limit.cubliminal.world.room.RoomRegistry;
 import net.limit.cubliminal.world.room.RoomType;
 import net.minecraft.entity.damage.DamageType;
@@ -53,17 +52,11 @@ public class Cubliminal implements ModInitializer {
 		AutoConfig.register(CubliminalConfig.class, GsonConfigSerializer::new);
 
 		ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(new RoomRegistry());
-		CubliminalItemGroups.init();
-		CubliminalItems.init();
-		CubliminalBlocks.init();
-		CubliminalBiomes.init();
-		CubliminalStructures.init();
-		CubliminalSounds.init();
-		CubliminalEntities.init();
-		CubliminalEffects.init();
-		CubliminalBlockEntities.init();
+
+		// Init Initers
+		Initer.initialise();
+
 		NoclipDestination.init();
-		S2CPackets.init();
 		RoomType.init();
 
 		ServerLifecycleEvents.SERVER_STARTED.register(server -> SERVER = server.getWorld(CubliminalRegistrar.THE_LOBBY_KEY));

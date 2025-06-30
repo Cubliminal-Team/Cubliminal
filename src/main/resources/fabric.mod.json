@@ -1,54 +1,70 @@
 {
-	"schemaVersion": 1,
-	"id": "cubliminal",
-	"version": "${version}",
-	"name": "Cubliminal",
-	"description": "If you're not careful and you noclip out of reality in the wrong areas, you'll end up in the Backrooms, where it's nothing but the stink of old moist carpet, the madness of mono-yellow, the endless background noise of fluorescent lights at maximum hum-buzz, and approximately six hundred million square miles of randomly segmented empty rooms to be trapped in. God save you if you hear something wandering around nearby, because it sure as hell has heard you.",
-	"authors": [
-		"Nhappysmiler (Owner)"
-	],
-	"contact": {
-		"homepage": "https://modrinth.com/mod/cubliminal-mod",
-		"sources": "https://github.com/northernlimit/Cubliminal",
-		"issues": "https://github.com/northernlimit/Cubliminal/issues"
-	},
-	"license": "GPLv3",
-	"icon": "assets/cubliminal/icon.png",
-	"environment": "*",
-	"entrypoints": {
-		"main": [
-			"net.limit.cubliminal.Cubliminal"
-		],
-		"client": [
-			"net.limit.cubliminal.CubliminalClient"
-		],
-		"limlib:registrar": [
-          "net.limit.cubliminal.init.CubliminalRegistrar"
-		],
-		"modmenu": [
-			"net.limit.cubliminal.config.CubliminalModmenu"
-		],
-		"fabric-datagen": [
-			"net.limit.cubliminal.CubliminalDataGenerator"
-		]
-	},
-	"mixins": [
-		"cubliminal.mixins.json"
-	],
-	"depends": {
-		"fabricloader": "*",
-		"minecraft": "~1.21.3",
-		"java": ">=21",
-		"fabric-api": "*",
-		"limlib":"11.31",
-		"cloth-config": "*"
-	},
-	"accessWidener": "cubliminal.accesswidener",
-	"custom": {
-		"modmenu": {
-			"links": {
-				"modmenu.discord": "https://discord.gg/EnzupkrK7m"
-			}
-		}
-	}
+    "schemaVersion": 1,
+    "id": "cubliminal",
+    "version": "${version}",
+    "name": "Cubliminal",
+    "description": "If you're not careful and you noclip out of reality in the wrong areas, you'll end up in the Backrooms, where it's nothing but the stink of old moist carpet, the madness of mono-yellow, the endless background noise of fluorescent lights at maximum hum-buzz, and approximately six hundred million square miles of randomly segmented empty rooms to be trapped in. God save you if you hear something wandering around nearby, because it sure as hell has heard you.",
+    "authors": [
+        "The Cubliminal Team"
+    ],
+    "contact": {
+        "homepage": "https://modrinth.com/mod/cubliminal-mod",
+        "sources": "https://github.com/Cubliminal-Team/Cubliminal",
+        "issues": "https://github.com/Cubliminal-Team/Cubliminal/issues"
+    },
+    "license": "GPLv3",
+    "icon": "assets/cubliminal/icon.png",
+    "environment": "*",
+    "entrypoints": {
+        "main": [
+            "net.limit.cubliminal.Cubliminal"
+        ],
+        "client": [
+            "net.limit.cubliminal.CubliminalClient"
+        ],
+        "limlib:registrar": [
+            "net.limit.cubliminal.init.CubliminalRegistrar"
+        ],
+        "modmenu": [
+            "net.limit.cubliminal.config.CubliminalModmenu"
+        ],
+        "fabric-datagen": [
+            "net.limit.cubliminal.CubliminalDataGenerator"
+        ],
+        "initer": [
+            "net.limit.cubliminal.init.CubliminalBiomes",
+            "net.limit.cubliminal.init.CubliminalBlockEntities",
+            "net.limit.cubliminal.init.CubliminalBlocks",
+            "net.limit.cubliminal.init.CubliminalEffects",
+            "net.limit.cubliminal.init.CubliminalEntities",
+            "net.limit.cubliminal.init.CubliminalItemGroups",
+            "net.limit.cubliminal.init.CubliminalItems",
+            "net.limit.cubliminal.init.CubliminalSounds",
+            "net.limit.cubliminal.init.CubliminalStructures",
+            "net.limit.cubliminal.networking.s2c.S2CPackets"
+        ],
+        "initerclient": [
+            "net.limit.cubliminal.client.render.RenderLayers",
+            "net.limit.cubliminal.networking.c2s.C2SPackets"
+        ]
+    },
+    "mixins": [
+        "cubliminal.mixins.json"
+    ],
+    "depends": {
+        "fabricloader": "*",
+        "minecraft": "~1.21.3",
+        "java": ">=21",
+        "fabric-api": "*",
+        "limlib": "11.3",
+        "cloth-config": "*"
+    },
+    "accessWidener": "cubliminal.accesswidener",
+    "custom": {
+        "modmenu": {
+            "links": {
+                "modmenu.discord": "https://discord.gg/EnzupkrK7m"
+            }
+        }
+    }
 }

@@ -7,7 +7,6 @@ import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientWorldEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
-import net.limit.cubliminal.client.render.RenderLayers;
 import net.limit.cubliminal.client.hud.NoclipHudOverlay;
 import net.limit.cubliminal.client.hud.SanityBarHudOverlay;
 import net.limit.cubliminal.client.render.FluxCapacitorRenderer;
@@ -17,7 +16,6 @@ import net.limit.cubliminal.client.render.fog.FogSettings;
 import net.limit.cubliminal.entity.client.SeatRenderer;
 import net.limit.cubliminal.event.KeyInputHandler;
 import net.limit.cubliminal.init.*;
-import net.limit.cubliminal.networking.c2s.C2SPackets;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
 
@@ -51,9 +49,11 @@ public class CubliminalClient implements ClientModInitializer {
 
 		KeyInputHandler.registerKeyInputs();
 		EntityRendererRegistry.register(CubliminalEntities.SEAT_ENTITY, SeatRenderer::new);
-		RenderLayers.init();
+
+		// Init Initers
+		IniterClient.initialise();
+
 		FogSettings.init();
-		C2SPackets.init();
 
 		//HudRenderCallback.EVENT.register(NoclipHudOverlay.INSTANCE);
 		HudRenderCallback.EVENT.register(new SanityBarHudOverlay());
