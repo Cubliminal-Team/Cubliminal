@@ -67,7 +67,7 @@ public class GridAlignedStructureGenerator {
         } else {
             // This is where the structure is aligned
             Vec2i rotationOffset = rotationOffset(level.getLevel(), blockRotation);
-            BlockPos blockPos = pos.subtract(new Vec3i(rotationOffset.getX(), 0, rotationOffset.getY()));
+            BlockPos blockPos = pos.subtract(new Vec3i(rotationOffset.x(), 0, rotationOffset.y()));
             // Create a room and invoke callback method
             optionalRoom.ifPresent(room -> level.saveRoom(pos, room.newInstance(Manipulation.of(blockRotation), false)));
 

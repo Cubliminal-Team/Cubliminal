@@ -104,13 +104,13 @@ public class LevelOneMazeRegion extends MazeRegion<LevelOneMaze> {
             for (int i = 0; i < roomInstances.size(); i++) {
                 Room.Instance room = roomInstances.get(i);
                 Vec2i roomPos = roomPositions.get(i);
-                room.place(maze, roomPos.getX(), roomPos.getY())
+                room.place(maze, roomPos.x(), roomPos.y())
                         .forEach(door -> {
                             Door.Instance instance = Door.Instance.of(roomPos, door.facing());
                             Vec2i vec = instance.entry(
-                                    door.relativePos().x() + roomPos.getX(),
-                                    door.relativePos().y() + roomPos.getY());
-                            Vector2D entryPos = new Vector2D(vec.getX(), vec.getY());
+                                    door.relativePos().x() + roomPos.x(),
+                                    door.relativePos().y() + roomPos.y());
+                            Vector2D entryPos = new Vector2D(vec.x(), vec.y());
                             doors.put(vec, instance);
                             nodes.add(entryPos);
                         });

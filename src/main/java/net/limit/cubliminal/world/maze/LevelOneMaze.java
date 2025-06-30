@@ -108,7 +108,7 @@ public class LevelOneMaze extends SpecialMaze {
     @Override
     public boolean hasNeighbour(Vec2i vec, Face face) {
         Vec2i adj = vec.go(face);
-        return super.hasNeighbour(vec, face) && !this.filter[adj.getY() * this.width + adj.getX()];
+        return super.hasNeighbour(vec, face) && !this.filter[adj.y() * this.width + adj.x()];
     }
 
     public void setMst(Collection<Edge2D> mst) {

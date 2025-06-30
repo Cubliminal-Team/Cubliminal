@@ -7,12 +7,12 @@ import net.ludocrypt.limlib.api.world.maze.MazeComponent;
 public record Door(Vec2b relativePos, byte facing) {
 
     public Door transform(PosTransformation translation, RotTransformation rotation) {
-        return new Door(translation.translate(relativePos), MazeUtil.ordinal(rotation.rotate(MazeUtil.byId(facing))));
+        return new Door(translation.translate(relativePos), MazeUtil.ordinal(rotation.rotate(MazeComponent.dirId(facing))));
     }
 
     public record Instance(MazeComponent.Vec2i roomPos, MazeComponent.Face facing) {
         public static Instance of(MazeComponent.Vec2i roomPos, byte facing) {
-            return new Instance(roomPos, MazeUtil.getById(facing));
+            return new Instance(roomPos, MazeComponent.faceId(facing));
         }
 
         public MazeComponent.Vec2i entry(int x, int y) {

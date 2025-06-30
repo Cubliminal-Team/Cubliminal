@@ -168,7 +168,7 @@ public record Vec2b(byte x, byte y) {
     }
 
     public boolean iEquals(Vec2i vec) {
-        return vec.getX() == this.x && vec.getY() == this.y;
+        return vec.x() == this.x && vec.y() == this.y;
     }
 
     @Override
