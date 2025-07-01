@@ -52,7 +52,7 @@ public class LevelOneMazeRegion extends MazeRegion<LevelOneMaze> {
                 roomCache[(column + cell.getZ()) * width + row + cell.getX()] = true;
             }
         }
-        //structurePositions.get(cell.getY()).add(new Vec2i(cell.getX(), cell.getZ()));
+        //structurePositions.get(cell.getY()).add(new Vec2i(cell));
         //structures.get(cell.getY()).add(room);
     }
 
@@ -91,10 +91,11 @@ public class LevelOneMazeRegion extends MazeRegion<LevelOneMaze> {
         Collections.shuffle(validRoomPos, new java.util.Random(LimlibHelper.blockSeed(mazePos)));
 
         // Run poisson disk sampler to find a position for each room
-        List<Room.Instance> roomInstances = new ArrayList<>(structures.get(floor));
+        List<Room.Instance> roomInstances = new ArrayList<>();
         boolean[] roomCache = floorCache[floor];
         List<Vec2i> roomPositions = sampler.generate(roomInstances, roomCache, biomeGrid, validRoomPos, random);
         roomPositions.addAll(structurePositions.get(floor));
+        roomInstances.addAll(structures.get(floor));
         Set<Vector2D> nodes = new HashSet<>();
         SetMultimap<Vec2i, Door.Instance> doors = HashMultimap.create();
         LevelOneMaze maze = new LevelOneMaze(width, height, roomCache, 0.2f, random);

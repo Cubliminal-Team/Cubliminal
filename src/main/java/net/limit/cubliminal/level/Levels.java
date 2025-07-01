@@ -20,7 +20,8 @@ public enum Levels {
         this.level = level;
     }
 
-    public static final BlockPos MANILA_ROOM = new BlockPos(7, LEVEL_0.level.layer_height * LEVEL_0.level.layer_count + 3, 3);
+    public static final BlockPos MANILA_ROOM = new BlockPos(7,  LEVEL_0.level.min_y
+            + LEVEL_0.level.layer_height * LEVEL_0.level.layer_count + 3, 3);
 
     public Level getLevel() {
         return this.level;

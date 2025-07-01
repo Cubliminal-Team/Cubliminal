@@ -3,7 +3,6 @@ package net.limit.cubliminal.world.room;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.limit.cubliminal.util.MazeUtil;
 import net.limit.cubliminal.util.WeightedHolderSet;
 import net.limit.cubliminal.world.maze.RoomCellState;
 import net.limit.cubliminal.world.maze.SpecialMaze;

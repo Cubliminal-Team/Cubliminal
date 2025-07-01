@@ -1,14 +1,14 @@
 {
   "structures": [
     {
-      "structure": "cubliminal:zombie_str",
+      "structure": "cubliminal:manila_gateway",
       "weight": 1
     }
   ],
   "placement": {
     "type": "minecraft:random_spread",
-    "spacing": 5,
-    "separation": 2,
+    "spacing": 17,
+    "separation": 10,
     "salt": 105815025
   }
 }

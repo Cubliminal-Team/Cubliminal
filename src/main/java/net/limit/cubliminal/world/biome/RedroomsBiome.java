@@ -14,7 +14,7 @@ public class RedroomsBiome {
 		Biome.Builder biome = new Biome.Builder();
 
 		SpawnSettings.Builder spawnSettings = new SpawnSettings.Builder();
-		GenerationSettings.Builder generationSettings = new GenerationSettings.Builder();
+		GenerationSettings.Builder generationSettings = new GenerationSettings.LookupBackedBuilder(features, carvers);
 		BiomeEffects.Builder biomeEffects = new BiomeEffects.Builder();
 
 		biomeEffects.loopSound(CubliminalSounds.AMBIENT_REDROOMS);

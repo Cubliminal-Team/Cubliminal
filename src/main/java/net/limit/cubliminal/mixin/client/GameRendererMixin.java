@@ -3,8 +3,8 @@ package net.limit.cubliminal.mixin.client;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.limit.cubliminal.Cubliminal;
+import net.limit.cubliminal.access.GameRendererAccessor;
 import net.limit.cubliminal.access.PEAccessor;
-import net.limit.cubliminal.client.hud.NoclipHudOverlay;
 import net.limit.cubliminal.client.sound.NoclipSoundInstance;
 import net.limit.cubliminal.config.CubliminalConfig;
 import net.limit.cubliminal.init.CubliminalEffects;
@@ -19,6 +19,7 @@ import net.minecraft.registry.Registries;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -26,7 +27,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Environment(EnvType.CLIENT)
 @Mixin(GameRenderer.class)
-public abstract class GameRendererMixin {
+public abstract class GameRendererMixin implements GameRendererAccessor {
 
     @Shadow
     @Final
@@ -36,6 +37,22 @@ public abstract class GameRendererMixin {
     @Final
     private Pool pool;
 
+    @Unique
+    private boolean clippingIntoWall = false;
+
+    @Unique
+    private boolean triggeredNoclip = false;
+
+    @Override
+    public void setClippingIntoWall(boolean bl) {
+        this.clippingIntoWall = bl;
+    }
+
+    @Override
+    public void setTriggered(boolean bl) {
+        this.triggeredNoclip = bl;
+    }
+
     @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/WorldRenderer;drawEntityOutlinesFramebuffer()V", shift = At.Shift.AFTER))
     private void cubliminal$renderPostEffects(RenderTickCounter tickCounter, boolean tick, CallbackInfo ci) {
         if (client.player != null && client.world != null && !CubliminalConfig.get().disableAggressiveGraphics) {
@@ -44,7 +61,7 @@ public abstract class GameRendererMixin {
                 PostProcesser shader = PostProcesserManager.INSTANCE.find(Cubliminal.id("noclip"));
                 shader.setUniform("NoclipTicks", (float) Math.abs(((PEAccessor) player).getNoclipEngine().getTicksToNc()));
                 shader.render(client.getFramebuffer(), this.pool);
-            } else if (NoclipHudOverlay.INSTANCE.shouldRender()) {
+            } else if (this.shouldRenderNoClip()) {
                 for (int i = 0; i < 2; i++) {
                     if ((player.getWorld().getTime() + i) % 6 == 0) {
                         PostProcesserManager.INSTANCE.find(Cubliminal.id("noclip")).render(client.getFramebuffer(), this.pool);
@@ -58,5 +75,10 @@ public abstract class GameRendererMixin {
                 PostProcesserManager.INSTANCE.find(Cubliminal.id("paranoia")).render(client.getFramebuffer(), this.pool);
             }
         }
+    }
+
+    @Unique
+    private boolean shouldRenderNoClip() {
+        return clippingIntoWall || triggeredNoclip;
     }
 }

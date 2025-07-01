@@ -1,0 +1,16 @@
+{
+  "type": "cubliminal:grid_aligned_structures",
+  "biomes": [
+    "cubliminal:the_lobby"
+  ],
+  "step": "underground_structures",
+  "spawn_overrides": {},
+  "start_pool": "cubliminal:manila_gateway",
+  "size": 1,
+  "manipulate": false,
+  "start_height": {
+    "absolute": 2
+  },
+  "max_distance_from_center": 80,
+  "dimension_padding": 2
+}
