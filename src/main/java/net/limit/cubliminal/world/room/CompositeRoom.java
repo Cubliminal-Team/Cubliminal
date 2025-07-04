@@ -14,39 +14,28 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiFunction;
 
-public class CompositeRoom implements Room {
+public record CompositeRoom(List<Component> components, byte width, byte height, List<Door> doors) implements Room {
     public static MapCodec<CompositeRoom> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             Component.CODEC.listOf().fieldOf("components").forGetter(CompositeRoom::components),
-            Codec.BYTE.fieldOf("width").forGetter(CompositeRoom::width),
-            Codec.BYTE.fieldOf("height").forGetter(CompositeRoom::height),
+            Codec.BYTE.fieldOf("width").forGetter(CompositeRoom::getWidth),
+            Codec.BYTE.fieldOf("height").forGetter(CompositeRoom::getHeight),
             Codec.STRING.fieldOf("doors").forGetter(CompositeRoom::doorData)
     ).apply(instance, CompositeRoom::new));
 
-    private final List<Component> components;
-    private final byte width, height;
-    private final List<Door> doors;
-
     public CompositeRoom(List<Component> components, byte width, byte height, String doorData) {
-        this.components = components;
+        this(components, width, height, Room.unpackDoors(doorData, width, height));
         if (width < 1 || height < 1) {
             throw new IllegalArgumentException("Room width: " + width + " and height: " + height + " must be set above 0");
         }
-        this.width = width;
-        this.height = height;
-        this.doors = this.unpackDoors(doorData);
-    }
-
-    public List<Component> components() {
-        return this.components;
     }
 
     @Override
-    public byte width() {
+    public byte getWidth() {
         return this.width;
     }
 
     @Override
-    public byte height() {
+    public byte getHeight() {
         return this.height;
     }
 
@@ -55,35 +44,23 @@ public class CompositeRoom implements Room {
     }
 
     @Override
-    public List<Door> doors() {
-        return this.doors;
-    }
-
-    @Override
     public RoomType<?> type() {
         return RoomType.COMPOUND_SET;
     }
 
     @Override
-    public List<Door> place(SpecialMaze maze, int x, int y, Vec2b roomDimensions, byte packedManipulation, boolean generate) {
+    public List<Door> place(SpecialMaze maze, int x, int y, int floor, Vec2b roomDimensions, byte packedManipulation) {
         Manipulation manipulation = Manipulation.unpack(packedManipulation);
-        if (generate) {
-            BiFunction<Vec2b, Vec2b, Vec2b> transformation = Room.cornerTransformation(roomDimensions, manipulation);
-            this.components.forEach(component -> {
-                Vec2b transformed = transformation.apply(component.pos(), new Vec2b(component.height(), component.width()));
-                maze.withState(x + transformed.x(), y + transformed.y(), RoomCellState.of(component::get, packedManipulation));
-            });
-        }
+        BiFunction<Vec2b, Vec2b, Vec2b> transformation = Room.cornerTransformation(roomDimensions, manipulation);
+        this.components.forEach(component -> {
+            Vec2b transformed = transformation.apply(component.pos(), new Vec2b(component.height(), component.width()));
+            maze.withState(x + transformed.x(), y + transformed.y(), RoomCellState.of(component::get, packedManipulation));
+        });
         PosTransformation translation = Room.posTransformation(roomDimensions, manipulation);
         RotTransformation rotation = Room.rotTransformation(manipulation);
         List<Door> transformed = new ArrayList<>(this.doors.size());
         this.doors.forEach(door -> transformed.add(door.transform(translation, rotation)));
         return transformed;
-    }
-
-    @Override
-    public String toString() {
-        return "Components: " + this.components.toString() + "; width: " + this.width + "; height: " + this.height + "; doors: " + this.doors.toString();
     }
 
     public record Component(Vec2b pos, byte width, byte height, WeightedHolderSet<String> structures) {
@@ -111,9 +88,5 @@ public class CompositeRoom implements Room {
             return this.structures.random(random);
         }
 
-        @Override
-        public String toString() {
-            return "Pos: " + pos().toString() + "; width: " + width() + "; height: " + height() + "; structures: " + structures().toString();
-        }
     }
 }

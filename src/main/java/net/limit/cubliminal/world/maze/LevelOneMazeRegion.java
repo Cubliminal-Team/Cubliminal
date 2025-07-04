@@ -1,12 +1,14 @@
 package net.limit.cubliminal.world.maze;
 
-import com.google.common.collect.HashMultimap;
+import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.SetMultimap;
 import io.github.jdiemke.triangulation.DelaunayTriangulator;
 import io.github.jdiemke.triangulation.Edge2D;
 import io.github.jdiemke.triangulation.NotEnoughPointsException;
 import io.github.jdiemke.triangulation.Vector2D;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
+import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
 import net.limit.cubliminal.Cubliminal;
 import net.limit.cubliminal.init.CubliminalBiomes;
 import net.limit.cubliminal.world.biome.source.LevelOneBiomeSource;
@@ -19,7 +21,6 @@ import net.ludocrypt.limlib.api.world.maze.MazeComponent;
 import net.ludocrypt.limlib.api.world.maze.MazeComponent.Vec2i;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.biome.Biome;
@@ -28,32 +29,13 @@ import java.util.*;
 
 public class LevelOneMazeRegion extends MazeRegion<LevelOneMaze> {
 
-    private final boolean[][] floorCache;
     private RegistryEntry<Biome>[] biomeGrid;
     private List<Vec2i> validRoomPos;
-    private final Int2ObjectOpenHashMap<Set<Vec2i>> structurePositions;
-    private final Int2ObjectOpenHashMap<Set<Room.Instance>> structures;
+    private final Int2ObjectOpenHashMap<Object2ObjectArrayMap<Vec2i, Room.Instance>> connectionCache;
 
-    public LevelOneMazeRegion(int width, int layerHeight, int height, int floorCount) {
+    public LevelOneMazeRegion(int layerHeight, int floorCount) {
         super(layerHeight, new LevelOneMaze[floorCount]);
-        this.floorCache = new boolean[floorCount][width * height];
-        this.structurePositions = new Int2ObjectOpenHashMap<>(floorCount);
-        this.structures = new Int2ObjectOpenHashMap<>(floorCount);
-        for (int i = 0; i < floorCount; i++) {
-            this.structurePositions.put(i, new HashSet<>(3));
-            this.structures.put(i, new HashSet<>(3));
-        }
-    }
-
-    public void cacheRoom(Vec3i cell, int width, Room.Instance room) {
-        boolean[] roomCache = floorCache[cell.getY()];
-        for (int row = 0; row < room.height(); row++) {
-            for (int column = 0; column < room.width(); column++) {
-                roomCache[(column + cell.getZ()) * width + row + cell.getX()] = true;
-            }
-        }
-        //structurePositions.get(cell.getY()).add(new Vec2i(cell));
-        //structures.get(cell.getY()).add(room);
+        this.connectionCache = new Int2ObjectOpenHashMap<>(floorCount);
     }
 
     public void generateMazes(LevelOneBiomeSource biomeSource, PoissonDiskSampler sampler, ChunkRegion region, BlockPos regionPos,
@@ -61,6 +43,10 @@ public class LevelOneMazeRegion extends MazeRegion<LevelOneMaze> {
         if (generated) {
             throw new IllegalStateException("Maze region: " + regionPos + " was generated twice");
         }
+
+        // Generate structures with a strict spacing and separation
+
+
         for (int i = 0; i < floorStorage.length; i++) {
             BlockPos mazePos = regionPos.add(0, i * layerHeight, 0);
             Random mazeRandom = Random.create(LimlibHelper.blockSeed(mazePos) + seedModifier + region.getSeed());
@@ -90,14 +76,30 @@ public class LevelOneMazeRegion extends MazeRegion<LevelOneMaze> {
         }
         Collections.shuffle(validRoomPos, new java.util.Random(LimlibHelper.blockSeed(mazePos)));
 
+        // Cache previously generated structures
+        boolean[] roomCache = new boolean[width * height];
+        List<Vec2i> cachedPositions = new ArrayList<>(2);
+        List<Room.Instance> cachedRooms = new ArrayList<>(2);
+        if (connectionCache.containsKey(floor)) {
+            Object2ObjectArrayMap<Vec2i, Room.Instance> cache = connectionCache.get(floor);
+            cachedPositions.addAll(cache.keySet());
+            cachedRooms.addAll(cache.values());
+            cache.forEach((cell, room) -> {
+                for (int row = 0; row < room.height(); row++) {
+                    for (int column = 0; column < room.width(); column++) {
+                        roomCache[(column + cell.y()) * width + row + cell.x()] = true;
+                    }
+                }
+            });
+        }
+
         // Run poisson disk sampler to find a position for each room
         List<Room.Instance> roomInstances = new ArrayList<>();
-        boolean[] roomCache = floorCache[floor];
         List<Vec2i> roomPositions = sampler.generate(roomInstances, roomCache, biomeGrid, validRoomPos, random);
-        roomPositions.addAll(structurePositions.get(floor));
-        roomInstances.addAll(structures.get(floor));
-        Set<Vector2D> nodes = new HashSet<>();
-        SetMultimap<Vec2i, Door.Instance> doors = HashMultimap.create();
+        roomPositions.addAll(cachedPositions);
+        roomInstances.addAll(cachedRooms);
+        ObjectLinkedOpenHashSet<Vector2D> nodes = new ObjectLinkedOpenHashSet<>();
+        SetMultimap<Vec2i, Door.Instance> doors = LinkedHashMultimap.create();
         LevelOneMaze maze = new LevelOneMaze(width, height, roomCache, 0.2f, random);
 
         // Mark room origin cells for generation and add their doors' positions as nodes
@@ -105,7 +107,7 @@ public class LevelOneMazeRegion extends MazeRegion<LevelOneMaze> {
             for (int i = 0; i < roomInstances.size(); i++) {
                 Room.Instance room = roomInstances.get(i);
                 Vec2i roomPos = roomPositions.get(i);
-                room.place(maze, roomPos.x(), roomPos.y())
+                room.place(maze, roomPos.x(), roomPos.y(), floor)
                         .forEach(door -> {
                             Door.Instance instance = Door.Instance.of(roomPos, door.facing());
                             Vec2i vec = instance.entry(

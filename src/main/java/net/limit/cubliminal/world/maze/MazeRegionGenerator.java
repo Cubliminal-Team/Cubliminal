@@ -16,7 +16,7 @@ public record MazeRegionGenerator<M extends MazeComponent, R extends MazeRegion<
 
     public static <M extends MazeComponent, R extends MazeRegion<M>> MazeRegionGenerator<M, R> create(LevelWithMaze level) {
         return new MazeRegionGenerator<>(
-                new HashMap<>(30),
+                new HashMap<>(15),
                 level.maze_width,
                 level.maze_height,
                 level.spacing_x,

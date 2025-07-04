@@ -13,7 +13,6 @@ import net.limit.cubliminal.level.LevelWithMaze;
 import net.limit.cubliminal.world.biome.source.LevelOneBiomeSource;
 import net.limit.cubliminal.world.maze.*;
 import net.limit.cubliminal.world.placement.PoissonDiskSampler;
-import net.limit.cubliminal.world.room.Room;
 import net.ludocrypt.limlib.api.world.LimlibHelper;
 import net.ludocrypt.limlib.api.world.Manipulation;
 import net.ludocrypt.limlib.api.world.NbtGroup;
@@ -27,7 +26,6 @@ import net.minecraft.state.property.Properties;
 import net.minecraft.util.Util;
 import net.minecraft.util.collection.BoundedRegionArray;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.chunk.AbstractChunkHolder;
@@ -56,9 +54,7 @@ public class LevelOneChunkGenerator extends AbstractNbtChunkGenerator implements
 	private final int spacingX;
 	private final int layerHeight;
 	private final int spacingZ;
-	private final int width;
 	private final int layerCount;
-	private final int height;
 
     public LevelOneChunkGenerator(LevelOneBiomeSource biomeSource, NbtGroup group, LevelWithMaze level) {
 		super(biomeSource, group);
@@ -68,10 +64,8 @@ public class LevelOneChunkGenerator extends AbstractNbtChunkGenerator implements
 		this.spacingX = level.spacing_x;
 		this.layerHeight = level.layer_height;
 		this.spacingZ = level.spacing_z;
-		this.width = level.maze_width;
 		this.layerCount = level.layer_count;
-		this.height = level.maze_height;
-		this.poissonDiskSampler = new PoissonDiskSampler(width, height, 30);
+		this.poissonDiskSampler = new PoissonDiskSampler(level.maze_width, level.maze_height, 30);
 	}
 
 	public static NbtGroup createGroup() {
@@ -95,30 +89,8 @@ public class LevelOneChunkGenerator extends AbstractNbtChunkGenerator implements
 		return CODEC;
 	}
 
-	@Override
-	public void saveRoom(BlockPos pos, Room.Instance room) {
-		int remainderX = Math.floorMod(pos.getX(), width * spacingX);
-		int remainderZ = Math.floorMod(pos.getZ(), height * spacingZ);
-		BlockPos regionPos = new BlockPos(
-				pos.getX() - remainderX,
-				pos.getY() - Math.floorMod(pos.getY(), layerHeight * layerCount),
-				pos.getZ() - remainderZ
-		);
-		LevelOneMazeRegion mazeRegion = mazeGenerator.mazeRegions().get(regionPos);
-		if (mazeRegion == null) {
-			mazeRegion = new LevelOneMazeRegion(width, layerHeight, height, layerCount);
-			mazeGenerator.mazeRegions().put(regionPos, mazeRegion);
-		}
-		Vec3i cell = new Vec3i(
-				Math.floorDiv(remainderX, spacingX),
-				Math.floorDiv(pos.getY(), layerHeight),
-				Math.floorDiv(remainderZ, spacingZ)
-		);
-		mazeRegion.cacheRoom(cell, width, room);
-	}
-
 	public LevelOneMazeRegion createRegion(ChunkRegion region, BlockPos regionPos, int width, int height, Random random) {
-        return new LevelOneMazeRegion(width, layerHeight, height, layerCount);
+        return new LevelOneMazeRegion(layerHeight, layerCount);
 	}
 
 	public void generateRegion(LevelOneMazeRegion mazeRegion, ChunkRegion region, BlockPos regionPos, int width, int height, Random random) {
