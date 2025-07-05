@@ -6,7 +6,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.limit.cubliminal.init.CubliminalStructures;
 import net.limit.cubliminal.level.Level;
 import net.limit.cubliminal.world.chunk.BackroomsLevel;
-import net.limit.cubliminal.world.room.Room;
 import net.minecraft.block.Block;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.entry.RegistryEntry;
@@ -14,7 +13,6 @@ import net.minecraft.registry.tag.TagKey;
 import net.minecraft.structure.StructureLiquidSettings;
 import net.minecraft.structure.pool.StructurePool;
 import net.minecraft.structure.pool.alias.StructurePoolAliasLookup;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.gen.heightprovider.HeightProvider;
@@ -31,57 +29,59 @@ public class GridAlignedStructure extends Structure {
             GridAlignedStructure.configCodecBuilder(instance),
             StructurePool.REGISTRY_CODEC.fieldOf("start_pool").forGetter(structure -> structure.startPool),
             Codec.intRange(0, 30).fieldOf("size").forGetter(structure -> structure.size),
+            Codec.BOOL.optionalFieldOf("manipulate", true).forGetter(structure -> structure.manipulate),
             HeightProvider.CODEC.fieldOf("start_height").forGetter(structure -> structure.startHeight),
             Heightmap.Type.CODEC.optionalFieldOf("project_start_to_heightmap").forGetter(structure -> structure.projectStartToHeightmap),
             Codec.intRange(1, 128).fieldOf("max_distance_from_center").forGetter(structure -> structure.maxDistanceFromCenter),
             DimensionPadding.CODEC.optionalFieldOf("dimension_padding", JigsawStructure.DEFAULT_DIMENSION_PADDING).forGetter(structure -> structure.dimensionPadding),
             StructureLiquidSettings.codec.optionalFieldOf("liquid_settings", JigsawStructure.DEFAULT_LIQUID_SETTINGS).forGetter(structure -> structure.liquidSettings),
-            TagKey.codec(RegistryKeys.BLOCK).optionalFieldOf("block_filter").forGetter(structure -> structure.blockFilter),
-            Room.CODEC.optionalFieldOf("room").forGetter(structure -> structure.room)
+            TagKey.codec(RegistryKeys.BLOCK).optionalFieldOf("block_filter").forGetter(structure -> structure.blockFilter)
     ).apply(instance, GridAlignedStructure::new));
 
     private final RegistryEntry<StructurePool> startPool;
     private final int size;
+    private final boolean manipulate;
     private final HeightProvider startHeight;
     private final Optional<Heightmap.Type> projectStartToHeightmap;
     private final int maxDistanceFromCenter;
     private final DimensionPadding dimensionPadding;
     private final StructureLiquidSettings liquidSettings;
     private final Optional<TagKey<Block>> blockFilter;
-    private final Optional<Room> room;
 
-    public GridAlignedStructure(Config config, RegistryEntry<StructurePool> startPool, int size, HeightProvider startHeight,
-                                Optional<Heightmap.Type> projectStartToHeightmap, int maxDistanceFromCenter,
-                                DimensionPadding dimensionPadding, StructureLiquidSettings liquidSettings,
-                                Optional<TagKey<Block>> blockFilter, Optional<Room> room) {
+    public GridAlignedStructure(Config config, RegistryEntry<StructurePool> startPool, int size, boolean manipulate,
+                                HeightProvider startHeight, Optional<Heightmap.Type> projectStartToHeightmap,
+                                int maxDistanceFromCenter, DimensionPadding dimensionPadding,
+                                StructureLiquidSettings liquidSettings, Optional<TagKey<Block>> blockFilter) {
         super(config);
         this.startPool = startPool;
         this.size = size;
+        this.manipulate = manipulate;
         this.startHeight = startHeight;
         this.projectStartToHeightmap = projectStartToHeightmap;
         this.maxDistanceFromCenter = maxDistanceFromCenter;
         this.dimensionPadding = dimensionPadding;
         this.liquidSettings = liquidSettings;
         this.blockFilter = blockFilter;
-        this.room = room;
     }
 
     @Override
     protected Optional<StructurePosition> getStructurePosition(Context context) {
         if (context.chunkGenerator() instanceof BackroomsLevel generator) {
+            Level level = generator.getLevel();
+            BlockPos candidate = getBlockPos(context, this.dimensionPadding, level);
             return GridAlignedStructureGenerator.generate(
                     context,
                     this.startPool,
                     this.size,
-                    getBlockPos(context, this.dimensionPadding, generator.getLevel()),
+                    candidate,
+                    this.manipulate,
                     false,
                     this.projectStartToHeightmap,
                     this.maxDistanceFromCenter,
                     StructurePoolAliasLookup.EMPTY,
                     this.dimensionPadding,
                     this.liquidSettings,
-                    generator,
-                    this.room
+                    level
             );
         }
         return Optional.empty();

@@ -2,9 +2,9 @@ package net.limit.cubliminal.block.entity;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.limit.cubliminal.access.GameRendererAccessor;
 import net.limit.cubliminal.access.PEAccessor;
 import net.limit.cubliminal.block.custom.FluxCapacitorBlock;
-import net.limit.cubliminal.client.hud.NoclipHudOverlay;
 import net.limit.cubliminal.client.sound.ConditionedSoundInstance;
 import net.limit.cubliminal.init.CubliminalBlockEntities;
 import net.limit.cubliminal.init.CubliminalSounds;
@@ -74,7 +74,7 @@ public class FluxCapacitorBlockEntity extends BlockEntity {
 	public void markRemoved() {
 		if (this.world != null && this.world.isClient() && this.getCachedState().get(FluxCapacitorBlock.POWERED)) {
 			if (this.soundInstance != null) CubliminalSounds.stopSound(this.soundInstance);
-			NoclipHudOverlay.INSTANCE.setAux_renderOverlay(false);
+			((GameRendererAccessor) MinecraftClient.getInstance().gameRenderer).setTriggered(false);
 		}
 		super.markRemoved();
 	}
@@ -96,7 +96,7 @@ public class FluxCapacitorBlockEntity extends BlockEntity {
 			if (this.realityTicks >= 220) {
 				if (this.realityTicks == 220) {
 					if (world.isClient()) {
-						NoclipHudOverlay.INSTANCE.setAux_renderOverlay(false);
+						((GameRendererAccessor) MinecraftClient.getInstance().gameRenderer).setTriggered(false);
 					} else {
 						world.getPlayers()
 								.stream()
@@ -105,7 +105,7 @@ public class FluxCapacitorBlockEntity extends BlockEntity {
 					}
 				}
 			} else if (world.isClient() && this.realityTicks >= 100 && !MinecraftClient.getInstance().player.isSpectator()) {
-				NoclipHudOverlay.INSTANCE.setAux_renderOverlay(true);
+				((GameRendererAccessor) MinecraftClient.getInstance().gameRenderer).setTriggered(true);
 			}
 		}
 	}

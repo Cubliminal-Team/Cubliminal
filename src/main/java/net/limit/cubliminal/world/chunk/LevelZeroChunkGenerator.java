@@ -35,7 +35,7 @@ import net.minecraft.world.gen.noise.NoiseConfig;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.BiFunction;
+import java.util.function.Supplier;
 
 public class LevelZeroChunkGenerator extends AbstractNbtChunkGenerator implements BackroomsLevel {
 	public static final MapCodec<LevelZeroChunkGenerator> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
@@ -73,7 +73,6 @@ public class LevelZeroChunkGenerator extends AbstractNbtChunkGenerator implement
 				.with("0tinywall", 1, 2)
 				.with("0twowalls", 1, 2)
 				.with("0wall", 1, 1)
-				.with("manila_gateway", 1, 4)
 				.with("manila_room")
 				.with("pillars", 1, 1)
 				.with("r_column", 1, 2)
@@ -104,14 +103,11 @@ public class LevelZeroChunkGenerator extends AbstractNbtChunkGenerator implement
 			// 1 : 5
 			generateNbt(region, pos, nbtGroup.pick(nbtGroup
 				.chooseGroup(random, "0column", "0corridor"), random), Manipulation.random(random));
-		} else if (randomInt < 15872) {
+		} else if (randomInt < 15880) {
 			// 79 : 80
 			generateNbt(region, pos, nbtGroup.pick(nbtGroup
 				.chooseGroup(random, "0corner", "0wall",
 					 "0thickcorner", "0thickwall", "0twowalls"), random), Manipulation.random(random));
-		} else if (randomInt < 15888) {
-			// 1 : 8
-			generateNbt(region, pos, nbtGroup.pick("manila_gateway", random));
 		} else {
 			generateNbt(region, pos, nbtGroup.pick("0tinywall", random), Manipulation.random(random));
 		}
@@ -154,7 +150,7 @@ public class LevelZeroChunkGenerator extends AbstractNbtChunkGenerator implement
 		}
 
 		if (startPos.equals(BlockPos.ZERO)) {
-			generateNbt(region, startPos.up(layerHeight * layerCount + 2), nbtGroup.nbtId("manila_room", "manila_room"));
+			generateNbt(region, startPos.up(layerHeight * layerCount + 1), nbtGroup.nbtId("manila_room", "manila_room"));
 		}
 
 		RegistryEntry<Biome> biome = this.biomeSource.calcBiome(startPos);
@@ -183,38 +179,6 @@ public class LevelZeroChunkGenerator extends AbstractNbtChunkGenerator implement
 			}
 		}
 
-		/*
-		if (biome.matchesKey(CubliminalBiomes.THE_LOBBY_BIOME)) {
-			for (int y = 0; y < layerCount; y++) {
-				for (int x = 0; x < 2; x++) {
-					for (int z = 0; z < 2; z++) {
-						decorateLobby(region, startPos.add(spacing * x, y * layerHeight + 1, spacing * z));
-					}
-				}
-			}
-		} else if (biome.matchesKey(CubliminalBiomes.PILLAR_BIOME)) {
-			Random random = Random.create(region.getSeed() + LimlibHelper.blockSeed(startPos));
-			for (int y = 0; y < layerCount; y++) {
-				if (random.nextInt(160) == 0) {
-					generateNbt(region, startPos.add(0, y * layerHeight + 1, 0),
-							nbtGroup.nbtId("special", "special_3"), Manipulation.random(random));
-				} else {
-					generateNbt(region, startPos.add(0, y * layerHeight + 1, 0),
-							nbtGroup.nbtId("pillars", "pillars_1"));
-				}
-			}
-		} else if (biome.matchesKey(CubliminalBiomes.REDROOMS_BIOME)) {
-			for (int y = 0; y < layerCount; y++) {
-				for (int x = 0; x < 2; x++) {
-					for (int z = 0; z < 2; z++) {
-						decorateRedRooms(region, startPos.add(spacing * x, y * layerHeight + 1, spacing * z));
-					}
-				}
-			}
-		}
-
-		 */
-
 		return CompletableFuture.completedFuture(chunk);
 	}
 
@@ -226,44 +190,44 @@ public class LevelZeroChunkGenerator extends AbstractNbtChunkGenerator implement
 
 		super.modifyStructure(region, pos, state, blockEntityNbt);
 
-		BiFunction<ChunkRegion, BlockPos, Random> random = (region1, pos1) -> Random.create(region1.getSeed() + LimlibHelper.blockSeed(pos1));
+		Supplier<Random> random = () -> Random.create(region.getSeed() + LimlibHelper.blockSeed(pos));
 
 		if (state.isOf(CubliminalBlocks.FLUORESCENT_LIGHT)) {
-			if (random.apply(region, pos).nextFloat() > 0.9 || region.getStatesInBox(new Box(pos).expand(1))
+			if (random.get().nextFloat() > 0.9 || region.getStatesInBox(new Box(pos).expand(1))
 					.anyMatch(blockState -> blockState.isOf(CubliminalBlocks.FUSED_FLUORESCENT_LIGHT))) {
 				region.setBlockState(pos, CubliminalBlocks.FUSED_FLUORESCENT_LIGHT.getDefaultState()
 						.with(HorizontalFacingBlock.FACING, state.get(HorizontalFacingBlock.FACING))
 								.with(CustomProperties.RED, state.get(CustomProperties.RED)), 0);
-			} else if (random.apply(region, pos).nextFloat() < 0.1) {
+			} else if (random.get().nextFloat() < 0.1) {
 				region.setBlockState(pos, CubliminalBlocks.FLICKERING_FLUORESCENT_LIGHT.getDefaultState()
 						.with(HorizontalFacingBlock.FACING, state.get(HorizontalFacingBlock.FACING))
 								.with(CustomProperties.RED, state.get(CustomProperties.RED)), 0);
 			}
 		} else if (state.isOf(CubliminalBlocks.SOCKET)) {
-			if (random.apply(region, pos).nextFloat() < 0.9) {
+			if (random.get().nextFloat() < 0.9) {
 				region.setBlockState(pos, Blocks.LIGHT.getDefaultState().with(LightBlock.LEVEL_15, 3), 0);
 			}
 		} else if (state.isOf(CubliminalBlocks.DAMAGED_YELLOW_WALLPAPERS)) {
-			if (random.apply(region, pos).nextFloat() < 0.95) {
+			if (random.get().nextFloat() < 0.95) {
 				region.setBlockState(pos, CubliminalBlocks.YELLOW_WALLPAPERS.getDefaultState(), 0);
 			}
 		} else if (state.isOf(CubliminalBlocks.DIRTY_DAMP_CARPET)) {
-			if (random.apply(region, pos).nextFloat() < 0.95) {
+			if (random.get().nextFloat() < 0.95) {
 				region.setBlockState(pos, CubliminalBlocks.DAMP_CARPET.getDefaultState(), 0);
 			}
 		} else if (state.isOf(CubliminalBlocks.SMOKE_DETECTOR)) {
-			if (random.apply(region, pos).nextFloat() < 0.9) {
+			if (random.get().nextFloat() < 0.9) {
 				region.setBlockState(pos, Blocks.LIGHT.getDefaultState().with(LightBlock.LEVEL_15, 3), 0);
 			}
 		} else if (state.isOf(Blocks.BROWN_MUSHROOM)) {
-			float randomFloat = random.apply(region, pos).nextFloat();
+			float randomFloat = random.get().nextFloat();
 			if (randomFloat > 0.9) {
 				region.setBlockState(pos, Blocks.RED_MUSHROOM.getDefaultState(), 0);
 			} else if (randomFloat > 0.1) {
 				region.setBlockState(pos, Blocks.AIR.getDefaultState(), 0);
 			}
 		} else if (state.isOf(CubliminalBlocks.MOLD)) {
-			if (random.apply(region, pos).nextFloat() < 0.9) {
+			if (random.get().nextFloat() < 0.9) {
 				region.setBlockState(pos, Blocks.AIR.getDefaultState(), 0);
 			}
 		}
@@ -272,7 +236,6 @@ public class LevelZeroChunkGenerator extends AbstractNbtChunkGenerator implement
 	@Override
 	protected RegistryKey<LootTable> getContainerLootTable(LootableContainerBlockEntity container) {
 		if (container.getLootTable() != null) {
-			//container.setLootTable(RegistryKey.of(RegistryKeys.LOOT_TABLE, Cubliminal.id("barrels/the_lobby/0")));
 			return RegistryKey.of(RegistryKeys.LOOT_TABLE, Cubliminal.id("barrels/the_lobby/0"));
 		} else {
 			return null;

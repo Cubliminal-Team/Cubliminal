@@ -34,7 +34,7 @@ public record PoissonDiskSampler(int width, int height, int maxSamples) {
         while (!active.isEmpty() && roomSamples < expectedRooms && consecutiveFailures < maxFailures) {
 
             Vec2i activeCenter = active.get(random.nextInt(active.size()));
-            RegistryKey<Biome> biome = //biomeGrid.get(activeCenter).getKey().orElseThrow();
+            RegistryKey<Biome> biome = //biomeGrid[activeCenter.y() * width + activeCenter.x()].getKey().orElseThrow();
                     CubliminalBiomes.DEEP_AQUILA_SECTOR_BIOME;
             boolean hasMapping = RoomRegistry.contains(biome);
 
