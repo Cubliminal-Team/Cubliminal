@@ -15,7 +15,7 @@ public abstract class SpecialMaze extends DepthLikeMaze {
     }
 
     public int manhattanDistance(Vec2i start, Vec2i end) {
-        return Math.abs(end.getX() - start.getX()) + Math.abs(end.getY() - start.getY());
+        return Math.abs(end.x() - start.x()) + Math.abs(end.y() - start.y());
     }
 
     public Face dir(Vec2i vec) {

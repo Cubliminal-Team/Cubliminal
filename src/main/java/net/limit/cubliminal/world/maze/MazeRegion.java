@@ -10,15 +10,10 @@ public abstract class MazeRegion<M extends MazeComponent> {
 
     protected final M[] floorStorage;
     protected final int layerHeight;
-    protected boolean generated = false;
 
     public MazeRegion(int layerHeight, M[] floorStorage) {
         this.floorStorage = floorStorage;
         this.layerHeight = layerHeight;
-    }
-
-    public boolean isGenerated() {
-        return generated;
     }
 
     protected final void decorateColumn(ChunkRegion region, BlockPos regionPos, int spacingX, int layerHeight, int spacingZ, BlockPos at, MazeRegionGenerator.Decorator<M> cellDecorator, long seedModifier) {

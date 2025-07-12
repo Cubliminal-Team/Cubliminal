@@ -5,7 +5,7 @@
     "name": "Cubliminal",
     "description": "If you're not careful and you noclip out of reality in the wrong areas, you'll end up in the Backrooms, where it's nothing but the stink of old moist carpet, the madness of mono-yellow, the endless background noise of fluorescent lights at maximum hum-buzz, and approximately six hundred million square miles of randomly segmented empty rooms to be trapped in. God save you if you hear something wandering around nearby, because it sure as hell has heard you.",
     "authors": [
-        "Nhappysmiler (Owner)"
+        "The Cubliminal Team"
     ],
     "contact": {
         "homepage": "https://modrinth.com/mod/cubliminal-mod",
@@ -52,11 +52,11 @@
         "cubliminal.mixins.json"
     ],
     "depends": {
-        "fabricloader": "*",
+        "fabricloader": ">=0.16.14",
         "minecraft": "~1.21.3",
         "java": ">=21",
-        "fabric-api": "*",
-        "limlib": "11.3",
+        "fabric-api": ">=0.114.1",
+        "limlib": "11.32",
         "cloth-config": "*"
     },
     "accessWidener": "cubliminal.accesswidener",

@@ -1,6 +1,7 @@
 package net.limit.cubliminal.world.maze;
 
 import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Lists;
 import com.google.common.collect.SetMultimap;
 import io.github.jdiemke.triangulation.Edge2D;
 import net.limit.cubliminal.world.room.Door;
@@ -15,26 +16,68 @@ public class LevelOneMaze extends SpecialMaze {
 
     private final boolean[] filter;
     private final float bias;
+    private final boolean simple;
     private final Random random;
     private List<Edge2D> mst;
     private SetMultimap<Vec2i, Door.Instance> doors;
 
-    public LevelOneMaze(int width, int height, boolean[] filter, float bias, Random random) {
+    public LevelOneMaze(int width, int height, boolean[] filter, float bias, boolean simple, Random random) {
         super(width, height);
         this.filter = filter;
         this.bias = bias;
+        this.simple = simple;
         this.random = random;
     }
 
     @Override
     public void create() {
+        this.connectDoors();
+        if (simple) {
+            this.generateCorridors();
+        } else {
+            this.generateHalls();
+        }
+    }
+
+    private void generateCorridors() {
+        // Generate maze using dfs (copy of Limlib's DepthFirstMaze)
+        visit(Vec2i.ZERO);
+        this.visitedCells++;
+        this.stack.push(Vec2i.ZERO);
+
+        while (!this.stack.isEmpty() && visitedCells < this.width * this.height) {
+            List<Face> neighbours = Lists.newArrayList();
+
+            for (Face face : Face.values()) {
+                if (this.hasNeighbour(this.stack.peek(), face)) {
+                    neighbours.add(face);
+                }
+            }
+
+            if (!neighbours.isEmpty()) {
+                Face nextFace = neighbours.get(random.nextInt(neighbours.size()));
+
+                this.cellState(this.stack.peek()).go(nextFace);
+                this.cellState(this.stack.peek().go(nextFace)).go(nextFace.mirror());
+                this.visit(this.stack.peek().go(nextFace));
+                this.stack.push(this.stack.peek().go(nextFace));
+
+                this.visitedCells++;
+
+            } else {
+                this.stack.pop();
+            }
+        }
+    }
+
+    private void generateHalls() {
         if (mst != null) {
             for (Edge2D edge : mst) {
                 Vec2i cell = new Vec2i((int) edge.a.x, (int) edge.a.y);
                 Vec2i end = new Vec2i((int) edge.b.x, (int) edge.b.y);
                 visitedCells++;
                 this.visit(cell);
-                this.connectDoors(cell);
+                //this.connectDoors(cell);
                 Stack<Vec2i> corridor = new Stack<>();
                 stack.push(cell);
                 corridor.push(cell);
@@ -43,11 +86,9 @@ public class LevelOneMaze extends SpecialMaze {
                     cell = corridor.peek();
                     // If it is the desired end, reassign and remove the new one
                     if (cell.equals(end)) {
-                        this.connectDoors(end);
+                        //this.connectDoors(end);
                         for (CellState cellState : maze) {
-                            if (!cellState.getExtra().containsKey("elevator")) {
-                                this.visit(cellState.getPosition(), false);
-                            }
+                            this.visit(cellState.getPosition(), false);
                         }
                         break;
                     }
@@ -108,7 +149,7 @@ public class LevelOneMaze extends SpecialMaze {
     @Override
     public boolean hasNeighbour(Vec2i vec, Face face) {
         Vec2i adj = vec.go(face);
-        return super.hasNeighbour(vec, face) && !this.filter[adj.getY() * this.width + adj.getX()];
+        return super.hasNeighbour(vec, face) && !this.filter[adj.y() * this.width + adj.x()];
     }
 
     public void setMst(Collection<Edge2D> mst) {
@@ -121,5 +162,11 @@ public class LevelOneMaze extends SpecialMaze {
 
     public void connectDoors(Vec2i doorPos) {
         this.doors.get(doorPos).forEach(door -> this.cellState(doorPos).go(door.facing().mirror()));
+    }
+
+    public void connectDoors() {
+        if (this.doors != null) {
+            this.doors.forEach((doorPos, door) -> this.cellState(doorPos).go(door.facing().mirror()));
+        }
     }
 }

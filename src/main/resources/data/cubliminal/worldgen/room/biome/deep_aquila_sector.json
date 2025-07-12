@@ -3,7 +3,7 @@
   "rooms": [
     {
       "type": "cubliminal:single_piece",
-      "id": "rooms:small",
+      "id": "room:small",
       "width": 1,
       "height": 1,
       "doors": "w_1:s_1",
@@ -17,7 +17,7 @@
           "width": 2,
           "height": 2,
           "structures": {
-            "rooms:pk_0": 1.0
+            "room:pk_0": 1.0
           }
         },
         {
@@ -25,7 +25,7 @@
           "width": 2,
           "height": 2,
           "structures": {
-            "rooms:pk_1": 1.0
+            "room:pk_1": 1.0
           }
         },
         {
@@ -33,7 +33,7 @@
           "width": 3,
           "height": 2,
           "structures": {
-            "rooms:pk_2": 1.0
+            "room:pk_2": 1.0
           }
         },
         {
@@ -41,7 +41,7 @@
           "width": 3,
           "height": 2,
           "structures": {
-            "rooms:pk_3": 1.0
+            "room:pk_3": 1.0
           }
         }
       ],
@@ -52,7 +52,7 @@
     },
     {
       "type": "cubliminal:single_piece",
-      "id": "rooms:medium",
+      "id": "room:medium",
       "width": 3,
       "height": 2,
       "doors": "n_0_1:e_0_0_1:s_0_1",
@@ -66,8 +66,8 @@
           "width": 2,
           "height": 2,
           "structures": {
-            "rooms:room_2_0": 0.5,
-            "rooms:room_2_1": 0.5
+            "room:room_2_0": 0.5,
+            "room:room_2_1": 0.5
           }
         },
         {
@@ -75,7 +75,7 @@
           "width": 1,
           "height": 2,
           "structures": {
-            "rooms:room_1_0": 1.0
+            "room:room_1_0": 1.0
           }
         },
         {
@@ -83,8 +83,8 @@
           "width": 1,
           "height": 3,
           "structures": {
-            "rooms:room_3_0": 0.5,
-            "rooms:room_3_1": 0.7
+            "room:room_3_0": 0.5,
+            "room:room_3_1": 0.7
           }
         }
       ],

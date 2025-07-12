@@ -2,9 +2,6 @@ package net.limit.cubliminal.world.structure;
 
 import com.google.common.collect.Lists;
 import net.limit.cubliminal.level.Level;
-import net.limit.cubliminal.world.chunk.BackroomsLevel;
-import net.limit.cubliminal.world.room.Room;
-import net.ludocrypt.limlib.api.world.Manipulation;
 import net.ludocrypt.limlib.api.world.maze.MazeComponent.Vec2i;
 import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.registry.Registry;
@@ -42,22 +39,21 @@ public class GridAlignedStructureGenerator {
             RegistryEntry<StructurePool> structurePool,
             int size,
             BlockPos pos,
+            boolean manipulate,
             boolean useExpansionHack,
             Optional<Heightmap.Type> projectStartToHeightmap,
             int maxDistanceFromCenter,
             StructurePoolAliasLookup aliasLookup,
             DimensionPadding dimensionPadding,
             StructureLiquidSettings liquidSettings,
-            BackroomsLevel level,
-            Optional<Room> optionalRoom
-    ) {
+            Level level) {
         DynamicRegistryManager dynamicRegistryManager = context.dynamicRegistryManager();
         ChunkGenerator chunkGenerator = context.chunkGenerator();
         StructureTemplateManager structureTemplateManager = context.structureTemplateManager();
         HeightLimitView heightLimitView = context.world();
         ChunkRandom chunkRandom = context.random();
         Registry<StructurePool> registry = dynamicRegistryManager.getOrThrow(RegistryKeys.TEMPLATE_POOL);
-        BlockRotation blockRotation = BlockRotation.random(chunkRandom);
+        BlockRotation blockRotation = manipulate ? BlockRotation.random(chunkRandom) : BlockRotation.NONE;
         StructurePool structurePool2 = structurePool.getKey()
                 .flatMap(key -> registry.getOptionalValue(aliasLookup.lookup(key)))
                 .orElse(structurePool.value());
@@ -66,10 +62,8 @@ public class GridAlignedStructureGenerator {
             return Optional.empty();
         } else {
             // This is where the structure is aligned
-            Vec2i rotationOffset = rotationOffset(level.getLevel(), blockRotation);
-            BlockPos blockPos = pos.subtract(new Vec3i(rotationOffset.getX(), 0, rotationOffset.getY()));
-            // Create a room and invoke callback method
-            optionalRoom.ifPresent(room -> level.saveRoom(pos, room.newInstance(Manipulation.of(blockRotation), false)));
+            Vec2i rotationOffset = rotationOffset(level, blockRotation);
+            BlockPos blockPos = pos.subtract(new Vec3i(rotationOffset.x(), 0, rotationOffset.y()));
 
             Vec3i vec3i = blockPos.subtract(pos);
             BlockPos blockPos2 = pos.subtract(vec3i);

@@ -62,7 +62,7 @@ void main() {
     uv.y = uv.y;
 
     float time = mod(GameTime*120000.0, 32.0)/110.0; // + modelmat[0].x + modelmat[0].z;
-    float NOCLIP = NoclipTicks / 80;
+    float NOCLIP = min(NoclipTicks / 80, 0.9);
     float GLITCH = 0.1 + NOCLIP * NOCLIP;
 
     float gnm = sat( GLITCH );

@@ -22,11 +22,9 @@ public interface Room {
 
     Room DEFAULT = new SingleRoom("default", (byte) 1, (byte) 1, "");
 
-    byte width();
+    byte getWidth();
 
-    byte height();
-
-    List<Door> doors();
+    byte getHeight();
 
     RoomType<?> type();
 
@@ -58,9 +56,9 @@ public interface Room {
      * It is read from left to right, and leftmost data represent doors closest to the west-north relative coordinate.
      * Redundant data will be ignored e.g. non-existent walls.
      **/
-    default List<Door> unpackDoors(String doorData) {
+    static List<Door> unpackDoors(String doorData, byte width, byte height) {
         String[] rawData = doorData.split(":");
-        Set<Door> doors = new HashSet<>();
+        List<Door> doors = new ArrayList<>();
         for (String wall : rawData) {
             if (!wall.isEmpty()) {
                 char direction = wall.charAt(0);
@@ -68,12 +66,12 @@ public interface Room {
                     String[] wallData = wall.split("_");
                     byte dir = MazeUtil.ordinal(MazeUtil.getDirection(direction));
                     for (int n = 1; n < wallData.length; n++) {
-                        if (wallData[n].equals("1") && this.isDoorValid(dir, n)) {
+                        if (wallData[n].equals("1") && isDoorValid(dir, n, width, height)) {
                             Door door = switch (dir) {
-                                case 0 -> new Door(new Vec2b((byte) (this.height() - 1), (byte) (n - 1)), dir);
+                                case 0 -> new Door(new Vec2b((byte) (height - 1), (byte) (n - 1)), dir);
                                 case 1 -> new Door(new Vec2b((byte) 0, (byte) (n - 1)), dir);
                                 case 2 -> new Door(new Vec2b((byte) (n - 1), (byte) 0), dir);
-                                default -> new Door(new Vec2b((byte) (n - 1), (byte) (this.width() - 1)), dir);
+                                default -> new Door(new Vec2b((byte) (n - 1), (byte) (width - 1)), dir);
                             };
                             doors.add(door);
                         }
@@ -81,17 +79,17 @@ public interface Room {
                 }
             }
         }
-        return doors.stream().toList();
+        return List.copyOf(doors);
     }
 
-    default boolean isDoorValid(byte dir, int index) {
+    static boolean isDoorValid(byte dir, int index, byte width, byte height) {
         return switch (dir) {
-            case 0, 1 -> index <= this.width();
-            default -> index <= this.height();
+            case 0, 1 -> index <= width;
+            default -> index <= height;
         };
     }
 
-    List<Door> place(SpecialMaze maze, int x, int y, Vec2b roomDimensions, byte packedManipulation, boolean generate);
+    List<Door> place(SpecialMaze maze, int x, int y, Vec2b roomDimensions, byte packedManipulation);
 
     static PosTransformation posTransformation(Vec2b roomDimensions, Manipulation manipulation) {
         PosTransformation rotation = switch (manipulation.getRotation()) {
@@ -149,27 +147,24 @@ public interface Room {
         boolean finalSwap = swap;
         return (pos, hw) -> {
             Vec2b rotatedPos = rotation.apply(pos, hw);
-            Vec2b updated = finalSwap ? hw.invert() : hw;
+            Vec2b updated = finalSwap ? hw.swap() : hw;
             return mirror.apply(rotatedPos, updated);
         };
     }
 
     default Instance newInstance(Random random) {
-        return new Instance(this, this.width(), this.height(), (byte) random.nextInt(8));
+        return new Instance(this, this.getWidth(), this.getHeight(), (byte) random.nextInt(8));
     }
 
-    default Instance newInstance(Manipulation manipulation, boolean generate) {
-        return new Instance(this, this.width(), this.height(), MazeUtil.pack(manipulation), generate);
+    default Instance newInstance(Manipulation manipulation) {
+        return new Instance(this, this.getWidth(), this.getHeight(), manipulation.pack());
     }
 
-    record Instance(Room parent, byte width, byte height, byte packedManipulation, boolean generate) {
+    record Instance(Room parent, byte width, byte height, byte packedManipulation) {
+
         public Instance(Room parent, byte width, byte height, byte packedManipulation) {
-            this(parent, width, height, packedManipulation, true);
-        }
-
-        public Instance(Room parent, byte width, byte height, byte packedManipulation, boolean generate) {
             this.parent = parent;
-            this.width = switch (MazeUtil.unpack(packedManipulation).getRotation()) {
+            this.width = switch (Manipulation.unpack(packedManipulation).getRotation()) {
                 case CLOCKWISE_90, COUNTERCLOCKWISE_90 -> {
                     this.height = width;
                     yield height;
@@ -180,11 +175,15 @@ public interface Room {
                 }
             };
             this.packedManipulation = packedManipulation;
-            this.generate = generate;
         }
 
+        // We invert width and height from the usual order because manipulations are done with a vector like this
         public List<Door> place(SpecialMaze maze, int x, int y) {
-            return this.parent.place(maze, x, y, new Vec2b(height, width), packedManipulation, generate);
+            return this.parent.place(maze, x, y, new Vec2b(height, width), packedManipulation);
+        }
+
+        public boolean shouldGenerate(int x, int z, int mazeWidth, int mazeHeight) {
+            return x > 0 && x + height < mazeWidth && z > 0 && z + width < mazeHeight;
         }
     }
 }

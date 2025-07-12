@@ -1,0 +1,97 @@
+{
+  "spacing": 1.0,
+  "rooms": [
+    {
+      "type": "cubliminal:single_piece",
+      "id": "room:small",
+      "width": 1,
+      "height": 1,
+      "doors": "w_1:s_1",
+      "weight": 0.3
+    },
+    {
+      "type": "cubliminal:compound_set",
+      "components": [
+        {
+          "pos": [0,0],
+          "width": 2,
+          "height": 2,
+          "structures": {
+            "room:pk_0": 1.0
+          }
+        },
+        {
+          "pos": [2,0],
+          "width": 2,
+          "height": 2,
+          "structures": {
+            "room:pk_1": 1.0
+          }
+        },
+        {
+          "pos": [0,2],
+          "width": 3,
+          "height": 2,
+          "structures": {
+            "room:pk_2": 1.0
+          }
+        },
+        {
+          "pos": [2,2],
+          "width": 3,
+          "height": 2,
+          "structures": {
+            "room:pk_3": 1.0
+          }
+        }
+      ],
+      "width": 5,
+      "height": 4,
+      "doors": "n_0_0_1:e_0_0_1:s_1",
+      "weight": 2.0
+    },
+    {
+      "type": "cubliminal:single_piece",
+      "id": "room:medium",
+      "width": 3,
+      "height": 2,
+      "doors": "n_0_1:e_0_0_1:s_0_1",
+      "weight": 0.2
+    },
+    {
+      "type": "cubliminal:compound_set",
+      "components": [
+        {
+          "pos": [2,0],
+          "width": 2,
+          "height": 2,
+          "structures": {
+            "room:room_2_0": 0.5,
+            "room:room_2_1": 0.5
+          }
+        },
+        {
+          "pos": [0,0],
+          "width": 1,
+          "height": 2,
+          "structures": {
+            "room:room_1_0": 1.0
+          }
+        },
+        {
+          "pos": [1,2],
+          "width": 1,
+          "height": 3,
+          "structures": {
+            "room:room_3_0": 0.5,
+            "room:room_3_1": 0.7
+          }
+        }
+      ],
+      "width": 3,
+      "height": 4,
+      "doors": "n_0_1:w_1:e_1:s_0_0_1",
+      "weight": 0.3
+    }
+  ]
+}

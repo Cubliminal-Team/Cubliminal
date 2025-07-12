@@ -48,7 +48,7 @@ public class LevelOneBiomeSource extends BiomeSource implements LiminalBiomeSour
 
     // Note that tags won't have been initialized yet by the time we create a biome source
     public LevelOneBiomeSource(float scale) {
-        this.level = Levels.LEVEL_1.getLevel();
+        this.level = Levels.LEVEL_1;
         this.scale = scale;
         this.noisePreset = RegistryNoisePreset.getPreset(CubliminalRegistrar.HABITABLE_ZONE_KEY);
         this.levelBiomes = this.noisePreset.biomes().keySet();
