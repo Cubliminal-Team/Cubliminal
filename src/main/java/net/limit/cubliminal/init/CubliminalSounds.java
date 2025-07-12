@@ -1,13 +1,7 @@
 package net.limit.cubliminal.init;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.limit.cubliminal.Cubliminal;
 import net.limit.cubliminal.Initer;
-import net.limit.cubliminal.client.sound.ConditionedSoundInstance;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.sound.SoundInstance;
 import net.minecraft.network.packet.s2c.play.PlaySoundS2CPacket;
 import net.minecraft.network.packet.s2c.play.StopSoundS2CPacket;
 import net.minecraft.registry.Registries;
@@ -42,35 +36,6 @@ public class CubliminalSounds implements Initer {
 	public static final RegistryEntry.Reference<SoundEvent> SINK_AMBIENT = registerReference("block.sink.ambient");
 	public static final RegistryEntry.Reference<SoundEvent> FLUX_CAPACITOR = registerReference("block.flux_capacitor");
 
-
-	@Environment(EnvType.CLIENT)
-	public static void playSound(ConditionedSoundInstance soundInstance) {
-		playSoundAt(soundInstance, soundInstance.getX(), soundInstance.getY(), soundInstance.getZ());
-	}
-
-	@Environment(EnvType.CLIENT)
-	public static void playSoundAt(ConditionedSoundInstance soundInstance, double x, double y, double z) {
-		ClientPlayerEntity player = MinecraftClient.getInstance().player;
-		if (player != null) {
-			double distance = soundInstance.getSoundEvent().getDistanceToTravel(soundInstance.getUnmodifiedVolume());
-			double d = x - player.getX();
-			double e = y - player.getY();
-			double f = z - player.getZ();
-			if (d * d + e * e + f * f < distance * distance) {
-				MinecraftClient.getInstance().getSoundManager().play(soundInstance);
-			}
-		}
-	}
-
-	@Environment(EnvType.CLIENT)
-	public static void playSoundAtBlock(ConditionedSoundInstance soundInstance) {
-		playSoundAt(soundInstance, soundInstance.getX() + 0.5, soundInstance.getY() + 0.5, soundInstance.getZ() + 0.5);
-	}
-
-	@Environment(EnvType.CLIENT)
-	public static void stopSound(SoundInstance soundInstance) {
-		MinecraftClient.getInstance().getSoundManager().stop(soundInstance);
-	}
 
 	public static void clientPlaySoundSingle(ServerPlayerEntity target, RegistryEntry<SoundEvent> sound, SoundCategory category, double x, double y, double z, float volume, float pitch, long seed) {
 		PlaySoundS2CPacket playSoundS2CPacket = new PlaySoundS2CPacket(sound, category, x, y, z, volume, pitch, seed);

@@ -47,10 +47,10 @@ public class CubliminalRegistrar implements LimlibRegistrar {
 	private static final List<Pair<RegistryKey<LiminalDimensionEffects>, LiminalDimensionEffects>> DIMENSION_EFFECTS = new ArrayList<>();
 	private static final List<Pair<RegistryKey<PostEffect>, PostEffect>> POST_EFFECTS = new ArrayList<>();
 
-	public static String THE_LOBBY = "the_lobby";
+	public static final String THE_LOBBY = "the_lobby";
 	public static final RegistryKey<World> THE_LOBBY_KEY = RegistryKey.of(RegistryKeys.WORLD, Cubliminal.id(THE_LOBBY));
 
-	public static String HABITABLE_ZONE = "habitable_zone";
+	public static final String HABITABLE_ZONE = "habitable_zone";
 	public static final RegistryKey<World> HABITABLE_ZONE_KEY = RegistryKey.of(RegistryKeys.WORLD, Cubliminal.id(HABITABLE_ZONE));
 
 	@Override
@@ -77,7 +77,7 @@ public class CubliminalRegistrar implements LimlibRegistrar {
 		// worlds
 		getWorld(THE_LOBBY,
 				new LimlibWorld(
-						() -> new DimensionType(OptionalLong.of(15500), false, false, false, false, 1.0, false, false, 0, 32, 32,
+						() -> new DimensionType(OptionalLong.of(15500), false, false, false, false, 1.0, false, false, Levels.LEVEL_0.min_y, Levels.LEVEL_0.world_height, Levels.LEVEL_0.world_height,
 								TagKey.of(RegistryKeys.BLOCK, Cubliminal.id(THE_LOBBY)), Cubliminal.id(THE_LOBBY),
 								0f, new MonsterSettings(false, false, ConstantIntProvider.ZERO, 0)),
 						(registry) -> new DimensionOptions(
@@ -86,12 +86,12 @@ public class CubliminalRegistrar implements LimlibRegistrar {
 										.getOptional(RegistryKey.of(RegistryKeys.DIMENSION_TYPE, Cubliminal.id(THE_LOBBY)))
 										.orElseThrow(),
 								new LevelZeroChunkGenerator(
-										new SimplexBiomeSource(THE_LOBBY_KEY, Levels.LEVEL_0.getLevel(), 0.007f),
-										LevelZeroChunkGenerator.createGroup(), Levels.LEVEL_0.getLevel()))));
+										new SimplexBiomeSource(THE_LOBBY_KEY, Levels.LEVEL_0, 0.007f),
+										LevelZeroChunkGenerator.createGroup(), Levels.LEVEL_0))));
 
 		getWorld(HABITABLE_ZONE,
 				new LimlibWorld(
-						() -> new DimensionType(OptionalLong.of(15500), false, false, false, false, 1.0, false, false, 0, 32, 32,
+						() -> new DimensionType(OptionalLong.of(15500), false, false, false, false, 1.0, false, false, Levels.LEVEL_1.min_y, Levels.LEVEL_1.world_height, Levels.LEVEL_1.world_height,
 								TagKey.of(RegistryKeys.BLOCK, Cubliminal.id(HABITABLE_ZONE)), Cubliminal.id(HABITABLE_ZONE),
 								0f, new MonsterSettings(false, false, ConstantIntProvider.ZERO, 0)),
 						(registry) -> new DimensionOptions(
@@ -101,7 +101,7 @@ public class CubliminalRegistrar implements LimlibRegistrar {
 										.orElseThrow(),
 								new LevelOneChunkGenerator(
 										new LevelOneBiomeSource(0.008f),
-										LevelOneChunkGenerator.createGroup(), (LevelWithMaze) Levels.LEVEL_1.getLevel()))));
+										LevelOneChunkGenerator.createGroup(), Levels.LEVEL_1))));
 
 
 		WORLDS.forEach((pair) -> LimlibWorld.LIMLIB_WORLD.add(pair.getFirst(), pair.getSecond(), RegistryEntryInfo.DEFAULT));

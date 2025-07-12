@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_silver_ingot": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "cubliminal:silver_ingot"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "cubliminal:flux_capacitor"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_silver_ingot"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "cubliminal:flux_capacitor"
+    ]
+  },
+  "sends_telemetry_event": false
+}

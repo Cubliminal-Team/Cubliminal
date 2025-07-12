@@ -79,7 +79,7 @@ public interface Room {
                 }
             }
         }
-        return doors;
+        return List.copyOf(doors);
     }
 
     static boolean isDoorValid(byte dir, int index, byte width, byte height) {
@@ -89,7 +89,7 @@ public interface Room {
         };
     }
 
-    List<Door> place(SpecialMaze maze, int x, int y, int floor, Vec2b roomDimensions, byte packedManipulation);
+    List<Door> place(SpecialMaze maze, int x, int y, Vec2b roomDimensions, byte packedManipulation);
 
     static PosTransformation posTransformation(Vec2b roomDimensions, Manipulation manipulation) {
         PosTransformation rotation = switch (manipulation.getRotation()) {
@@ -178,8 +178,12 @@ public interface Room {
         }
 
         // We invert width and height from the usual order because manipulations are done with a vector like this
-        public List<Door> place(SpecialMaze maze, int x, int y, int floor) {
-            return this.parent.place(maze, x, y, floor, new Vec2b(height, width), packedManipulation);
+        public List<Door> place(SpecialMaze maze, int x, int y) {
+            return this.parent.place(maze, x, y, new Vec2b(height, width), packedManipulation);
+        }
+
+        public boolean shouldGenerate(int x, int z, int mazeWidth, int mazeHeight) {
+            return x > 0 && x + height < mazeWidth && z > 0 && z + width < mazeHeight;
         }
     }
 }

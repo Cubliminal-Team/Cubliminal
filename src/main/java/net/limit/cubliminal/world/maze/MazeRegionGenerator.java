@@ -26,7 +26,7 @@ public record MazeRegionGenerator<M extends MazeComponent, R extends MazeRegion<
         );
     }
 
-    public void generateMazeRegion(BlockPos pos, ChunkRegion region, int layerCount, RegionCreator<M, R> regionCreator, RegionGenerator<M, R> regionGenerator, Decorator<M> cellDecorator) {
+    public void generateMazeRegion(BlockPos pos, ChunkRegion region, int layerCount, RegionCreator<M, R> regionCreator, Decorator<M> cellDecorator) {
         for (int x = 0; x < 16; ++x) {
             for (int z = 0; z < 16; ++z) {
                 BlockPos inPos = pos.add(x, 0, z);
@@ -42,9 +42,6 @@ public record MazeRegionGenerator<M extends MazeComponent, R extends MazeRegion<
                     } else {
                         mazeRegion = regionCreator.newRegion(region, regionPos, width, height, Random.create(LimlibHelper.blockSeed(regionPos) + seedModifier + region.getSeed()));
                         mazeRegions.put(regionPos, mazeRegion);
-                    }
-                    if (!mazeRegion.isGenerated()) {
-                        regionGenerator.generateRegion(mazeRegion, region, regionPos, width, height, Random.create(LimlibHelper.blockSeed(regionPos) + seedModifier + region.getSeed()));
                     }
 
                     mazeRegion.decorateColumn(region, regionPos, spacingX, layerHeight, spacingZ, inPos, cellDecorator, seedModifier);
@@ -64,11 +61,6 @@ public record MazeRegionGenerator<M extends MazeComponent, R extends MazeRegion<
     @FunctionalInterface
     public interface RegionCreator<M extends MazeComponent, R extends MazeRegion<M>> {
         R newRegion(ChunkRegion region, BlockPos regionPos, int width, int height, Random random);
-    }
-
-    @FunctionalInterface
-    public interface RegionGenerator<M extends MazeComponent, R extends MazeRegion<M>> {
-        void generateRegion(R mazeRegion, ChunkRegion region, BlockPos regionPos, int width, int height, Random random);
     }
 
     @FunctionalInterface
