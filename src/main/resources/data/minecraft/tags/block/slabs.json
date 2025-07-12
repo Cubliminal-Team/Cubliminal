@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
+    "cubliminal:damp_carpet_slab",
     "cubliminal:pool_tile_slab",
     "cubliminal:yellow_wallpapers_vertical_slab"
   ]

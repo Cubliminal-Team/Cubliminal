@@ -1,0 +1,33 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_damp_carpet": {
+      "conditions": {
+        "items": [
+          {
+            "items": "cubliminal:damp_carpet"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "cubliminal:damp_carpet_stairs"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_damp_carpet"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "cubliminal:damp_carpet_stairs"
+    ]
+  },
+  "sends_telemetry_event": false
+}

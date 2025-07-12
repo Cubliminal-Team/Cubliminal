@@ -272,13 +272,13 @@ public class LevelOneMazeRegion extends MazeRegion<LevelOneMaze> {
         Random randomRight = Random.create(LimlibHelper.blockSeed(mazePos.add(0, 0, width * thicknessX)));
         List<Vec2i> connections = new ArrayList<>();
         // East
-        connections.add(new Vec2i(width - 1, randomUp.nextBetween(-a, height + a)));
+        connections.add(new Vec2i(width - 1, randomUp.nextBetween(-a, height + a - 1)));
         // West
-        connections.add(new Vec2i(0, randomDown.nextBetween(-a, height + a)));
+        connections.add(new Vec2i(0, randomDown.nextBetween(-a, height + a - 1)));
         // North
-        connections.add(new Vec2i(randomLeft.nextBetween(-a, width + a), 0));
+        connections.add(new Vec2i(randomLeft.nextBetween(-a, width + a - 1), 0));
         // South
-        connections.add(new Vec2i(randomRight.nextBetween(-a, width + a), height - 1));
+        connections.add(new Vec2i(randomRight.nextBetween(-a, width + a - 1), height - 1));
         return connections;
     }
 }

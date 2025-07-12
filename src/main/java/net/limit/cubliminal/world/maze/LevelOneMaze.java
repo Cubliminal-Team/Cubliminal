@@ -77,7 +77,6 @@ public class LevelOneMaze extends SpecialMaze {
                 Vec2i end = new Vec2i((int) edge.b.x, (int) edge.b.y);
                 visitedCells++;
                 this.visit(cell);
-                //this.connectDoors(cell);
                 Stack<Vec2i> corridor = new Stack<>();
                 stack.push(cell);
                 corridor.push(cell);
@@ -86,7 +85,6 @@ public class LevelOneMaze extends SpecialMaze {
                     cell = corridor.peek();
                     // If it is the desired end, reassign and remove the new one
                     if (cell.equals(end)) {
-                        //this.connectDoors(end);
                         for (CellState cellState : maze) {
                             this.visit(cellState.getPosition(), false);
                         }
@@ -158,10 +156,6 @@ public class LevelOneMaze extends SpecialMaze {
 
     public void setDoors(SetMultimap<Vec2i, Door.Instance> doors) {
         this.doors = HashMultimap.create(doors);
-    }
-
-    public void connectDoors(Vec2i doorPos) {
-        this.doors.get(doorPos).forEach(door -> this.cellState(doorPos).go(door.facing().mirror()));
     }
 
     public void connectDoors() {
