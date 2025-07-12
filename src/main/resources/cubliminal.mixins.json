@@ -7,10 +7,12 @@
     "ChunkSectionMixin",
     "ClearAllEffectsConsumeEffectMixin",
     "EntityMixin",
+    "LivingEntityMixin",
     "PlayerEntityMixin"
   ],
   "client": [
     "client.BackgroundRendererMixin",
+    "client.CameraMixin",
     "client.ClientPlayerEntityMixin",
     "client.GameRendererMixin",
     "client.ItemRendererMixin"
