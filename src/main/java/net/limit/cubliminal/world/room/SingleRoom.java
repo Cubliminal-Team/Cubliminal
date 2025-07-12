@@ -46,7 +46,7 @@ public record SingleRoom(String id, byte width, byte height, List<Door> doors) i
     }
 
     @Override
-    public List<Door> place(SpecialMaze maze, int x, int y, int floor, Vec2b roomDimensions, byte packedManipulation) {
+    public List<Door> place(SpecialMaze maze, int x, int y, Vec2b roomDimensions, byte packedManipulation) {
         maze.withState(x, y, RoomCellState.of(random -> this.id, packedManipulation));
         Manipulation manipulation = Manipulation.unpack(packedManipulation);
         PosTransformation translation = Room.posTransformation(roomDimensions, manipulation);

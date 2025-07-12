@@ -1,0 +1,42 @@
+{
+  "placement": {
+    "spacing": 12,
+    "separation": 4,
+    "salt": 23363237,
+    "type": "cubliminal:random_spread"
+  },
+  "room": {
+    "floors": [
+      {
+        "floor": 0,
+        "components": [
+          {
+            "pos": [0,0],
+            "width": 1,
+            "height": 1,
+            "structures": {
+              "connection:test_connection_0": 1.0
+            }
+          }
+        ],
+        "doors": "s_1"
+      },
+      {
+        "floor": 1,
+        "components": [
+          {
+            "pos": [0,0],
+            "width": 1,
+            "height": 1,
+            "structures": {
+              "connection:test_connection_1": 1.0
+            }
+          }
+        ],
+        "doors": "e_1"
+      }
+    ],
+    "width": 1,
+    "height": 1
+  }
+}
