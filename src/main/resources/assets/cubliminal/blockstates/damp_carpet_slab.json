@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "cubliminal:block/damp_carpet_slab"
+    },
+    "type=double": {
+      "model": "cubliminal:block/damp_carpet"
+    },
+    "type=top": {
+      "model": "cubliminal:block/damp_carpet_slab_top"
+    }
+  }
+}
