@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.function.BiFunction;
 
 public record CompositeRoom(List<Component> components, byte width, byte height, List<Door> doors) implements Room {
-    public static MapCodec<CompositeRoom> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+    public static final MapCodec<CompositeRoom> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             Component.CODEC.listOf().fieldOf("components").forGetter(CompositeRoom::components),
             Codec.BYTE.fieldOf("width").forGetter(CompositeRoom::getWidth),
             Codec.BYTE.fieldOf("height").forGetter(CompositeRoom::getHeight),
@@ -23,7 +23,7 @@ public record CompositeRoom(List<Component> components, byte width, byte height,
     ).apply(instance, CompositeRoom::new));
 
     public CompositeRoom(List<Component> components, byte width, byte height, String doorData) {
-        this(components, width, height, Room.unpackDoors(doorData, width, height));
+        this(List.copyOf(components), width, height, Room.unpackDoors(doorData, width, height));
         if (width < 1 || height < 1) {
             throw new IllegalArgumentException("Room width: " + width + " and height: " + height + " must be set above 0");
         }
@@ -49,7 +49,7 @@ public record CompositeRoom(List<Component> components, byte width, byte height,
     }
 
     @Override
-    public List<Door> place(SpecialMaze maze, int x, int y, int floor, Vec2b roomDimensions, byte packedManipulation) {
+    public List<Door> place(SpecialMaze maze, int x, int y, Vec2b roomDimensions, byte packedManipulation) {
         Manipulation manipulation = Manipulation.unpack(packedManipulation);
         BiFunction<Vec2b, Vec2b, Vec2b> transformation = Room.cornerTransformation(roomDimensions, manipulation);
         this.components.forEach(component -> {
