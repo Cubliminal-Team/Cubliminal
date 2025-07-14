@@ -12,10 +12,12 @@ import net.limit.cubliminal.block.fluids.ContaminatedWaterBlock;
 import net.limit.cubliminal.block.fluids.CustomFluidBlock;
 import net.limit.cubliminal.block.fluids.FluidBlockFactory;
 import net.limit.cubliminal.item.AlmondWaterBlockItem;
+import net.limit.cubliminal.util.Debug;
 import net.minecraft.block.*;
 import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.fluid.FlowableFluid;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.OperatorOnlyBlockItem;
@@ -71,8 +73,10 @@ public class CubliminalBlocks implements Initer {
 		return Registry.register(Registries.BLOCK, blockKey, block);
 	}
 
-	public static Block registerBlockWithoutItem(String name, Block block){
-		return Registry.register(Registries.BLOCK, Cubliminal.id(name), block);
+	private static Block registerBlockWithoutItem(String name, Function<AbstractBlock.Settings, Block> blockFactory, AbstractBlock.Settings settings) {
+		RegistryKey<Block> blockKey = RegistryKey.of(RegistryKeys.BLOCK, Cubliminal.id(name));
+		Block block = blockFactory.apply(settings.registryKey(blockKey));
+		return Registry.register(Registries.BLOCK, blockKey, block);
 	}
 
 	/**
@@ -86,18 +90,14 @@ public class CubliminalBlocks implements Initer {
 	private static Block registerFluidBlock(String name, FlowableFluid flowableFluid, FluidBlockFactory factory, CustomFluidBlock.Settings settings){
 		return registerBlockWithoutItem(
 				name + "_fluid",
-				factory.create(
-						flowableFluid,
-						AbstractBlock.Settings.create()
-								.replaceable()
-								.noCollision()
-								.strength(100.0f)
-								.pistonBehavior(PistonBehavior.DESTROY)
-								.dropsNothing()
-								.liquid()
-								.sounds(BlockSoundGroup.INTENTIONALLY_EMPTY),
-						settings
-				)
+				blockSettings -> factory.create(flowableFluid, blockSettings, settings),
+				AbstractBlock.Settings.copy(Blocks.WATER)
+						.replaceable()
+						.noCollision()
+						.strength(100.0f)
+						.pistonBehavior(PistonBehavior.DESTROY)
+						.dropsNothing()
+						.liquid()
 		);
 	}
 

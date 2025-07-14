@@ -20,9 +20,8 @@ import java.util.concurrent.Executor;
 import java.util.function.Function;
 
 @Environment(EnvType.CLIENT)
-public class CubliminalParticleManager implements ResourceReloader, Initer {
-    @Override
-    public void init() {
+public class CubliminalParticleManager implements ResourceReloader {
+    public static void init() {
         registerSplashFactory(CubliminalParticleTypes.SPLASH, WaterSplashParticle.SplashFactory::new);
         registerFactory(CubliminalParticleTypes.CONTAMINATED_WATER_SPLASH, ContaminatedWaterSplash.Factory::new);
         registerFactory(CubliminalParticleTypes.ALMOND_WATER_BUBBLE, Bubble.AlmondWaterBubbleFactory::new);

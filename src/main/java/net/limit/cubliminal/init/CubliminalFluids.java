@@ -35,8 +35,7 @@ public class CubliminalFluids implements Initer {
         return fluidMap;
     }
 
-    @Override
-    public void init() {
+    public static void initFluid(){
         Map<String, FlowableFluid> almondWater = registerFluidTypes("almond_water", new AlmondWaterFluid.Flowing(), new AlmondWaterFluid.Still());
         FLOWING_ALMOND_WATER = almondWater.get("flowing");
         ALMOND_WATER = almondWater.get("still");

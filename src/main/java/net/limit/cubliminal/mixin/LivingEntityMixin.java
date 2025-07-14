@@ -42,7 +42,6 @@ public abstract class LivingEntityMixin {
 
     @Inject(method = "travel", at = @At("HEAD"), cancellable = true)
     private void onTravel(Vec3d movementInput, CallbackInfo ci){
-        // Checks to see if player is submerged in backroom fluids.
         if (isSubmergedAtFeet(CubliminalFluidTags.CUSTOM_FLUIDS)){
             // Checks to see if the fluid uses Project Backrooms custom implementations
             if (this.fluidState.getFluid() instanceof BackroomsFlowableFluid backroomsFluid){

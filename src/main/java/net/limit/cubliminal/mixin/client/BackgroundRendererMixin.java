@@ -10,7 +10,9 @@ import net.limit.cubliminal.client.render.fog.FogSettings;
 import net.limit.cubliminal.client.util.CameraBackroomFluid;
 import net.limit.cubliminal.config.CubliminalConfig;
 import net.limit.cubliminal.fluid.BackroomsFlowableFluid;
+import net.limit.cubliminal.init.CubliminalFluidTags;
 import net.limit.cubliminal.util.ColorManager;
+import net.limit.cubliminal.util.Debug;
 import net.minecraft.block.enums.CameraSubmersionType;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.BackgroundRenderer;
@@ -82,9 +84,8 @@ public abstract class BackgroundRendererMixin {
                         fluidColor.getBlueDecimal(),
                         0.5f
                 );
-
                 RenderSystem.setShaderFog(fog);
-
+                cir.setReturnValue(fog);
                 cir.cancel();
             }
         }
