@@ -5,7 +5,6 @@ import net.limit.cubliminal.Initer;
 import net.limit.cubliminal.fluid.AlmondWaterFluid;
 import net.limit.cubliminal.fluid.BlackSludgeFluid;
 import net.limit.cubliminal.fluid.ContaminatedWaterFluid;
-import net.limit.cubliminal.util.Debug;
 import net.minecraft.fluid.FlowableFluid;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.registry.Registries;

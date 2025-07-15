@@ -1,4 +1,4 @@
-package net.limit.cubliminal.block.fluids;
+package net.limit.cubliminal.block.fluid;
 
 import net.limit.cubliminal.init.CubliminalEffects;
 import net.minecraft.block.AbstractBlock;

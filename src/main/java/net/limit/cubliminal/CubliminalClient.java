@@ -4,16 +4,13 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientWorldEvents;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.fabricmc.fabric.api.client.render.fluid.v1.SimpleFluidRenderHandler;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.limit.cubliminal.access.GameRendererAccessor;
-import net.limit.cubliminal.block.fluids.CustomFluidBlock;
+import net.limit.cubliminal.block.fluid.CustomFluidBlock;
 import net.limit.cubliminal.client.hud.SanityBarHudOverlay;
 import net.limit.cubliminal.client.particle.CubliminalParticleManager;
 import net.limit.cubliminal.client.render.FluxCapacitorRenderer;
@@ -23,14 +20,8 @@ import net.limit.cubliminal.client.render.fog.FogSettings;
 import net.limit.cubliminal.entity.client.SeatRenderer;
 import net.limit.cubliminal.event.KeyInputHandler;
 import net.limit.cubliminal.init.*;
-import net.limit.cubliminal.util.Debug;
-import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
-import net.minecraft.client.util.InputUtil;
-import org.lwjgl.glfw.GLFW;
-
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Environment(EnvType.CLIENT)
 public class CubliminalClient implements ClientModInitializer {

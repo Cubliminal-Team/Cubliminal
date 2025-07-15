@@ -1,11 +1,10 @@
 package net.limit.cubliminal.util;
 
 import net.limit.cubliminal.Cubliminal;
-import org.apache.http.annotation.Obsolete;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Debug {
+public class DebugLogger {
     private static final String MOD_ID = Cubliminal.MOD_ID;
     private static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
@@ -65,6 +64,12 @@ public class Debug {
         }
     }
 
+    /**
+     * Displays a debug message every tick. Useful for methods that would run every tick, that way the IDE can handle it.
+     * @param age = Simply get the age of the entity.
+     * @param increment = How many times per tick the message will display. 20 ticks = 1 second
+     * @param msg = The message to display/
+     */
     public static void debug(int age, int increment, Object... msg){
         if (age % increment == 0){
             debug(msg);
@@ -75,6 +80,7 @@ public class Debug {
      * Displays a message to the Minecraft log to list sectors that was loaded from the mod.
      * @param c The class that has loaded.
      */
+    @Deprecated
     public static void displayRegisteredSectors(Class c){
         LOGGER.info(ANSI_GREEN + "{ LOADED | " + ANSI_CYAN + MOD_ID + ANSI_GREEN + " } " + ANSI_BLUE + c.getSimpleName());
     }

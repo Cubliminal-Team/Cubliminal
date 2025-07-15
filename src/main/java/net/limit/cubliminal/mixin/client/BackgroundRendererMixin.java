@@ -4,15 +4,13 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.limit.cubliminal.Cubliminal;
-import net.limit.cubliminal.block.fluids.CustomFluidBlock;
+import net.limit.cubliminal.block.fluid.CustomFluidBlock;
 import net.limit.cubliminal.client.render.fog.FogManager;
 import net.limit.cubliminal.client.render.fog.FogSettings;
 import net.limit.cubliminal.client.util.CameraBackroomFluid;
 import net.limit.cubliminal.config.CubliminalConfig;
 import net.limit.cubliminal.fluid.BackroomsFlowableFluid;
-import net.limit.cubliminal.init.CubliminalFluidTags;
 import net.limit.cubliminal.util.ColorManager;
-import net.limit.cubliminal.util.Debug;
 import net.minecraft.block.enums.CameraSubmersionType;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.BackgroundRenderer;
@@ -30,7 +28,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Environment(EnvType.CLIENT)

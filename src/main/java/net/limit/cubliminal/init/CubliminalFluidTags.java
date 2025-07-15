@@ -1,15 +1,10 @@
 package net.limit.cubliminal.init;
 
 import net.limit.cubliminal.Cubliminal;
-import net.limit.cubliminal.Initer;
-import net.limit.cubliminal.util.Debug;
+import net.limit.cubliminal.util.DebugLogger;
 import net.minecraft.fluid.Fluid;
-import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.TagKey;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class CubliminalFluidTags {
     public static final TagKey<Fluid> CUSTOM_FLUIDS = of("custom_fluids");
@@ -19,6 +14,6 @@ public class CubliminalFluidTags {
     }
 
     public static void init() {
-        Debug.displayRegisteredSectors(CubliminalFluidTags.class);
+        DebugLogger.displayRegisteredSectors(CubliminalFluidTags.class);
     }
 }

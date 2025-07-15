@@ -1,22 +1,15 @@
 package net.limit.cubliminal.mixin;
 
-import net.limit.cubliminal.block.fluids.CustomFluidBlock;
+import net.limit.cubliminal.block.fluid.CustomFluidBlock;
 import net.limit.cubliminal.fluid.BackroomsFlowableFluid;
 import net.limit.cubliminal.init.CubliminalFluidTags;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MovementType;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.data.DataTracker;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.tag.TagKey;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;

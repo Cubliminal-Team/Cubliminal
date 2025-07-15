@@ -1,6 +1,6 @@
 package net.limit.cubliminal.fluid;
 
-import net.limit.cubliminal.block.fluids.CustomFluidBlock;
+import net.limit.cubliminal.block.fluid.CustomFluidBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;

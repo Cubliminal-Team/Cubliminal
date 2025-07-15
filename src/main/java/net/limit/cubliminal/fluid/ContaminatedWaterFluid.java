@@ -1,6 +1,6 @@
 package net.limit.cubliminal.fluid;
 
-import net.limit.cubliminal.block.fluids.CustomFluidBlock;
+import net.limit.cubliminal.block.fluid.CustomFluidBlock;
 import net.limit.cubliminal.init.CubliminalBlocks;
 import net.limit.cubliminal.init.CubliminalFluids;
 import net.minecraft.block.BlockState;
@@ -9,13 +9,11 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.particle.ParticleEffect;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.StateManager;
 import net.minecraft.world.WorldView;
-import org.jetbrains.annotations.Nullable;
 
 public class ContaminatedWaterFluid extends BackroomsFlowableFluid {
     public ContaminatedWaterFluid() {
