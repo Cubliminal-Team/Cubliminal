@@ -7,10 +7,20 @@ import net.limit.cubliminal.block.CustomProperties;
 import net.limit.cubliminal.block.custom.*;
 import net.limit.cubliminal.block.custom.template.RotatableBlock;
 import net.limit.cubliminal.block.custom.template.RotatableLightBlock;
+import net.limit.cubliminal.block.fluid.BlackSludgeFluidBlock;
+import net.limit.cubliminal.block.fluid.ContaminatedWaterBlock;
+import net.limit.cubliminal.block.fluid.CustomFluidBlock;
+import net.limit.cubliminal.block.fluid.FluidBlockFactory;
+import net.limit.cubliminal.block.pipe.CeilingPipeBlock;
+import net.limit.cubliminal.block.pipe.LargeHorizontalPipeBlock;
+import net.limit.cubliminal.block.pipe.PipeBlock;
+import net.limit.cubliminal.block.pipe.VerticalPipeBlock;
 import net.limit.cubliminal.item.AlmondWaterBlockItem;
+import net.limit.cubliminal.particle.CubliminalParticleTypes;
 import net.minecraft.block.*;
 import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.component.DataComponentTypes;
+import net.minecraft.fluid.FlowableFluid;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.OperatorOnlyBlockItem;
@@ -24,7 +34,10 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Rarity;
+import net.minecraft.util.math.Vec3d;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.ToIntFunction;
@@ -32,12 +45,19 @@ import java.util.function.ToIntFunction;
 import static net.minecraft.block.Blocks.createLightLevelFromLitBlockState;
 
 public class CubliminalBlocks implements Initer {
+	public static List<Block> pipeBlocks = new ArrayList<>();
+	private static void groupPipeBlock(Block block){
+		if (block instanceof PipeBlock){
+			pipeBlocks.add(block);
+		}
+	}
 
 	private static Block register(String id, Function<AbstractBlock.Settings, Block> blockFactory, AbstractBlock.Settings blockSettings, BiFunction<Block, Item.Settings, BlockItem> itemFactory, Item.Settings itemSettings) {
 		RegistryKey<Item> itemKey = RegistryKey.of(RegistryKeys.ITEM, Cubliminal.id(id));
 		RegistryKey<Block> blockKey = RegistryKey.of(RegistryKeys.BLOCK, Cubliminal.id(id));
 
 		Block block = blockFactory.apply(blockSettings.registryKey(blockKey));
+		groupPipeBlock(block);
 		BlockItem item = itemFactory.apply(block, itemSettings.registryKey(itemKey));
 		Registry.register(Registries.ITEM, itemKey, item);
 		return Registry.register(Registries.BLOCK, blockKey, block);
@@ -48,6 +68,7 @@ public class CubliminalBlocks implements Initer {
 		RegistryKey<Block> blockKey = RegistryKey.of(RegistryKeys.BLOCK, Cubliminal.id(id));
 
 		Block block = blockFactory.apply(constructorData, blockSettings.registryKey(blockKey));
+		groupPipeBlock(block);
 		BlockItem item = itemFactory.apply(block, itemSettings.registryKey(itemKey));
 		Registry.register(Registries.ITEM, itemKey, item);
 		return Registry.register(Registries.BLOCK, blockKey, block);
@@ -58,11 +79,41 @@ public class CubliminalBlocks implements Initer {
 	}
 
 	private static Block registerBlock(String id, Block block, BiFunction<Block, Item.Settings, BlockItem> itemFactory, Item.Settings itemSettings) {
+		groupPipeBlock(block);
 		RegistryKey<Block> blockKey = RegistryKey.of(RegistryKeys.BLOCK, Cubliminal.id(id));
 		RegistryKey<Item> itemKey = RegistryKey.of(RegistryKeys.ITEM, Cubliminal.id(id));
 		BlockItem item = itemFactory.apply(block, itemSettings.registryKey(itemKey));
 		Registry.register(Registries.ITEM, itemKey, item);
 		return Registry.register(Registries.BLOCK, blockKey, block);
+	}
+
+	private static Block registerBlockWithoutItem(String name, Function<AbstractBlock.Settings, Block> blockFactory, AbstractBlock.Settings settings) {
+		RegistryKey<Block> blockKey = RegistryKey.of(RegistryKeys.BLOCK, Cubliminal.id(name));
+		Block block = blockFactory.apply(settings.registryKey(blockKey));
+		groupPipeBlock(block);
+		return Registry.register(Registries.BLOCK, blockKey, block);
+	}
+
+	/**
+	 * registers a fluid block.
+	 * @param name The name of the fluid.
+	 * @param flowableFluid The flowable fluid.
+	 * @param factory The fluid block factory
+	 * @param settings The fluid settings.
+	 * @return Returns a block of the custom fluid.
+	 */
+	private static Block registerFluidBlock(String name, FlowableFluid flowableFluid, FluidBlockFactory factory, CustomFluidBlock.Settings settings){
+		return registerBlockWithoutItem(
+				name + "_fluid",
+				blockSettings -> factory.create(flowableFluid, blockSettings, settings),
+				AbstractBlock.Settings.copy(Blocks.WATER)
+						.replaceable()
+						.noCollision()
+						.strength(100.0f)
+						.pistonBehavior(PistonBehavior.DESTROY)
+						.dropsNothing()
+						.liquid()
+		);
 	}
 
 	public static TagKey<Block> of(String id) {
@@ -450,6 +501,27 @@ public class CubliminalBlocks implements Initer {
 	public static final Block POOL_TILE_WALL = register("pool_tile_wall", WallBlock::new,
 			AbstractBlock.Settings.copy(Blocks.REINFORCED_DEEPSLATE).solid());
 
+	public static final Block LARGE_HORIZONTAL_PIPE = register(
+			"large_horizontal_pipe",
+			LargeHorizontalPipeBlock::new,
+			AbstractBlock.Settings.create().nonOpaque()
+	);
+
+	public static final Block VERTICAL_PIPE = register(
+			"vertical_pipe",
+			VerticalPipeBlock::new,
+			AbstractBlock.Settings.create().nonOpaque()
+	);
+
+	public static final Block CEILING_PIPE = register(
+			"ceiling_pipe",
+			CeilingPipeBlock::new,
+			AbstractBlock.Settings.create().nonOpaque()
+	);
+
+	public static Block ALMOND_WATER_BLOCK;
+	public static Block CONTAMINATED_WATER_BLOCK;
+	public static Block BLACK_SLUDGE_BLOCK;
 
 	public static ToIntFunction<BlockState> shouldBeRed(int defaultLevel, int redLevel) {
 		return (state) -> {
@@ -480,5 +552,32 @@ public class CubliminalBlocks implements Initer {
 			builder.add(RED_WALLPAPERS.asItem(), 300);
 			builder.add(WOODEN_CRATE.asItem(), 300);
 		});
+
+		ALMOND_WATER_BLOCK = registerFluidBlock("almond_water", CubliminalFluids.ALMOND_WATER, CustomFluidBlock::new,
+				CustomFluidBlock.Settings.create()
+						.setColor(0xFFECB3)
+						.setSplashParticles(CustomFluidBlock.FluidSplashParticleManager.create()
+								.setParticles(CubliminalParticleTypes.LANDING_ALMOND_WATER, CubliminalParticleTypes.ALMOND_WATER_BUBBLE)
+						)
+		);
+
+		CONTAMINATED_WATER_BLOCK = registerFluidBlock("contaminated_water", CubliminalFluids.CONTAMINATED_WATER, ContaminatedWaterBlock::new,
+				CustomFluidBlock.Settings.create()
+						.setColor(0x556B2F)
+						.setFogEnd(10.0f)
+						.setSplashParticles(
+								CustomFluidBlock.FluidSplashParticleManager.create()
+										.setParticles(CubliminalParticleTypes.CONTAMINATED_WATER_SPLASH, CubliminalParticleTypes.CONTAMINATED_WATER_BUBBLE)
+						)
+		);
+
+		BLACK_SLUDGE_BLOCK = registerFluidBlock("black_sludge", CubliminalFluids.BLACK_SLUDGE, BlackSludgeFluidBlock::new,
+				CustomFluidBlock.Settings.create()
+						.setColor(0x000000)
+						.setSpeed(0.005f)
+						.setDrag(new Vec3d(0.5, 0.4, 0.5))
+						.setFogStart(0.25F)
+						.setFogEnd(1.0F)
+		);
     }
 }

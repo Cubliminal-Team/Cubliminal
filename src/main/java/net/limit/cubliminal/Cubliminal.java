@@ -15,6 +15,7 @@ import net.limit.cubliminal.event.command.NoclipCommand;
 import net.limit.cubliminal.event.command.SanityCommand;
 import net.limit.cubliminal.init.*;
 import net.limit.cubliminal.event.noclip.NoclipDestination;
+import net.limit.cubliminal.particle.CubliminalParticleTypes;
 import net.limit.cubliminal.world.connection.ConnectionPlacementType;
 import net.limit.cubliminal.world.connection.ConnectionRegistry;
 import net.limit.cubliminal.world.room.RoomRegistry;
@@ -57,6 +58,9 @@ public class Cubliminal implements ModInitializer {
 		ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(new ConnectionRegistry());
 
 		// Init Initers
+		CubliminalFluidTags.init();
+		CubliminalParticleTypes.init();
+		CubliminalFluids.initFluid();
 		Initer.initialise();
 
 		NoclipDestination.init();
