@@ -174,6 +174,13 @@ public class CubliminalBlocks implements Initer {
 					.sounds(BlockSoundGroup.WOOL)
 					.strength(1, 3));
 
+	public static final Block DAMP_CARPET_STAIRS = register("damp_carpet_stairs", StairsBlock::new,
+			AbstractBlock.Settings.copy(DAMP_CARPET),
+			DAMP_CARPET.getDefaultState(), BlockItem::new, new Item.Settings());
+
+	public static final Block DAMP_CARPET_SLAB = register("damp_carpet_slab", SlabBlock::new,
+			AbstractBlock.Settings.copy(DAMP_CARPET));
+
     public static final Block DIRTY_DAMP_CARPET = register("dirty_damp_carpet", Block::new,
             AbstractBlock.Settings.create()
 					.mapColor(MapColor.OAK_TAN)

@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
+    "cubliminal:damp_carpet_stairs",
     "cubliminal:pool_tile_stairs"
   ]
 }

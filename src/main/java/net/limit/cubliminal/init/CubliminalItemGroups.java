@@ -27,6 +27,8 @@ public class CubliminalItemGroups implements Initer {
                         entries.add(CubliminalBlocks.FALSE_CEILING);
                         entries.add(CubliminalBlocks.DAMP_CARPET);
                         entries.add(CubliminalBlocks.DIRTY_DAMP_CARPET);
+                        entries.add(CubliminalBlocks.DAMP_CARPET_SLAB);
+                        entries.add(CubliminalBlocks.DAMP_CARPET_STAIRS);
                         entries.add(CubliminalBlocks.RED_DAMP_CARPET);
                         entries.add(CubliminalBlocks.RED_WALLPAPERS);
 						entries.add(CubliminalBlocks.FLICKERING_FLUORESCENT_LIGHT);

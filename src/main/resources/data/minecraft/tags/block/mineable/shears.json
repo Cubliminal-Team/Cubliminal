@@ -2,6 +2,8 @@
   "replace": false,
   "values": [
     "cubliminal:damp_carpet",
+    "cubliminal:damp_carpet_slab",
+    "cubliminal:damp_carpet_stairs",
     "cubliminal:dirty_damp_carpet",
     "cubliminal:red_damp_carpet"
   ]
