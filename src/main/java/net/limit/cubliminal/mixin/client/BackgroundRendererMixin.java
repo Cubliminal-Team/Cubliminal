@@ -79,7 +79,7 @@ public abstract class BackgroundRendererMixin {
                         fluidColor.getRedDecimal(),
                         fluidColor.getGreenDecimal(),
                         fluidColor.getBlueDecimal(),
-                        0.5f
+                        settings.getFogAlpha()
                 );
                 RenderSystem.setShaderFog(fog);
                 cir.setReturnValue(fog);

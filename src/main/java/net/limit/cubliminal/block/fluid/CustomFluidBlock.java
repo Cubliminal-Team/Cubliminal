@@ -80,14 +80,16 @@ public class CustomFluidBlock extends FluidBlock {
         ColorManager primaryColor;
         float fogStart;
         float fogEnd;
+        float fogAlpha;
         Vec3d drag;
         float speed;
         FluidSplashParticleManager splashParticleManager = null;
 
         private Settings(){
             this.useDefaultFluidPhysics = true;
-            this.fogStart = -8.0f;
-            this.fogEnd = 25.0f;
+            this.fogStart = -8.0F;
+            this.fogEnd = 25.0F;
+            this.fogAlpha = 0.5F;
         }
 
         public static Settings create(){
@@ -138,6 +140,15 @@ public class CustomFluidBlock extends FluidBlock {
 
         public float getFogEnd(){
             return this.fogEnd;
+        }
+
+        public Settings setFogAlpha(float alpha){
+            this.fogAlpha = alpha;
+            return this;
+        }
+
+        public float getFogAlpha(){
+            return this.fogAlpha;
         }
 
         public Settings setSpeed(float speed){

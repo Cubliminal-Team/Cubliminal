@@ -63,6 +63,13 @@ public class CubliminalBlocks implements Initer {
 		return Registry.register(Registries.BLOCK, blockKey, block);
 	}
 
+	private static Block register(String id, Function<AbstractBlock.Settings, Block> blockFactory, AbstractBlock.Settings blockSettings){
+		RegistryKey<Block> blockKey = RegistryKey.of(RegistryKeys.BLOCK, Cubliminal.id(id));
+		Block block = blockFactory.apply(blockSettings);
+		groupPipeBlock(block);
+		return Registry.register(Registries.BLOCK, blockKey, block);
+	}
+
 	private static <T> Block register(String id, BiFunction<T, AbstractBlock.Settings, Block> blockFactory, AbstractBlock.Settings blockSettings, T constructorData, BiFunction<Block, Item.Settings, BlockItem> itemFactory, Item.Settings itemSettings) {
 		RegistryKey<Item> itemKey = RegistryKey.of(RegistryKeys.ITEM, Cubliminal.id(id));
 		RegistryKey<Block> blockKey = RegistryKey.of(RegistryKeys.BLOCK, Cubliminal.id(id));
@@ -72,10 +79,6 @@ public class CubliminalBlocks implements Initer {
 		BlockItem item = itemFactory.apply(block, itemSettings.registryKey(itemKey));
 		Registry.register(Registries.ITEM, itemKey, item);
 		return Registry.register(Registries.BLOCK, blockKey, block);
-	}
-
-	private static Block register(String id, Function<AbstractBlock.Settings, Block> blockFactory, AbstractBlock.Settings blockSettings) {
-		return register(id, blockFactory, blockSettings, BlockItem::new, new Item.Settings());
 	}
 
 	private static Block registerBlock(String id, Block block, BiFunction<Block, Item.Settings, BlockItem> itemFactory, Item.Settings itemSettings) {
@@ -565,6 +568,7 @@ public class CubliminalBlocks implements Initer {
 				CustomFluidBlock.Settings.create()
 						.setColor(0x556B2F)
 						.setFogEnd(10.0f)
+						.setFogAlpha(0.8f)
 						.setSplashParticles(
 								CustomFluidBlock.FluidSplashParticleManager.create()
 										.setParticles(CubliminalParticleTypes.CONTAMINATED_WATER_SPLASH, CubliminalParticleTypes.CONTAMINATED_WATER_BUBBLE)
@@ -578,6 +582,7 @@ public class CubliminalBlocks implements Initer {
 						.setDrag(new Vec3d(0.5, 0.4, 0.5))
 						.setFogStart(0.25F)
 						.setFogEnd(1.0F)
+						.setFogAlpha(1.0F)
 		);
     }
 }
