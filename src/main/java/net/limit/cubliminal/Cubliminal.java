@@ -58,7 +58,6 @@ public class Cubliminal implements ModInitializer {
 		ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(new ConnectionRegistry());
 
 		// Init Initers
-		CubliminalFluidTags.init();
 		CubliminalParticleTypes.init();
 		CubliminalFluids.initFluid();
 		Initer.initialise();

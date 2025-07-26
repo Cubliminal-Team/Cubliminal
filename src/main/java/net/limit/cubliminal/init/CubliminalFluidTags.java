@@ -12,4 +12,9 @@ public class CubliminalFluidTags implements Initer {
     private static TagKey<Fluid> of(String id) {
         return TagKey.of(RegistryKeys.FLUID, Cubliminal.id(id));
     }
+
+    @Override
+    public void init() {
+        Initer.super.init();
+    }
 }
