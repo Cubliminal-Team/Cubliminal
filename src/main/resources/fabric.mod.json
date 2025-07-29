@@ -37,6 +37,7 @@
             "net.limit.cubliminal.init.CubliminalBlocks",
             "net.limit.cubliminal.init.CubliminalEffects",
             "net.limit.cubliminal.init.CubliminalEntities",
+            "net.limit.cubliminal.init.CubliminalFluidTags",
             "net.limit.cubliminal.init.CubliminalItemGroups",
             "net.limit.cubliminal.init.CubliminalItems",
             "net.limit.cubliminal.init.CubliminalSounds",

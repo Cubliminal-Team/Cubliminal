@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "facing=north,connector=false": { "model": "cubliminal:block/pipes/vertical_pipe", "y": 180},
+    "facing=east,connector=false": { "model": "cubliminal:block/pipes/vertical_pipe", "y":  270},
+    "facing=south,connector=false": { "model": "cubliminal:block/pipes/vertical_pipe"},
+    "facing=west,connector=false": { "model": "cubliminal:block/pipes/vertical_pipe", "y":  90},
+
+    "facing=north,connector=true": { "model": "cubliminal:block/pipes/vertical_pipe_connector", "y": 180},
+    "facing=east,connector=true": { "model": "cubliminal:block/pipes/vertical_pipe_connector", "y":  270},
+    "facing=south,connector=true": { "model": "cubliminal:block/pipes/vertical_pipe_connector"},
+    "facing=west,connector=true": { "model": "cubliminal:block/pipes/vertical_pipe_connector", "y":  90}
+  }
+}

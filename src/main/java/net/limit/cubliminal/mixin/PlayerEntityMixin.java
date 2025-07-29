@@ -106,4 +106,6 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PEAccess
 	@Override
 	public void openUSBlockScreen(USBlockBlockEntity blockEntity) {
 	}
+
+
 }

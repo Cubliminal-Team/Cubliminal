@@ -1,0 +1,28 @@
+{
+  "variants": {
+    "facing=north,type=one_layer_straight": { "model": "cubliminal:block/pipes/ceiling_pipe_1"},
+    "facing=east,type=one_layer_straight": { "model": "cubliminal:block/pipes/ceiling_pipe_1", "y":  90},
+    "facing=south,type=one_layer_straight": { "model": "cubliminal:block/pipes/ceiling_pipe_1", "y": 180},
+    "facing=west,type=one_layer_straight": { "model": "cubliminal:block/pipes/ceiling_pipe_1", "y":  270},
+
+    "facing=north,type=two_layer_straight": { "model": "cubliminal:block/pipes/ceiling_pipe_2"},
+    "facing=east,type=two_layer_straight": { "model": "cubliminal:block/pipes/ceiling_pipe_2", "y":  90},
+    "facing=south,type=two_layer_straight": { "model": "cubliminal:block/pipes/ceiling_pipe_2", "y": 180},
+    "facing=west,type=two_layer_straight": { "model": "cubliminal:block/pipes/ceiling_pipe_2", "y":  270},
+
+    "facing=north,type=two_layer_corner": { "model": "cubliminal:block/pipes/ceiling_pipe_3"},
+    "facing=east,type=two_layer_corner": { "model": "cubliminal:block/pipes/ceiling_pipe_3", "y":  90},
+    "facing=south,type=two_layer_corner": { "model": "cubliminal:block/pipes/ceiling_pipe_3", "y": 180},
+    "facing=west,type=two_layer_corner": { "model": "cubliminal:block/pipes/ceiling_pipe_3", "y":  270},
+
+    "facing=north,type=two_layer_up": { "model": "cubliminal:block/pipes/ceiling_pipe_4"},
+    "facing=east,type=two_layer_up": { "model": "cubliminal:block/pipes/ceiling_pipe_4", "y":  90},
+    "facing=south,type=two_layer_up": { "model": "cubliminal:block/pipes/ceiling_pipe_4", "y": 180},
+    "facing=west,type=two_layer_up": { "model": "cubliminal:block/pipes/ceiling_pipe_4", "y":  270},
+
+    "facing=north,type=one_layer_vertical_pipe_connection": { "model": "cubliminal:block/pipes/ceiling_pipe_5"},
+    "facing=east,type=one_layer_vertical_pipe_connection": { "model": "cubliminal:block/pipes/ceiling_pipe_5", "y":  90},
+    "facing=south,type=one_layer_vertical_pipe_connection": { "model": "cubliminal:block/pipes/ceiling_pipe_5", "y": 180},
+    "facing=west,type=one_layer_vertical_pipe_connection": { "model": "cubliminal:block/pipes/ceiling_pipe_5", "y":  270}
+  }
+}

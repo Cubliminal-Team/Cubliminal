@@ -1,0 +1,23 @@
+{
+  "variants": {
+    "facing=north,type=straight,connector=false": { "model": "cubliminal:block/pipes/large_pipe_2"},
+    "facing=east,type=straight,connector=false": { "model": "cubliminal:block/pipes/large_pipe_2", "y":  90},
+    "facing=south,type=straight,connector=false": { "model": "cubliminal:block/pipes/large_pipe_2", "y": 180},
+    "facing=west,type=straight,connector=false": { "model": "cubliminal:block/pipes/large_pipe_2", "y":  270},
+
+    "facing=north,type=straight,connector=true": { "model": "cubliminal:block/pipes/large_pipe_1"},
+    "facing=east,type=straight,connector=true": { "model": "cubliminal:block/pipes/large_pipe_1", "y":  90},
+    "facing=south,type=straight,connector=true": { "model": "cubliminal:block/pipes/large_pipe_1", "y": 180},
+    "facing=west,type=straight,connector=true": { "model": "cubliminal:block/pipes/large_pipe_1", "y":  270},
+
+    "facing=north,type=corner,connector=false": { "model": "cubliminal:block/pipes/large_pipe_3"},
+    "facing=east,type=corner,connector=false": { "model": "cubliminal:block/pipes/large_pipe_3", "y":  90},
+    "facing=south,type=corner,connector=false": { "model": "cubliminal:block/pipes/large_pipe_3", "y": 180},
+    "facing=west,type=corner,connector=false": { "model": "cubliminal:block/pipes/large_pipe_3", "y":  270},
+
+    "facing=north,type=corner,connector=true": { "model": "cubliminal:block/pipes/large_pipe_3"},
+    "facing=east,type=corner,connector=true": { "model": "cubliminal:block/pipes/large_pipe_3", "y":  90},
+    "facing=south,type=corner,connector=true": { "model": "cubliminal:block/pipes/large_pipe_3", "y": 180},
+    "facing=west,type=corner,connector=true": { "model": "cubliminal:block/pipes/large_pipe_3", "y":  270}
+  }
+}

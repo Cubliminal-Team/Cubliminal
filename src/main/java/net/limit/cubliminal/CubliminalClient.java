@@ -5,10 +5,14 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientWorldEvents;
+import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
+import net.fabricmc.fabric.api.client.render.fluid.v1.SimpleFluidRenderHandler;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.limit.cubliminal.access.GameRendererAccessor;
+import net.limit.cubliminal.block.fluid.CustomFluidBlock;
 import net.limit.cubliminal.client.hud.SanityBarHudOverlay;
+import net.limit.cubliminal.client.particle.CubliminalParticleManager;
 import net.limit.cubliminal.client.render.FluxCapacitorRenderer;
 import net.limit.cubliminal.client.render.ManilaGatewayRenderer;
 import net.limit.cubliminal.client.render.UnlimitedStructureBlockRenderer;
@@ -24,6 +28,8 @@ public class CubliminalClient implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
+		CubliminalParticleManager.init();
+
 		BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getCutout(),
 				CubliminalBlocks.THE_LOBBY_GATEWAY_BLOCK,
 				CubliminalBlocks.EMERGENCY_EXIT_DOOR_0,
@@ -49,6 +55,19 @@ public class CubliminalClient implements ClientModInitializer {
 
 		KeyInputHandler.registerKeyInputs();
 		EntityRendererRegistry.register(CubliminalEntities.SEAT_ENTITY, SeatRenderer::new);
+
+		for (CustomFluidBlock backroomFluidBlock : CustomFluidBlock.getAll()) {
+			FluidRenderHandlerRegistry.INSTANCE.register(
+					backroomFluidBlock.getFluid().getStill(),
+					backroomFluidBlock.getFluid().getFlowing(),
+					new SimpleFluidRenderHandler(
+							SimpleFluidRenderHandler.WATER_STILL,
+							SimpleFluidRenderHandler.WATER_FLOWING,
+							SimpleFluidRenderHandler.WATER_OVERLAY,
+							backroomFluidBlock.getColor(0)
+					)
+			);
+		}
 
 		// Init Initers
 		IniterClient.initialise();
