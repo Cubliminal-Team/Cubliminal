@@ -1,105 +1,108 @@
 package net.limit.cubliminal.block.custom;
 
-import net.limit.cubliminal.block.CustomProperties;
+import net.limit.cubliminal.access.ServerWorldAccessor;
+import net.limit.cubliminal.block.custom.template.RotatableLightBlock;
+import net.limit.cubliminal.block.state.CustomProperties;
+import net.limit.cubliminal.event.backrooms.BlackoutManager;
 import net.limit.cubliminal.init.CubliminalBiomes;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.HorizontalFacingBlock;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
-import net.minecraft.state.property.EnumProperty;
-import net.minecraft.state.property.Properties;
-import net.minecraft.util.BlockMirror;
-import net.minecraft.util.BlockRotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
-import net.minecraft.world.World;
 import net.minecraft.world.WorldView;
-import net.minecraft.world.block.WireOrientation;
 import org.jetbrains.annotations.Nullable;
 
+public class FluorescentLightBlock extends RotatableLightBlock {
 
-public class FluorescentLightBlock extends Block {
+    public static final BooleanProperty RED = CustomProperties.RED;
+    private static final VoxelShape VOXEL_SHAPE = Block.createCuboidShape(0, 15,0, 16, 16, 16);
+    private final boolean fused;
+    private final boolean flicker;
 
-	public static final BooleanProperty LIT = Properties.LIT;
-	public static final BooleanProperty RED = CustomProperties.RED;
-	public static final EnumProperty<Direction> FACING = HorizontalFacingBlock.FACING;
-	private static final VoxelShape VOXEL_SHAPE = Block.createCuboidShape(0, 15,0, 16, 16, 16);
+    public FluorescentLightBlock(Settings settings, boolean fused, boolean flicker) {
+        super(settings);
+        this.fused = fused;
+        this.flicker = flicker;
+        this.setDefaultState(this.getDefaultState()
+                .with(LIT, !fused)
+                .with(RED, false));
+    }
 
-	@Override
-	public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-		return VOXEL_SHAPE;
-	}
+    @Override
+    public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+        return VOXEL_SHAPE;
+    }
 
-	public FluorescentLightBlock(Settings settings) {
-		super(settings);
-		this.setDefaultState(this.stateManager.getDefaultState().with(LIT, true).with(FACING, Direction.NORTH).with(RED, false));
-	}
+    @Override
+    protected VoxelShape getCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+        return VOXEL_SHAPE;
+    }
 
-	@Override
-	public boolean canPlaceAt(BlockState state, WorldView world, BlockPos pos) {
-		BlockPos blockPos = pos.offset(Direction.DOWN.getOpposite());
-		BlockState blockState = world.getBlockState(blockPos);
-		return blockState.isSideSolidFullSquare(world, blockPos, Direction.DOWN);
-	}
+    @Override
+    protected boolean canPlaceAt(BlockState state, WorldView world, BlockPos pos) {
+        if (!this.needsAttachment) {
+            return true;
+        } else {
+            BlockPos blockPos = pos.offset(Direction.DOWN.getOpposite());
+            BlockState blockState = world.getBlockState(blockPos);
+            return blockState.isSideSolidFullSquare(world, blockPos, Direction.DOWN);
+        }
+    }
 
-	@Override
-	public void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
-		world.setBlockState(pos, state.with(LIT, true));
-	}
+    @Nullable
+    @Override
+    public BlockState getPlacementState(ItemPlacementContext ctx) {
+        BlockState state = super.getPlacementState(ctx);
+        if (state != null) {
+            return state
+                    .with(LIT, state.get(LIT) && !this.fused)
+                    .with(RED, ctx.getWorld().getBiome(ctx.getBlockPos())
+                            .getKey().orElseThrow().equals(CubliminalBiomes.REDROOMS_BIOME));
+        }
+        return state;
+    }
 
-	@Override
-	protected void neighborUpdate(BlockState state, World world, BlockPos pos, Block sourceBlock, @Nullable WireOrientation wireOrientation, boolean notify) {
-		if (!state.canPlaceAt(world, pos)) {
-			world.breakBlock(pos, false);
-		}
-	}
+    @Override
+    protected void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
+        BlockState newState = state.with(LIT, !this.fused);
+        if (world instanceof ServerWorldAccessor accessor) {
+            BlackoutManager blackoutManager = accessor.blackoutManager();
+            if (blackoutManager != null) {
+                newState = state.with(LIT, !(this.fused || blackoutManager.lightsOffIn(pos)));
+            }
+        }
+        world.setBlockState(pos, newState);
+    }
 
-	@Override
-	public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
-		if (!world.isClient) {
-			if (random.nextInt(3) == 0) {
-				world.setBlockState(pos, state.with(LIT, false));
-				world.scheduleBlockTick(pos, state.getBlock(), 2);
-			}
-		}
-	}
+    @Override
+    protected void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
+        if (world instanceof ServerWorldAccessor accessor && this.flicker) {
+            BlackoutManager blackoutManager = accessor.blackoutManager();
+            if ((blackoutManager == null || !blackoutManager.lightsOffIn(pos)) && random.nextInt(this.fused ? 2 : 3) == 0) {
+                world.setBlockState(pos, state.with(LIT, !this.fused));
+                world.scheduleBlockTick(pos, state.getBlock(), 2);
+            }
+        }
+    }
 
-	@Override
-	public BlockState rotate(BlockState state, BlockRotation rotation) {
-		return state.with(FACING, rotation.rotate(state.get(FACING)));
-	}
+    @Override
+    public void blackoutUpdate(BlockState state, ServerWorld world, BlockPos pos, boolean lightsOff, Random random) {
+        if (!this.fused) {
+            world.setBlockState(pos, state.with(LIT, !lightsOff));
+        }
+    }
 
-	@Override
-	public BlockState mirror(BlockState state, BlockMirror mirror) {
-		return state.rotate(mirror.getRotation(state.get(FACING)));
-	}
-
-	@Nullable
-	@Override
-	public BlockState getPlacementState(ItemPlacementContext ctx) {
-		BlockState blockState = this.getDefaultState();
-		Direction direction = ctx.getSide();
-		boolean needsToBeRed = ctx.getWorld().getBiome(ctx.getBlockPos()).getKey()
-				.get().equals(CubliminalBiomes.REDROOMS_BIOME);
-		if (!ctx.canReplaceExisting() && direction.getAxis().isHorizontal()) {
-			blockState = blockState.with(FACING, direction);
-		} else {
-			blockState = blockState.with(FACING, ctx.getHorizontalPlayerFacing().getOpposite());
-		}
-
-		return blockState.with(RED, needsToBeRed);
-	}
-
-	@Override
-	protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-		builder.add(LIT, FACING, RED);
-	}
-
+    @Override
+    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
+        super.appendProperties(builder);
+        builder.add(RED);
+    }
 }

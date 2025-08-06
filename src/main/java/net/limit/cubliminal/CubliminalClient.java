@@ -12,12 +12,12 @@ import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.limit.cubliminal.access.GameRendererAccessor;
 import net.limit.cubliminal.block.fluid.CustomFluidBlock;
 import net.limit.cubliminal.client.hud.SanityBarHudOverlay;
-import net.limit.cubliminal.client.particle.CubliminalParticleManager;
-import net.limit.cubliminal.client.render.FluxCapacitorRenderer;
-import net.limit.cubliminal.client.render.ManilaGatewayRenderer;
-import net.limit.cubliminal.client.render.UnlimitedStructureBlockRenderer;
-import net.limit.cubliminal.client.render.fog.FogSettings;
-import net.limit.cubliminal.entity.client.SeatRenderer;
+import net.limit.cubliminal.client.particle.CustomParticleManager;
+import net.limit.cubliminal.client.block.FluxCapacitorRenderer;
+import net.limit.cubliminal.client.block.ManilaGatewayRenderer;
+import net.limit.cubliminal.client.block.UnlimitedStructureBlockRenderer;
+import net.limit.cubliminal.client.fog.FogSettings;
+import net.limit.cubliminal.client.entity.SeatRenderer;
 import net.limit.cubliminal.event.KeyInputHandler;
 import net.limit.cubliminal.init.*;
 import net.minecraft.client.render.*;
@@ -28,7 +28,7 @@ public class CubliminalClient implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
-		CubliminalParticleManager.init();
+		CustomParticleManager.init();
 
 		BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getCutout(),
 				CubliminalBlocks.THE_LOBBY_GATEWAY_BLOCK,

@@ -13,7 +13,7 @@
       "safety": 4.0,
       "decay_factor": 0.24
     },
-    "cubliminal:guild_sector": {
+    "cubliminal:gild_sector": {
       "rarity": -4.5,
       "spacing": -60.0,
       "safety": 4.2,
@@ -37,7 +37,7 @@
       "safety": 4.0,
       "decay_factor": 0.24
     },
-    "cubliminal:deep_guild_sector": {
+    "cubliminal:deep_gild_sector": {
       "rarity": -4.5,
       "spacing": -60.0,
       "safety": 4.2,

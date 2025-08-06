@@ -29,6 +29,8 @@ public class CubliminalSounds implements Initer {
     public static final RegistryEntry.Reference<SoundEvent> AMBIENT_LEVEL_O = registerReference("ambient.lvl0");
     public static final RegistryEntry.Reference<SoundEvent> AMBIENT_PILLARS_LEVEL_0 = registerReference("ambient.lvl0.pillars");
     public static final RegistryEntry.Reference<SoundEvent> AMBIENT_REDROOMS = registerReference("ambient.redrooms");
+	public static final RegistryEntry.Reference<SoundEvent> POWER_DOWN = registerReference("ambient.power_down");
+	public static final RegistryEntry.Reference<SoundEvent> POWER_ON = registerReference("ambient.power_on");
 	public static final RegistryEntry.Reference<SoundEvent> HEARTBEAT = registerReference("heartbeat");
 	public static final RegistryEntry.Reference<SoundEvent> NOCLIPPING = registerReference("noclipping");
 	public static final RegistryEntry.Reference<SoundEvent> WALL_CLIPPING = registerReference("wall_clipping");

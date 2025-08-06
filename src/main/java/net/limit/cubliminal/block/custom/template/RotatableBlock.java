@@ -1,45 +1,35 @@
 package net.limit.cubliminal.block.custom.template;
 
 import com.mojang.serialization.MapCodec;
-import net.limit.cubliminal.Cubliminal;
 import net.minecraft.block.*;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.EnumProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.random.Random;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldView;
 import net.minecraft.world.block.WireOrientation;
-import org.apache.commons.io.function.IOQuadFunction;
 import org.jetbrains.annotations.Nullable;
-
-import java.io.IOException;
 
 public class RotatableBlock extends HorizontalFacingBlock implements Waterloggable {
     public static MapCodec<RotatableBlock> CODEC = RotatableBlock.createCodec(RotatableBlock::new);
 
-    private IOQuadFunction<BlockState, ServerWorld, BlockPos, Random, Void> randomTick = (state, world, pos, random) -> null;
-    private IOQuadFunction<BlockState, World, BlockPos, Random, Void> randomDisplayTick = (state, world, pos, random) -> null;
-    private IOQuadFunction<BlockState, ServerWorld, BlockPos, Random, Void> scheduledTick = (state, world, pos, random) -> null;
-    private boolean solid = true;
-    private boolean collidable = true;
-    private boolean needsAttachment = false;
+    protected boolean solid = true;
+    protected boolean needsAttachment = false;
     private VoxelShape WEST_SHAPE = VoxelShapes.fullCube();
     private VoxelShape EAST_SHAPE = VoxelShapes.fullCube();
     private VoxelShape SOUTH_SHAPE = VoxelShapes.fullCube();
     private VoxelShape NORTH_SHAPE = VoxelShapes.fullCube();
-    private static final EnumProperty<Direction> FACING = HorizontalFacingBlock.FACING;
-    private static final BooleanProperty WATERLOGGED = Properties.WATERLOGGED;
+    public static final EnumProperty<Direction> FACING = HorizontalFacingBlock.FACING;
+    public static final BooleanProperty WATERLOGGED = Properties.WATERLOGGED;
 
     @Override
     protected MapCodec<? extends HorizontalFacingBlock> getCodec() {
@@ -51,28 +41,8 @@ public class RotatableBlock extends HorizontalFacingBlock implements Waterloggab
         this.setDefaultState(this.getDefaultState().with(FACING, Direction.NORTH).with(WATERLOGGED, false));
     }
 
-    public RotatableBlock onRandomTick(IOQuadFunction<BlockState, ServerWorld, BlockPos, Random, Void> randomTick) {
-        this.randomTick = randomTick;
-        return this;
-    }
-
-    public RotatableBlock onRandomDisplayTick(IOQuadFunction<BlockState, World, BlockPos, Random, Void> randomDisplayTick) {
-        this.randomDisplayTick = randomDisplayTick;
-        return this;
-    }
-
-    public RotatableBlock onScheduledTick(IOQuadFunction<BlockState, ServerWorld, BlockPos, Random, Void> scheduledTick) {
-        this.scheduledTick = scheduledTick;
-        return this;
-    }
-
     public RotatableBlock notSolid() {
         this.solid = false;
-        return this;
-    }
-
-    public RotatableBlock notCollidable() {
-        this.collidable = false;
         return this;
     }
 
@@ -103,14 +73,12 @@ public class RotatableBlock extends HorizontalFacingBlock implements Waterloggab
 
     @Override
     protected VoxelShape getCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-        if (this.collidable) {
-            return switch (state.get(FACING)) {
-                case SOUTH -> SOUTH_SHAPE;
-                case WEST -> WEST_SHAPE;
-                case EAST -> EAST_SHAPE;
-                default -> NORTH_SHAPE;
-            };
-        } else return VoxelShapes.empty();
+        return switch (state.get(FACING)) {
+            case SOUTH -> SOUTH_SHAPE;
+            case WEST -> WEST_SHAPE;
+            case EAST -> EAST_SHAPE;
+            default -> NORTH_SHAPE;
+        };
     }
 
     @Override
@@ -155,36 +123,6 @@ public class RotatableBlock extends HorizontalFacingBlock implements Waterloggab
     protected void neighborUpdate(BlockState state, World world, BlockPos pos, Block sourceBlock, @Nullable WireOrientation wireOrientation, boolean notify) {
         if (!state.canPlaceAt(world, pos)) {
             world.breakBlock(pos, false);
-        }
-    }
-
-    @Override
-    protected void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
-        try {
-            this.randomTick.apply(state, world, pos, random);
-        } catch (IOException e) {
-            Cubliminal.LOGGER.error("Couldn't perform random tick at pos: {}", pos);
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    public void randomDisplayTick(BlockState state, World world, BlockPos pos, Random random) {
-        try {
-            this.randomDisplayTick.apply(state, world, pos, random);
-        } catch (IOException e) {
-            Cubliminal.LOGGER.error("Couldn't perform random display tick at pos: {}", pos);
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    protected void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
-        try {
-            this.scheduledTick.apply(state, world, pos, random);
-        } catch (IOException e) {
-            Cubliminal.LOGGER.error("Couldn't perform scheduled tick at pos: {}", pos);
-            throw new RuntimeException(e);
         }
     }
 

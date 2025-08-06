@@ -44,6 +44,9 @@ public class CubliminalItemGroups implements Initer {
                         entries.add(CubliminalBlocks.HANGING_FLUORESCENT_LIGHTS);
                         entries.add(CubliminalBlocks.WALL_LIGHT_BULB);
                         entries.add(CubliminalBlocks.SMALL_HANGING_PIPE);
+                        entries.add(CubliminalBlocks.LARGE_HORIZONTAL_PIPE);
+                        entries.add(CubliminalBlocks.VERTICAL_PIPE);
+                        entries.add(CubliminalBlocks.CEILING_PIPE);
                         entries.add(CubliminalBlocks.VENTILATION_DUCT);
 						entries.add(CubliminalBlocks.EMERGENCY_EXIT_DOOR_0);
 						entries.add(CubliminalBlocks.EMERGENCY_EXIT_DOOR_1);

@@ -2,13 +2,7 @@ package net.limit.cubliminal.mixin;
 
 import net.limit.cubliminal.block.fluid.CustomFluidBlock;
 import net.limit.cubliminal.fluid.BackroomsFlowableFluid;
-import net.limit.cubliminal.init.CubliminalFluids;
-import net.limit.cubliminal.particle.CubliminalParticleTypes;
-import net.limit.cubliminal.util.DebugLogger;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.fluid.FlowableFluid;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.particle.ParticleEffect;
@@ -27,7 +21,9 @@ import java.util.function.Predicate;
 
 @Mixin(Entity.class)
 public abstract class FluidSplashMixin {
-    @Shadow public abstract World getWorld();
+
+    @Shadow
+    public abstract World getWorld();
 
     @ModifyArg(
             method = "onSwimmingStart",
@@ -41,12 +37,12 @@ public abstract class FluidSplashMixin {
         Entity self = (Entity) (Object) this;
         Fluid fluid = getTouchingFluid(self, f -> f instanceof BackroomsFlowableFluid);
 
-        if (fluid instanceof BackroomsFlowableFluid flowableFluid){
+        if (fluid instanceof BackroomsFlowableFluid flowableFluid) {
             CustomFluidBlock.Settings settings = flowableFluid.getFluidBlock().getFluidSettings();
             CustomFluidBlock.FluidSplashParticleManager splashParticle = settings.getSplashParticles();
-            if (original == ParticleTypes.SPLASH && splashParticle.getSplashParticle() != null){
+            if (original == ParticleTypes.SPLASH && splashParticle.getSplashParticle() != null) {
                 return splashParticle.getSplashParticle();
-            } else if (original == ParticleTypes.BUBBLE && splashParticle.getBubbleParticle() != null){
+            } else if (original == ParticleTypes.BUBBLE && splashParticle.getBubbleParticle() != null) {
                 return splashParticle.getBubbleParticle();
             }
         }

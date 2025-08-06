@@ -2,7 +2,7 @@ package net.limit.cubliminal.mixin;
 
 import net.limit.cubliminal.block.fluid.CustomFluidBlock;
 import net.limit.cubliminal.fluid.BackroomsFlowableFluid;
-import net.limit.cubliminal.init.CubliminalFluidTags;
+import net.limit.cubliminal.init.CubliminalFluids;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MovementType;
@@ -19,14 +19,18 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin {
-    @Shadow protected boolean jumping;
+
+    @Shadow
+    protected boolean jumping;
+
+    @Unique
     private FluidState fluidState;
 
     @Unique
     private boolean isSubmergedAtFeet(TagKey<Fluid> fluid) {
         Entity entity = (Entity)(Object) this;
         FluidState fluidState = entity.getWorld().getFluidState(entity.getBlockPos());
-        if (fluidState.isIn(fluid)){
+        if (fluidState.isIn(fluid)) {
             this.fluidState = fluidState;
             return true;
         }
@@ -34,17 +38,17 @@ public abstract class LivingEntityMixin {
     }
 
     @Inject(method = "travel", at = @At("HEAD"), cancellable = true)
-    private void onTravel(Vec3d movementInput, CallbackInfo ci){
-        if (isSubmergedAtFeet(CubliminalFluidTags.CUSTOM_FLUIDS)){
+    private void onTravel(Vec3d movementInput, CallbackInfo ci) {
+        if (isSubmergedAtFeet(CubliminalFluids.CUSTOM_FLUIDS)) {
             // Checks to see if the fluid uses Project Backrooms custom implementations
-            if (this.fluidState.getFluid() instanceof BackroomsFlowableFluid backroomsFluid){
+            if (this.fluidState.getFluid() instanceof BackroomsFlowableFluid backroomsFluid) {
                 Entity entity = (Entity)(Object) this;
                 // Gets the fluid block.
                 CustomFluidBlock fluidBlock = backroomsFluid.getFluidBlock();
                 // Gets the fluid settings from the fluid block.
                 CustomFluidBlock.Settings settings = fluidBlock.getFluidSettings();
                 // Checks to see if the fluid doesn't plan to use the default physics.
-                if (!settings.usesDefaultPhysics()){
+                if (!settings.usesDefaultPhysics()) {
                     // The gravity.
                     double gravity = 0.08;
 

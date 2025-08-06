@@ -3,6 +3,7 @@ package net.limit.cubliminal.fluid;
 import net.limit.cubliminal.block.fluid.CustomFluidBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.FluidBlock;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.fluid.FlowableFluid;
 import net.minecraft.fluid.Fluid;
@@ -29,6 +30,7 @@ public abstract class BackroomsFlowableFluid extends FlowableFluid {
     }
 
     public abstract ItemStack getBottleItem();
+
     public abstract CustomFluidBlock getFluidBlock();
 
     @Override
@@ -60,6 +62,12 @@ public abstract class BackroomsFlowableFluid extends FlowableFluid {
         return 1;
     }
 
+    @Override
+    protected BlockState toBlockState(FluidState state) {
+        return this.getFluidBlock().getDefaultState().with(FluidBlock.LEVEL, getBlockStateLevel(state));
+    }
+
+    @SuppressWarnings("deprecation")
     @Override
     protected boolean canBeReplacedWith(FluidState state, BlockView world, BlockPos pos, Fluid fluid, Direction direction) {
         return direction == Direction.DOWN && !fluid.isIn(FluidTags.WATER);
