@@ -3,7 +3,6 @@ package net.limit.cubliminal.item;
 import net.limit.cubliminal.access.PEAccessor;
 import net.limit.cubliminal.block.custom.AlmondWaterBlock;
 import net.limit.cubliminal.init.CubliminalEffects;
-import net.limit.cubliminal.event.sanity.SanityManager;
 import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.block.Block;
 import net.minecraft.entity.LivingEntity;

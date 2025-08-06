@@ -3,15 +3,16 @@ package net.limit.cubliminal.block.entity;
 import net.limit.cubliminal.Cubliminal;
 import net.limit.cubliminal.access.PEAccessor;
 import net.limit.cubliminal.advancements.AdvancementHelper;
+import net.limit.cubliminal.block.custom.TheLobbyGatewayBlock;
 import net.limit.cubliminal.init.CubliminalBlockEntities;
 import net.limit.cubliminal.init.CubliminalBlocks;
-import net.limit.cubliminal.init.CubliminalRegistrar;
 import net.limit.cubliminal.level.Levels;
 import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.thrown.EnderPearlEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
@@ -37,8 +38,8 @@ public class TheLobbyGatewayBlockEntity extends BlockEntity {
 		super(CubliminalBlockEntities.THE_LOBBY_GATEWAY_BLOCK_ENTITY, pos, state);
 	}
 
-	private long age;
-	private BlockPos exitPos = Levels.MANILA_ROOM;
+	private long age = 0L;
+	private BlockPos exitPos;
 
 	public void writeExitPos(BlockPos blockPos) {
 		this.exitPos = blockPos;
@@ -48,7 +49,9 @@ public class TheLobbyGatewayBlockEntity extends BlockEntity {
 	protected void writeNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
 		super.writeNbt(nbt, registryLookup);
 		nbt.putLong("Age", this.age);
-		nbt.put("exitPos", NbtHelper.fromBlockPos(exitPos));
+		if (this.exitPos != null) {
+			nbt.put("exitPos", NbtHelper.fromBlockPos(this.exitPos));
+		}
 	}
 
 	@Override
@@ -61,58 +64,61 @@ public class TheLobbyGatewayBlockEntity extends BlockEntity {
 		}
 	}
 
+	public BlockPos getExitPos() {
+		return this.exitPos == null ? Levels.MANILA_ROOM : this.exitPos;
+	}
 
 	public static void tick(World world, BlockPos pos, BlockState state, TheLobbyGatewayBlockEntity blockEntity) {
 		if (!world.isClient) {
 			++blockEntity.age;
-			if (blockEntity.getWorld().getRegistryKey().equals(CubliminalRegistrar.THE_LOBBY_KEY)) {
-				if (world.getBlockEntity(pos.down()) instanceof TheLobbyGatewayBlockEntity) return;
-				if (blockEntity.age % 100 == 0 && state.equals(CubliminalBlocks.THE_LOBBY_GATEWAY_BLOCK
-					.getDefaultState().with(Properties.LIT, false))) {
-
+			if (!world.getBlockState(pos.down()).isOf(CubliminalBlocks.THE_LOBBY_GATEWAY_BLOCK)) {
+				List<Entity> list = world.getEntitiesByClass(Entity.class, new Box(pos), TheLobbyGatewayBlockEntity::canTeleport);
+				if (!list.isEmpty()) {
+					tryTeleportingEntity(world, pos, state, list.get(world.random.nextInt(list.size())), blockEntity);
+				}
+				if (blockEntity.age % 100 == 0 && !state.get(Properties.LIT)) {
 					for (Entity entity : world.getEntitiesByClass(Entity.class, new Box(pos).expand(16, 2, 11), Entity::isPlayer)) {
 						((PEAccessor) entity).getSanityManager().resetTimer();
 					}
 				}
-				List<Entity> list = world.getEntitiesByClass(Entity.class, new Box(pos), TheLobbyGatewayBlockEntity::canTeleport);
-				if (!list.isEmpty()) tryTeleportingEntity(world, pos, state, list.get(world.random.nextInt(list.size())), blockEntity);
 			}
 		}
 	}
 
 	public static void tryTeleportingEntity(World world, BlockPos pos, BlockState state, Entity entity, TheLobbyGatewayBlockEntity blockEntity) {
 		if (world instanceof ServerWorld serverWorld) {
-			Entity entity3;
+			Entity finalEntity;
 			if (entity instanceof EnderPearlEntity) {
-				Entity entity2 = ((EnderPearlEntity) entity).getOwner();
-				if (entity2 instanceof ServerPlayerEntity) {
-					Criteria.ENTER_BLOCK.trigger((ServerPlayerEntity) entity2, state);
+				Entity pearlOwner = ((EnderPearlEntity) entity).getOwner();
+				if (pearlOwner instanceof ServerPlayerEntity) {
+					Criteria.ENTER_BLOCK.trigger((ServerPlayerEntity) pearlOwner, state);
 				}
 
-				if (entity2 != null) {
-					entity3 = entity2;
+				if (pearlOwner != null) {
+					finalEntity = pearlOwner;
 					entity.discard();
 				} else {
-					entity3 = entity;
+					finalEntity = entity;
 				}
 			} else {
-				entity3 = entity.getRootVehicle();
+				finalEntity = entity.getRootVehicle();
 			}
 
-			entity3.resetPortalCooldown();
-			TeleportTarget teleportTarget = new TeleportTarget(serverWorld, Vec3d.ofBottomCenter(blockEntity.exitPos), Vec3d.ZERO, entity3.getYaw(), entity3.getPitch(), TeleportTarget.NO_OP);
-			entity3.teleportTo(teleportTarget);
-			if (entity3.isPlayer()) {
-				AdvancementHelper.grantAdvancement((ServerPlayerEntity) entity3, Cubliminal.id("backrooms/manila_room"));
-			}
+			finalEntity.resetPortalCooldown();
+			TeleportTarget teleportTarget = new TeleportTarget(
+					serverWorld, Vec3d.ofBottomCenter(blockEntity.getExitPos()), Vec3d.ZERO,
+					finalEntity.getYaw(), finalEntity.getPitch(), teleported -> {
+						if (teleported instanceof PlayerEntity player) {
+							AdvancementHelper.grantAdvancement(player, Cubliminal.id("backrooms/manila_room"));
+						}
+			});
+			finalEntity.teleportTo(teleportTarget);
 
-			if (state.equals(CubliminalBlocks.THE_LOBBY_GATEWAY_BLOCK.getDefaultState().with(Properties.LIT, true))) {
-				for (BlockEntity blockEntity2 : BlockPos.stream(new Box(blockEntity.exitPos).expand(10))
-					.map(blockEntity.getWorld()::getBlockEntity).filter(Objects::nonNull).filter(blockEntity2 ->
-						blockEntity2.getCachedState().equals(CubliminalBlocks.THE_LOBBY_GATEWAY_BLOCK
-							.getDefaultState().with(Properties.LIT, false))).toList()) {
-					((TheLobbyGatewayBlockEntity) blockEntity2).writeExitPos(pos.add(3, 0, 0));
-				}
+			if (state.get(TheLobbyGatewayBlock.LIT) && blockEntity.getWorld() != null) {
+				BlockPos.stream(new Box(blockEntity.getExitPos()).expand(10))
+						.map(blockEntity.getWorld()::getBlockEntity)
+						.filter(be -> be instanceof TheLobbyGatewayBlockEntity && !be.getCachedState().get(Properties.LIT))
+						.forEach(other -> ((TheLobbyGatewayBlockEntity) other).writeExitPos(pos.add(3, 0, 0)));
 			}
 		}
 	}

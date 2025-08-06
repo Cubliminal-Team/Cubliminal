@@ -3,7 +3,7 @@ package net.limit.cubliminal.world.chunk;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.limit.cubliminal.Cubliminal;
-import net.limit.cubliminal.block.CustomProperties;
+import net.limit.cubliminal.block.state.CustomProperties;
 import net.limit.cubliminal.init.CubliminalBiomes;
 import net.limit.cubliminal.init.CubliminalBlocks;
 import net.limit.cubliminal.init.CubliminalRegistrar;

@@ -26,6 +26,80 @@
       }
     ]
   },
+  "ambient.power_down": {
+    "category": "ambient",
+    "sounds": [
+      {
+        "name": "cubliminal:ambience/power_down/power_down_1",
+        "stream": true
+      },
+      {
+        "name": "cubliminal:ambience/power_down/power_down_2",
+        "stream": true
+      },
+      {
+        "name": "cubliminal:ambience/power_down/power_down_3",
+        "stream": true
+      },
+      {
+        "name": "cubliminal:ambience/power_down/power_down_4",
+        "stream": true
+      },
+      {
+        "name": "cubliminal:ambience/power_down/power_down_5",
+        "stream": true
+      },
+      {
+        "name": "cubliminal:ambience/power_down/power_down_6",
+        "stream": true
+      },
+      {
+        "name": "cubliminal:ambience/power_down/power_down_7",
+        "stream": true
+      },
+      {
+        "name": "cubliminal:ambience/power_down/power_down_8",
+        "stream": true
+      },
+      {
+        "name": "cubliminal:ambience/power_down/power_down_9",
+        "stream": true
+      },
+      {
+        "name": "cubliminal:ambience/power_down/power_down_10",
+        "stream": true
+      }
+    ]
+  },
+  "ambient.power_on": {
+    "category": "ambient",
+    "sounds": [
+      {
+        "name": "cubliminal:ambience/power_on/power_on_1",
+        "stream": true
+      },
+      {
+        "name": "cubliminal:ambience/power_on/power_on_2",
+        "stream": true
+      },
+      {
+        "name": "cubliminal:ambience/power_on/power_on_3",
+        "stream": true
+      },
+      {
+        "name": "cubliminal:ambience/power_on/power_on_4",
+        "stream": true
+      },
+      {
+        "name": "cubliminal:ambience/power_on/power_on_5",
+        "stream": true
+      },
+      {
+        "name": "cubliminal:ambience/power_on/power_on_6",
+        "stream": true
+      }
+    ]
+  },
   "heartbeat": {
     "category": "player",
     "sounds": [

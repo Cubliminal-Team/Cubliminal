@@ -11,11 +11,12 @@ import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.limit.cubliminal.access.PEAccessor;
 import net.limit.cubliminal.config.CubliminalConfig;
+import net.limit.cubliminal.event.backrooms.BlackoutParams;
+import net.limit.cubliminal.event.command.BlackoutCommand;
 import net.limit.cubliminal.event.command.NoclipCommand;
 import net.limit.cubliminal.event.command.SanityCommand;
 import net.limit.cubliminal.init.*;
-import net.limit.cubliminal.event.noclip.NoclipDestination;
-import net.limit.cubliminal.particle.CubliminalParticleTypes;
+import net.limit.cubliminal.event.backrooms.NoclipDestination;
 import net.limit.cubliminal.world.connection.ConnectionPlacementType;
 import net.limit.cubliminal.world.connection.ConnectionRegistry;
 import net.limit.cubliminal.world.room.RoomRegistry;
@@ -56,10 +57,12 @@ public class Cubliminal implements ModInitializer {
 
 		ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(new RoomRegistry());
 		ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(new ConnectionRegistry());
+		ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(new BlackoutParams());
+
+		// Needed to register fluids before blocks
+		CubliminalFluids.init();
 
 		// Init Initers
-		CubliminalParticleTypes.init();
-		CubliminalFluids.initFluid();
 		Initer.initialise();
 
 		NoclipDestination.init();
@@ -70,6 +73,7 @@ public class Cubliminal implements ModInitializer {
 		ServerPlayerEvents.AFTER_RESPAWN.register(Cubliminal::afterDeath);
 		CommandRegistrationCallback.EVENT.register(NoclipCommand::register);
 		CommandRegistrationCallback.EVENT.register(SanityCommand::register);
+		CommandRegistrationCallback.EVENT.register(BlackoutCommand::register);
 
 		LootTableEvents.MODIFY.register(((key, tableBuilder, source, registries) -> {
 			if (source.isBuiltin() && key.getValue().equals(BURIED_TREASURE_ID)) {

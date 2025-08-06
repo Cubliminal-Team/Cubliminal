@@ -2,7 +2,6 @@ package net.limit.cubliminal.init;
 
 import com.mojang.datafixers.util.Pair;
 import net.limit.cubliminal.Cubliminal;
-import net.limit.cubliminal.level.LevelWithMaze;
 import net.limit.cubliminal.level.Levels;
 import net.limit.cubliminal.world.biome.*;
 import net.limit.cubliminal.world.biome.noise.RegistryNoisePreset;
@@ -134,8 +133,8 @@ public class CubliminalRegistrar implements LimlibRegistrar {
 
 			registry.add(CubliminalBiomes.AQUILA_SECTOR_BIOME, AquilaSectorBiome.create(features, carvers), RegistryEntryInfo.DEFAULT);
 			registry.add(CubliminalBiomes.DEEP_AQUILA_SECTOR_BIOME, DeepAquilaSectorBiome.create(features, carvers), RegistryEntryInfo.DEFAULT);
-			registry.add(CubliminalBiomes.GUILD_SECTOR_BIOME, GuildSectorBiome.create(features, carvers), RegistryEntryInfo.DEFAULT);
-			registry.add(CubliminalBiomes.DEEP_GUILD_SECTOR_BIOME, DeepGuildSectorBiome.create(features, carvers), RegistryEntryInfo.DEFAULT);
+			registry.add(CubliminalBiomes.GILD_SECTOR_BIOME, GildSectorBiome.create(features, carvers), RegistryEntryInfo.DEFAULT);
+			registry.add(CubliminalBiomes.DEEP_GILD_SECTOR_BIOME, DeepGildSectorBiome.create(features, carvers), RegistryEntryInfo.DEFAULT);
 			registry.add(CubliminalBiomes.GOTHIC_SECTOR_BIOME, GothicSectorBiome.create(features, carvers), RegistryEntryInfo.DEFAULT);
 			registry.add(CubliminalBiomes.DEEP_GOTHIC_SECTOR_BIOME, DeepGothicSectorBiome.create(features, carvers), RegistryEntryInfo.DEFAULT);
 			registry.add(CubliminalBiomes.OUROBOROS_SECTOR_BIOME, OuroborosSectorBiome.create(features, carvers), RegistryEntryInfo.DEFAULT);

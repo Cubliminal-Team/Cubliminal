@@ -3,12 +3,12 @@ package net.limit.cubliminal.fluid;
 import net.limit.cubliminal.block.fluid.CustomFluidBlock;
 import net.limit.cubliminal.init.CubliminalBlocks;
 import net.limit.cubliminal.init.CubliminalFluids;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.FluidBlock;
+import net.limit.cubliminal.init.CubliminalParticleTypes;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.particle.ParticleEffect;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
@@ -17,8 +17,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.WorldView;
+import org.jetbrains.annotations.Nullable;
 
 public class BlackSludgeFluid extends BackroomsFlowableFluid {
+
     public BlackSludgeFluid() {
         super(SoundEvents.BLOCK_HONEY_BLOCK_SLIDE, SoundCategory.BLOCKS);
     }
@@ -36,6 +38,12 @@ public class BlackSludgeFluid extends BackroomsFlowableFluid {
     @Override
     public CustomFluidBlock getFluidBlock() {
         return (CustomFluidBlock) CubliminalBlocks.BLACK_SLUDGE_BLOCK;
+    }
+
+    @Nullable
+    @Override
+    protected ParticleEffect getParticle() {
+        return CubliminalParticleTypes.DRIPPING_BLACK_SLUDGE;
     }
 
     @Override
@@ -61,11 +69,6 @@ public class BlackSludgeFluid extends BackroomsFlowableFluid {
     @Override
     public Item getBucketItem() {
         return null;
-    }
-
-    @Override
-    protected BlockState toBlockState(FluidState state) {
-        return CubliminalBlocks.BLACK_SLUDGE_BLOCK.getDefaultState().with(FluidBlock.LEVEL, getBlockStateLevel(state));
     }
 
     public static class Flowing extends BlackSludgeFluid {

@@ -1,6 +1,7 @@
 package net.limit.cubliminal.block.custom;
 
 import com.mojang.serialization.MapCodec;
+import net.limit.cubliminal.block.custom.pipe.SmallHangingPipeBlock;
 import net.limit.cubliminal.block.custom.template.AbstractHorizontalConnectingBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;

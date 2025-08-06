@@ -1,20 +1,24 @@
 package net.limit.cubliminal.client.util;
 
-import net.limit.cubliminal.init.CubliminalFluidTags;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.limit.cubliminal.access.CameraAccessor;
+import net.limit.cubliminal.init.CubliminalFluids;
 import net.minecraft.client.render.Camera;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
 
+@Environment(EnvType.CLIENT)
 public class CameraBackroomFluid {
-    private static FluidState fluidState;
+    private static FluidState FLUID_STATE;
 
     public static boolean isSubmergedInBackroomFluid(Camera camera){
         if (camera instanceof CameraAccessor accessor){
             BlockView view = accessor.getArea();
             BlockPos pos = accessor.getBlockPos();
             FluidState fluidState = view.getFluidState(pos);
-            if (fluidState.isIn(CubliminalFluidTags.CUSTOM_FLUIDS)){
+            if (fluidState.isIn(CubliminalFluids.CUSTOM_FLUIDS)){
                 setFluidState(fluidState);
                 double fluidHeight = pos.getY() + fluidState.getHeight(view, pos);
                 return camera.getPos().y < fluidHeight;
@@ -24,10 +28,10 @@ public class CameraBackroomFluid {
     }
 
     public static FluidState getFluidState() {
-        return fluidState;
+        return FLUID_STATE;
     }
 
     private static void setFluidState(FluidState fluidState) {
-        CameraBackroomFluid.fluidState = fluidState;
+        CameraBackroomFluid.FLUID_STATE = fluidState;
     }
 }

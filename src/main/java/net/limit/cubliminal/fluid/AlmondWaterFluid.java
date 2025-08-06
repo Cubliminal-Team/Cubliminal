@@ -3,9 +3,7 @@ package net.limit.cubliminal.fluid;
 import net.limit.cubliminal.block.fluid.CustomFluidBlock;
 import net.limit.cubliminal.init.CubliminalBlocks;
 import net.limit.cubliminal.init.CubliminalFluids;
-import net.limit.cubliminal.particle.CubliminalParticleTypes;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.FluidBlock;
+import net.limit.cubliminal.init.CubliminalParticleTypes;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.item.Item;
@@ -19,7 +17,8 @@ import net.minecraft.world.WorldView;
 import org.jetbrains.annotations.Nullable;
 
 public class AlmondWaterFluid extends BackroomsFlowableFluid {
-    public AlmondWaterFluid(){
+
+    public AlmondWaterFluid() {
         super(SoundEvents.BLOCK_WATER_AMBIENT, SoundCategory.BLOCKS);
     }
 
@@ -58,14 +57,9 @@ public class AlmondWaterFluid extends BackroomsFlowableFluid {
         return (CustomFluidBlock) CubliminalBlocks.ALMOND_WATER_BLOCK;
     }
 
-    @Override
-    protected BlockState toBlockState(FluidState state) {
-        return CubliminalBlocks.ALMOND_WATER_BLOCK.getDefaultState().with(FluidBlock.LEVEL, getBlockStateLevel(state));
-    }
-
     @Nullable
     @Override
-    public ParticleEffect getParticle() {
+    protected ParticleEffect getParticle() {
         return CubliminalParticleTypes.DRIPPING_ALMOND_WATER;
     }
 
