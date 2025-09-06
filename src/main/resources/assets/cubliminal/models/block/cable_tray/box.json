@@ -1,16 +1,15 @@
 {
-	"format_version": "1.9.0",
-	"credit": "Made with Blockbench",
-	"parent": "block/cube_all",
+	"parent": "block/block",
 	"texture_size": [32, 32],
 	"textures": {
-		"0": "cubliminal:block/large_hanging_lamp",
-		"particle": "cubliminal:block/large_hanging_lamp"
+		"0": "cubliminal:block/cable_tray_box",
+		"particle": "cubliminal:block/cable_tray_box"
 	},
 	"elements": [
 		{
-			"from": [0, 12, 0],
-			"to": [16, 16, 16],
+			"from": [0, 10, 0],
+			"to": [16, 14, 16],
+			"rotation": {"angle": 0, "axis": "y", "origin": [0, -2, 0]},
 			"faces": {
 				"north": {"uv": [8, 0, 16, 2], "texture": "#0"},
 				"east": {"uv": [8, 2, 16, 4], "texture": "#0"},
