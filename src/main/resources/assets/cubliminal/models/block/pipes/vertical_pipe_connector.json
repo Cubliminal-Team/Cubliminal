@@ -1,6 +1,5 @@
 {
-	"credit": "Made with Blockbench",
-	"parent": "block/cube_all",
+	"parent": "block/block",
 	"textures": {
 		"0": "cubliminal:block/pipes/pipes",
 		"1": "cubliminal:block/pipes/pipe-ring",

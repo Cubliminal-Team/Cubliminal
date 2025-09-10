@@ -102,7 +102,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "cubliminal:almond_water",
+          "name": "cubliminal:almond_water_can",
           "functions": [
             {
               "function": "minecraft:set_count",

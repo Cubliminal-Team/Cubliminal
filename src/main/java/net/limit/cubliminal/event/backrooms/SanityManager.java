@@ -8,7 +8,6 @@ import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
-import net.minecraft.registry.Registries;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.stat.Stats;
@@ -64,8 +63,7 @@ public class SanityManager {
 			this.sanity = Math.max(this.sanity - 1, 0);
 			if (this.sanity < 20) {
 				if (this.sanity < 5) {
-					player.addStatusEffect(new StatusEffectInstance(
-							Registries.STATUS_EFFECT.getEntry(CubliminalEffects.PARANOIA),
+					player.addStatusEffect(new StatusEffectInstance(CubliminalEffects.PARANOIA,
 							400, 0, true, false, true));
 				}
 				switch (random.nextInt(5 + this.sanity)) {

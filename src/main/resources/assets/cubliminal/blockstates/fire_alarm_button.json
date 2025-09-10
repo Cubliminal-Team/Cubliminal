@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=west": {
+      "model": "cubliminal:block/fire_alarm_button",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "cubliminal:block/fire_alarm_button"
+    },
+    "facing=north": {
+      "model": "cubliminal:block/fire_alarm_button",
+      "y": 180
+    },
+    "facing=east": {
+      "model": "cubliminal:block/fire_alarm_button",
+      "y": 270
+    }
+  }
+}

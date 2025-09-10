@@ -7,16 +7,14 @@ import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectCategory;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.registry.entry.RegistryEntry;
 
 public class CubliminalEffects implements Initer {
-    public static StatusEffect PARANOIA;
-    public static StatusEffect registerStatusEffect(String id) {
-        return Registry.register(Registries.STATUS_EFFECT, Cubliminal.id(id),
-                new ParanoiaEffect(StatusEffectCategory.HARMFUL, 24828));
+
+    public static RegistryEntry<StatusEffect> PARANOIA = register("paranoia", new ParanoiaEffect(StatusEffectCategory.HARMFUL, 24828));
+
+    public static RegistryEntry<StatusEffect> register(String id, StatusEffect statusEffect) {
+        return Registry.registerReference(Registries.STATUS_EFFECT, Cubliminal.id(id), statusEffect);
     }
 
-    @Override
-    public void init() {
-        PARANOIA = registerStatusEffect("paranoia");
-    }
 }

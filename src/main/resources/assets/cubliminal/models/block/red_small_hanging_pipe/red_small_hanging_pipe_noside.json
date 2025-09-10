@@ -1,0 +1,17 @@
+{
+	"ambientocclusion": false,
+	"textures": {
+		"0": "cubliminal:block/red_small_hanging_pipe",
+		"particle": "cubliminal:block/red_small_hanging_pipe"
+	},
+	"elements": [
+		{
+			"from": [7, 7, 7],
+			"to": [9, 9, 9],
+			"rotation": {"angle": 0, "axis": "y", "origin": [0, 7, 0]},
+			"faces": {
+				"north": {"uv": [6, 2, 7, 4], "texture": "#0"}
+			}
+		}
+	]
+}

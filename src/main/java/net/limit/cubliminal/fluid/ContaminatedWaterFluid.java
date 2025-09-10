@@ -3,6 +3,7 @@ package net.limit.cubliminal.fluid;
 import net.limit.cubliminal.block.fluid.CustomFluidBlock;
 import net.limit.cubliminal.init.CubliminalBlocks;
 import net.limit.cubliminal.init.CubliminalFluids;
+import net.limit.cubliminal.init.CubliminalItems;
 import net.limit.cubliminal.init.CubliminalParticleTypes;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
@@ -25,7 +26,6 @@ public class ContaminatedWaterFluid extends BackroomsFlowableFluid {
     @Override
     public ItemStack getBottleItem() {
         return null;
-        //return new ItemStack(BackroomItems.CONTAMINATED_WATER);
     }
 
     @Override
@@ -61,7 +61,7 @@ public class ContaminatedWaterFluid extends BackroomsFlowableFluid {
 
     @Override
     public Item getBucketItem() {
-        return null;
+        return CubliminalItems.CONTAMINATED_WATER_BUCKET;
     }
 
     public static class Flowing extends ContaminatedWaterFluid {

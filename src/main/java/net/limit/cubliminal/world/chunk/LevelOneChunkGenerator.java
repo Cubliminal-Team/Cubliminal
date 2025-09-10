@@ -121,7 +121,7 @@ public class LevelOneChunkGenerator extends AbstractNbtChunkGenerator implements
 	@Override
 	public CompletableFuture<Chunk> populateBiomes(NoiseConfig noiseConfig, Blender blender, StructureAccessor structureAccessor, Chunk chunk) {
 		return CompletableFuture.supplyAsync(() -> {
-			((ChunkAccessor) chunk).cubliminal$populateBiomes(this.biomeSource);
+			((ChunkAccessor) chunk).cubliminal$sectionPopulateBiomes(this.biomeSource);
 			return chunk;
 		}, Util.getMainWorkerExecutor().named("init_biomes"));
 	}

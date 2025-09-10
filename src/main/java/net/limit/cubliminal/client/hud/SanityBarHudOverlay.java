@@ -15,7 +15,8 @@ import net.minecraft.util.Identifier;
 
 @Environment(EnvType.CLIENT)
 public class SanityBarHudOverlay implements HudRenderCallback {
-	private static final Identifier SANITY_BAR_0 = Cubliminal.id("textures/hud/sanity/sanity_bar.png");
+
+	private static final Identifier SANITY_BAR = Cubliminal.id("textures/hud/sanity/sanity_bar.png");
 
 	@Override
 	public void onHudRender(DrawContext drawContext, RenderTickCounter tickCounter) {
@@ -26,15 +27,15 @@ public class SanityBarHudOverlay implements HudRenderCallback {
 			!player.getWorld().getRegistryKey().getValue().getNamespace()
 					.equals(Cubliminal.MOD_ID) || client.options.hudHidden) return;
 
-		int x = drawContext.getScaledWindowWidth() / 2 + 95;
-		int l = drawContext.getScaledWindowHeight() - 34;
+		int x = drawContext.getScaledWindowWidth() / 2 + 94;
+		int l = drawContext.getScaledWindowHeight() - 32;
 		int i = ((PEAccessor) player).getSanityManager().getSanity();
 		RenderSystem.enableBlend();
 		int color1 = 0xffff8070;
 		int color2 = 0xffff3722;
 		if (i > 80) {
-			color1 = -1;
-			color2 = -1;
+			color1 = 0xffb5ff7a;
+			color2 = 0xff7be02b;
 		} else if (i > 60) {
 			color1 = 0xfff7ff86;
 			color2 = 0xfff4ff50;
@@ -46,15 +47,15 @@ public class SanityBarHudOverlay implements HudRenderCallback {
 			color2 = 0xffff7722;
 		}
 
-		drawContext.drawTexture(RenderLayer::getGuiTextured, SANITY_BAR_0, x, l, 2, 0, 12, 32, 32, 32, color1);
-
 		if (i > 0) {
-			int k = (int) (i * 0.01 * 28);
-			drawContext.drawTexture(RenderLayer::getGuiTextured, SANITY_BAR_0, x + 2, l + 30 - k, 20, 30 - k, 8, k, 32, 32, color2);
+			int k = (int) (i * 0.01 * 23);
+			drawContext.drawTexture(RenderLayer::getGuiTextured, SANITY_BAR, x + 3, l + 29 - k, 20, 29 - k, 8, k, 32, 32, color2);
 		}
-		int j = i > 90 ? 4 : 3;
+		drawContext.drawTexture(RenderLayer::getGuiTextured, SANITY_BAR, x, l, 1, 0, 14, 32, 32, 32, color1);
+
+		int j = i > 99 ? 5 : 3;
 		String string = i + "%";
-		drawContext.drawText(client.inGameHud.getTextRenderer(), string, x - j, l - 7, 20165255, true);
+		drawContext.drawText(client.inGameHud.getTextRenderer(), string, x - j + 3, l - 6, 0x919191, true);
 		RenderSystem.disableBlend();
 	}
 }

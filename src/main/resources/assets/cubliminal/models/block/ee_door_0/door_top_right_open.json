@@ -1,5 +1,4 @@
 {
-	"parent": "block/cube_all",
 	"ambientocclusion": false,
 	"texture_size": [64, 64],
 	"textures": {

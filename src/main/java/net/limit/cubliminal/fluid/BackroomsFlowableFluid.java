@@ -13,12 +13,15 @@ import net.minecraft.particle.ParticleTypes;
 import net.minecraft.registry.tag.FluidTags;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldView;
+
+import java.util.Optional;
 
 public abstract class BackroomsFlowableFluid extends FlowableFluid {
     private final SoundEvent ambience;
@@ -96,5 +99,10 @@ public abstract class BackroomsFlowableFluid extends FlowableFluid {
     @Override
     public boolean matchesType(Fluid fluid) {
         return fluid == getStill() || fluid == getFlowing();
+    }
+
+    @Override
+    public Optional<SoundEvent> getBucketFillSound() {
+        return Optional.of(SoundEvents.ITEM_BUCKET_FILL);
     }
 }

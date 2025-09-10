@@ -3,7 +3,7 @@ package net.limit.cubliminal.level;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-public class LevelWithMaze extends Level implements LevelMaze {
+public class LevelWithMaze extends Level {
     public static Codec<LevelWithMaze> LEVEL_WITH_MAZE_CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.INT.optionalFieldOf("world_height", 256).forGetter(level -> level.world_height),
             Codec.INT.optionalFieldOf("min_y", 0).forGetter(level -> level.min_y),
@@ -36,18 +36,4 @@ public class LevelWithMaze extends Level implements LevelMaze {
         this.maze_seed_modifier = maze_seed_modifier;
     }
 
-    @Override
-    public int getMazeWidth() {
-        return this.maze_width;
-    }
-
-    @Override
-    public int getMazeHeight() {
-        return this.maze_height;
-    }
-
-    @Override
-    public long getMazeSeedModifier() {
-        return this.maze_seed_modifier;
-    }
 }

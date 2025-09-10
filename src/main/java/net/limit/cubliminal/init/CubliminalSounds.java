@@ -37,6 +37,7 @@ public class CubliminalSounds implements Initer {
 	public static final RegistryEntry.Reference<SoundEvent> OPEN_SINK = registerReference("block.sink_open");
 	public static final RegistryEntry.Reference<SoundEvent> SINK_AMBIENT = registerReference("block.sink.ambient");
 	public static final RegistryEntry.Reference<SoundEvent> FLUX_CAPACITOR = registerReference("block.flux_capacitor");
+	public static final RegistryEntry.Reference<SoundEvent> SHORT_CIRCUIT = registerReference("block.short_circuit");
 
 
 	public static void clientPlaySoundSingle(ServerPlayerEntity target, RegistryEntry<SoundEvent> sound, SoundCategory category, double x, double y, double z, float volume, float pitch, long seed) {

@@ -27,25 +27,31 @@ public record MazeRegionGenerator<M extends MazeComponent, R extends MazeRegion<
     }
 
     public void generateMazeRegion(BlockPos pos, ChunkRegion region, int layerCount, RegionCreator<M, R> regionCreator, Decorator<M> cellDecorator) {
+        final int posX = pos.getX();
+        final int posY = pos.getY();
+        final int posZ = pos.getZ();
         for (int x = 0; x < 16; ++x) {
-            for (int z = 0; z < 16; ++z) {
-                BlockPos inPos = pos.add(x, 0, z);
-                if (Math.floorMod(inPos.getX(), spacingX) == 0 && Math.floorMod(inPos.getZ(), spacingZ) == 0) {
-                    BlockPos regionPos = new BlockPos(
-                            inPos.getX() - Math.floorMod(inPos.getX(), width * spacingX),
-                            inPos.getY() - Math.floorMod(inPos.getY(), layerHeight * layerCount),
-                            inPos.getZ() - Math.floorMod(inPos.getZ(), height * spacingZ)
-                    );
-                    R mazeRegion;
-                    if (mazeRegions.containsKey(regionPos)) {
-                        mazeRegion = mazeRegions.get(regionPos);
-                    } else {
-                        mazeRegion = regionCreator.newRegion(region, regionPos, width, height, Random.create(LimlibHelper.blockSeed(regionPos) + seedModifier + region.getSeed()));
-                        mazeRegions.put(regionPos, mazeRegion);
-                    }
+            int inX = posX + x;
+            if (Math.floorMod(inX, spacingX) != 0) continue;
 
-                    mazeRegion.decorateColumn(region, regionPos, spacingX, layerHeight, spacingZ, inPos, cellDecorator, seedModifier);
-                }
+            for (int z = 0; z < 16; ++z) {
+                int inZ = posZ + z;
+                if (Math.floorMod(inZ, spacingZ) != 0) continue;
+
+                BlockPos regionPos = new BlockPos(
+                        inX - Math.floorMod(inX, width * spacingX),
+                        posY - Math.floorMod(posY, layerHeight * layerCount),
+                        inZ - Math.floorMod(inZ, height * spacingZ)
+                );
+
+                R mazeRegion = mazeRegions.computeIfAbsent(regionPos, posx -> regionCreator
+                        .newRegion(
+                                region, posx, width, height,
+                                Random.create(LimlibHelper.blockSeed(posx) + seedModifier + region.getSeed())
+                        )
+                );
+
+                mazeRegion.decorateColumn(region, regionPos, spacingX, layerHeight, spacingZ, new BlockPos(inX, posY, inZ), cellDecorator, seedModifier);
             }
         }
     }

@@ -21,6 +21,8 @@ public class CubliminalBiomes implements Initer {
 	public static final RegistryKey<Biome> PILLAR_BIOME = of("pillar_biome");
 	public static final RegistryKey<Biome> REDROOMS_BIOME = of("redrooms");
 
+	public static final RegistryKey<Biome> HABITABLE_CORRIDORS_BIOME = of("habitable_corridors");
+
 	public static final RegistryKey<Biome> AQUILA_SECTOR_BIOME = of("aquila_sector");
 	public static final RegistryKey<Biome> DEEP_AQUILA_SECTOR_BIOME = of("deep_aquila_sector");
 

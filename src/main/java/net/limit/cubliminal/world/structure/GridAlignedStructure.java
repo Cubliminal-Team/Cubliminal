@@ -90,15 +90,23 @@ public class GridAlignedStructure extends Structure {
     private static BlockPos getBlockPos(Context context, DimensionPadding dimensionPadding, Level level) {
         BlockPos startPos = context.chunkPos().getStartPos();
         List<BlockPos> possibilities = new ArrayList<>();
+        final int startX = startPos.getX();
+        final int startY = startPos.getY();
+        final int startZ = startPos.getZ();
+        final int heightLimit = Math.min(level.world_height - dimensionPadding.top(), level.layer_height * level.layer_count + dimensionPadding.bottom());
+
         for (int x = 0; x < 16; ++x) {
-            for (int y = dimensionPadding.bottom(); y + startPos.getY() < Math.min(level.world_height - dimensionPadding.top(), level.layer_height * level.layer_count + dimensionPadding.bottom()); y += level.layer_height) {
-                for (int z = 0; z < 16; ++z) {
-                    BlockPos inPos = startPos.add(x, y, z);
-                    if (Math.floorMod(inPos.getX(), level.spacing_x) == 0 && Math.floorMod(inPos.getZ(), level.spacing_z) == 0)
-                        if (!possibilities.contains(inPos)) possibilities.add(inPos);
+            int inX = startX + x;
+            if (Math.floorMod(inX, level.spacing_x) != 0) continue;
+            for (int z = 0; z < 16; ++z) {
+                int inZ = startZ + z;
+                if (Math.floorMod(inZ, level.spacing_z) != 0) continue;
+                for (int y = dimensionPadding.bottom(); y + startY < heightLimit; y += level.layer_height) {
+                    possibilities.add(new BlockPos(inX, startY + y, inZ));
                 }
             }
         }
+
         return possibilities.get(context.random().nextInt(possibilities.size()));
     }
 

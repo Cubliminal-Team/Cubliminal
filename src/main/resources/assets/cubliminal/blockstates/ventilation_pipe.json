@@ -1,0 +1,121 @@
+{
+  "variants": {
+    "north=false,south=false,east=false,west=false,fan=false": {
+      "model": "cubliminal:block/ventilation_pipe/straight"
+    },
+    "north=true,south=false,east=false,west=false,fan=false": {
+      "model": "cubliminal:block/ventilation_pipe/straight"
+    },
+    "north=false,south=true,east=false,west=false,fan=false": {
+      "model": "cubliminal:block/ventilation_pipe/straight",
+      "y": 180
+    },
+    "north=true,south=true,east=false,west=false,fan=false": {
+      "model": "cubliminal:block/ventilation_pipe/straight"
+    },
+    "north=false,south=false,east=true,west=false,fan=false": {
+      "model": "cubliminal:block/ventilation_pipe/straight",
+      "y": 90
+    },
+    "north=false,south=false,east=false,west=true,fan=false": {
+      "model": "cubliminal:block/ventilation_pipe/straight",
+      "y": 270
+    },
+    "north=false,south=false,east=true,west=true,fan=false": {
+      "model": "cubliminal:block/ventilation_pipe/straight",
+      "y": 90
+    },
+    "north=true,south=false,east=false,west=true,fan=false": {
+      "model": "cubliminal:block/ventilation_pipe/corner"
+    },
+    "north=false,south=true,east=true,west=false,fan=false": {
+      "model": "cubliminal:block/ventilation_pipe/corner",
+      "y": 180
+    },
+    "north=true,south=false,east=true,west=false,fan=false": {
+      "model": "cubliminal:block/ventilation_pipe/corner",
+      "y": 90
+    },
+    "north=false,south=true,east=false,west=true,fan=false": {
+      "model": "cubliminal:block/ventilation_pipe/corner",
+      "y": 270
+    },
+    "north=true,south=true,east=true,west=true,fan=false": {
+      "model": "cubliminal:block/ventilation_pipe/quad"
+    },
+    "north=true,south=false,east=true,west=true,fan=false": {
+      "model": "cubliminal:block/ventilation_pipe/triple"
+    },
+    "north=false,south=true,east=true,west=true,fan=false": {
+      "model": "cubliminal:block/ventilation_pipe/triple",
+      "y": 180
+    },
+    "north=true,south=true,east=false,west=true,fan=false": {
+      "model": "cubliminal:block/ventilation_pipe/triple",
+      "y": 270
+    },
+    "north=true,south=true,east=true,west=false,fan=false": {
+      "model": "cubliminal:block/ventilation_pipe/triple",
+      "y": 90
+    },
+
+    "north=false,south=false,east=false,west=false,fan=true": {
+      "model": "cubliminal:block/ventilation_pipe/straight_fan"
+    },
+    "north=true,south=false,east=false,west=false,fan=true": {
+      "model": "cubliminal:block/ventilation_pipe/straight_fan"
+    },
+    "north=false,south=true,east=false,west=false,fan=true": {
+      "model": "cubliminal:block/ventilation_pipe/straight_fan",
+      "y": 180
+    },
+    "north=true,south=true,east=false,west=false,fan=true": {
+      "model": "cubliminal:block/ventilation_pipe/straight_fan"
+    },
+    "north=false,south=false,east=true,west=false,fan=true": {
+      "model": "cubliminal:block/ventilation_pipe/straight_fan",
+      "y": 90
+    },
+    "north=false,south=false,east=false,west=true,fan=true": {
+      "model": "cubliminal:block/ventilation_pipe/straight_fan",
+      "y": 270
+    },
+    "north=false,south=false,east=true,west=true,fan=true": {
+      "model": "cubliminal:block/ventilation_pipe/straight_fan",
+      "y": 90
+    },
+    "north=true,south=false,east=false,west=true,fan=true": {
+      "model": "cubliminal:block/ventilation_pipe/corner_fan"
+    },
+    "north=false,south=true,east=true,west=false,fan=true": {
+      "model": "cubliminal:block/ventilation_pipe/corner_fan",
+      "y": 180
+    },
+    "north=true,south=false,east=true,west=false,fan=true": {
+      "model": "cubliminal:block/ventilation_pipe/corner_fan",
+      "y": 90
+    },
+    "north=false,south=true,east=false,west=true,fan=true": {
+      "model": "cubliminal:block/ventilation_pipe/corner_fan",
+      "y": 270
+    },
+    "north=true,south=true,east=true,west=true,fan=true": {
+      "model": "cubliminal:block/ventilation_pipe/quad_fan"
+    },
+    "north=true,south=false,east=true,west=true,fan=true": {
+      "model": "cubliminal:block/ventilation_pipe/triple_fan"
+    },
+    "north=false,south=true,east=true,west=true,fan=true": {
+      "model": "cubliminal:block/ventilation_pipe/triple_fan",
+      "y": 180
+    },
+    "north=true,south=true,east=false,west=true,fan=true": {
+      "model": "cubliminal:block/ventilation_pipe/triple_fan",
+      "y": 270
+    },
+    "north=true,south=true,east=true,west=false,fan=true": {
+      "model": "cubliminal:block/ventilation_pipe/triple_fan",
+      "y": 90
+    }
+  }
+}

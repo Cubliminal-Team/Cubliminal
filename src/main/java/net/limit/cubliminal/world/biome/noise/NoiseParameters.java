@@ -19,5 +19,5 @@ public record NoiseParameters(double rarity, double spacing, double safety, doub
             Codec.doubleRange(0, 1).fieldOf("decay_factor").forGetter(NoiseParameters::decayFactor)
     ).apply(instance, instance.stable(NoiseParameters::new)));
 
-    public static final NoiseParameters DEFAULT = new NoiseParameters(0, 0, 0, 0);
+    public static final NoiseParameters DEFAULT = new NoiseParameters(0, 0, 0, 0.3);
 }

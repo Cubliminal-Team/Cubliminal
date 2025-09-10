@@ -3,6 +3,7 @@ package net.limit.cubliminal.fluid;
 import net.limit.cubliminal.block.fluid.CustomFluidBlock;
 import net.limit.cubliminal.init.CubliminalBlocks;
 import net.limit.cubliminal.init.CubliminalFluids;
+import net.limit.cubliminal.init.CubliminalItems;
 import net.limit.cubliminal.init.CubliminalParticleTypes;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
@@ -11,6 +12,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.StateManager;
 import net.minecraft.util.math.BlockPos;
@@ -18,6 +20,8 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.WorldView;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Optional;
 
 public class BlackSludgeFluid extends BackroomsFlowableFluid {
 
@@ -68,7 +72,12 @@ public class BlackSludgeFluid extends BackroomsFlowableFluid {
 
     @Override
     public Item getBucketItem() {
-        return null;
+        return CubliminalItems.BLACK_SLUDGE_BUCKET;
+    }
+
+    @Override
+    public Optional<SoundEvent> getBucketFillSound() {
+        return Optional.of(SoundEvents.BLOCK_HONEY_BLOCK_FALL);
     }
 
     public static class Flowing extends BlackSludgeFluid {

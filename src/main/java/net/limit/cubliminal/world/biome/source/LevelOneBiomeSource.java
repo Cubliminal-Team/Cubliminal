@@ -4,11 +4,15 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.limit.cubliminal.Cubliminal;
+import net.limit.cubliminal.init.CubliminalBiomes;
 import net.limit.cubliminal.init.CubliminalRegistrar;
 import net.limit.cubliminal.level.Level;
 import net.limit.cubliminal.level.Levels;
 import net.limit.cubliminal.world.biome.noise.NoiseParameters;
 import net.limit.cubliminal.world.biome.noise.RegistryNoisePreset;
+import net.minecraft.registry.RegistryEntryLookup;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.RegistryOps;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.noise.SimplexNoiseSampler;
@@ -19,15 +23,13 @@ import net.minecraft.world.biome.source.BiomeCoords;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.biome.source.util.MultiNoiseUtil;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class LevelOneBiomeSource extends BiomeSource implements LiminalBiomeSource {
     public static final MapCodec<LevelOneBiomeSource> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            RegistryOps.getEntryLookupCodec(RegistryKeys.BIOME),
             Codec.FLOAT.optionalFieldOf("scale", 0.1f).forGetter(biomeSource -> biomeSource.scale)
     ).apply(instance, instance.stable(LevelOneBiomeSource::new)));
 
@@ -46,8 +48,10 @@ public class LevelOneBiomeSource extends BiomeSource implements LiminalBiomeSour
 
     private final Map<RegistryEntry<Biome>, RegistryEntry<Biome>> biomeMap = new HashMap<>();
 
+    private final RegistryEntry<Biome> corridorsBiome;
+
     // Note that tags won't have been initialized yet by the time we create a biome source
-    public LevelOneBiomeSource(float scale) {
+    public LevelOneBiomeSource(RegistryEntryLookup<Biome> lookup, float scale) {
         this.level = Levels.LEVEL_1;
         this.scale = scale;
         this.noisePreset = RegistryNoisePreset.getPreset(CubliminalRegistrar.HABITABLE_ZONE_KEY);
@@ -70,6 +74,7 @@ public class LevelOneBiomeSource extends BiomeSource implements LiminalBiomeSour
         this.rarityScale = this.noisePreset.globalSettings().rarity();
         this.maxSpacing = this.noisePreset.globalSettings().spacing();
         this.levelSafety = this.noisePreset.globalSettings().safety();
+        this.corridorsBiome = lookup.getOrThrow(CubliminalBiomes.HABITABLE_CORRIDORS_BIOME);
     }
 
     private void initSamplers() {
@@ -94,17 +99,22 @@ public class LevelOneBiomeSource extends BiomeSource implements LiminalBiomeSour
 
     @Override
     public RegistryEntry<Biome> calcBiome(int blockX, int blockY, int blockZ) {
-        this.initSamplers();
-        int x = BiomeCoords.fromBlock(blockX);
-        int z = BiomeCoords.fromBlock(blockZ);
-        double dx = x * this.scale;
-        double dz = z * this.scale;
+        int floor = (blockY - this.level.min_y) / this.level.layer_height;
+        if (floor % 2 == 0) {
+            this.initSamplers();
+            int x = BiomeCoords.fromBlock(blockX);
+            int z = BiomeCoords.fromBlock(blockZ);
+            double dx = x * this.scale;
+            double dz = z * this.scale;
 
-        double rarityValue = this.sampleRarity(dx, dz);
-        double spacingValue = this.sampleSpacing(x, z, dx, dz);
-        double safetyValue = this.sampleSafety(dx, dz);
+            double rarityValue = this.sampleRarity(dx, dz);
+            double spacingValue = this.sampleSpacing(x, z, dx, dz);
+            double safetyValue = this.sampleSafety(dx, dz);
 
-        return this.getBiomeReference(rarityValue, spacingValue, safetyValue);
+            return this.getBiomeReference(rarityValue, spacingValue, safetyValue);
+        }
+
+        return this.corridorsBiome;
     }
 
     private double sampleRarity(double dx, double dz) {
@@ -151,7 +161,6 @@ public class LevelOneBiomeSource extends BiomeSource implements LiminalBiomeSour
         return chosenBiome;
     }
 
-    // FIXME: TRY USING SQUARED DISTANCE
     public double distanceTo(NoiseParameters parameters, double rarityValue, double spacingValue, double safetyValue) {
         double rarity = (parameters.rarity() - rarityValue) / 8;
         double spacing = (parameters.spacing() - spacingValue) / this.maxSpacing;
@@ -171,7 +180,9 @@ public class LevelOneBiomeSource extends BiomeSource implements LiminalBiomeSour
 
     @Override
     protected Stream<RegistryEntry<Biome>> biomeStream() {
-        return this.levelBiomes.stream();
+        Set<RegistryEntry<Biome>> biomes = new HashSet<>(this.levelBiomes);
+        biomes.add(this.corridorsBiome);
+        return biomes.stream();
     }
 
     // I had been half blind all this time...

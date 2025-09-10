@@ -152,5 +152,20 @@
       }
     ],
     "subtitle": "subtitle.block.flux_capacitor"
+  },
+  "block.short_circuit": {
+    "category": "blocks",
+    "sounds": [
+      {
+        "name": "cubliminal:block/short_circuit/short_circuit_1"
+      },
+      {
+        "name": "cubliminal:block/short_circuit/short_circuit_2"
+      },
+      {
+        "name": "cubliminal:block/short_circuit/short_circuit_3"
+      }
+    ],
+    "subtitle": "subtitle.block.short_circuit"
   }
 }

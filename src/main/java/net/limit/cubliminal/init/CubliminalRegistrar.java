@@ -99,7 +99,7 @@ public class CubliminalRegistrar implements LimlibRegistrar {
 										.getOptional(RegistryKey.of(RegistryKeys.DIMENSION_TYPE, Cubliminal.id(HABITABLE_ZONE)))
 										.orElseThrow(),
 								new LevelOneChunkGenerator(
-										new LevelOneBiomeSource(0.008f),
+										new LevelOneBiomeSource(registry.get(RegistryKeys.BIOME), 0.008f),
 										LevelOneChunkGenerator.createGroup(), Levels.LEVEL_1))));
 
 
@@ -131,6 +131,7 @@ public class CubliminalRegistrar implements LimlibRegistrar {
 			registry.add(CubliminalBiomes.PILLAR_BIOME, PillarBiome.create(features, carvers), RegistryEntryInfo.DEFAULT);
 			registry.add(CubliminalBiomes.REDROOMS_BIOME, RedroomsBiome.create(features, carvers), RegistryEntryInfo.DEFAULT);
 
+			registry.add(CubliminalBiomes.HABITABLE_CORRIDORS_BIOME, HabitableCorridorsBiome.create(features, carvers), RegistryEntryInfo.DEFAULT);
 			registry.add(CubliminalBiomes.AQUILA_SECTOR_BIOME, AquilaSectorBiome.create(features, carvers), RegistryEntryInfo.DEFAULT);
 			registry.add(CubliminalBiomes.DEEP_AQUILA_SECTOR_BIOME, DeepAquilaSectorBiome.create(features, carvers), RegistryEntryInfo.DEFAULT);
 			registry.add(CubliminalBiomes.GILD_SECTOR_BIOME, GildSectorBiome.create(features, carvers), RegistryEntryInfo.DEFAULT);
