@@ -1,5 +1,5 @@
 {
-	"parent": "block/cube_all",
+	"parent": "block/block",
 	"texture_size": [32, 32],
 	"textures": {
 		"1": "cubliminal:block/socket",
@@ -11,7 +11,7 @@
 			"to": [11.5, 12.5, 0.5],
 			"rotation": {"angle": 0, "axis": "y", "origin": [0, 3, 0]},
 			"faces": {
-				"north": {"uv": [0, 0, 3.5, 4.25], "texture": "#1"},
+				"north": {"uv": [0, 0, 3.5, 4.25], "texture": "#1", "cullface": "north"},
 				"east": {"uv": [0, 4.5, 0.25, 8.75], "texture": "#1"},
 				"south": {"uv": [3.5, 0, 7, 4.25], "texture": "#1"},
 				"west": {"uv": [0.5, 4.5, 0.75, 8.75], "texture": "#1"},

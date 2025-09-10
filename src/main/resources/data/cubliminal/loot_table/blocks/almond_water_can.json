@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "cubliminal:almond_water_can"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "cubliminal:blocks/almond_water_can"
+}

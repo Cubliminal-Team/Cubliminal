@@ -62,7 +62,7 @@ public abstract class ServerWorldMixin implements ServerWorldAccessor {
     }
 
     @SuppressWarnings("all")
-    @Inject(method = "tickChunk", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/chunk/WorldChunk;getSectionArray()[Lnet/minecraft/world/chunk/ChunkSection;", shift = At.Shift.AFTER))
+    @Inject(method = "tickChunk", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/profiler/Profiler;swap(Ljava/lang/String;)V", ordinal = 1, shift = At.Shift.AFTER))
     private void onRandomTick(WorldChunk chunk, int randomTickSpeed, CallbackInfo ci, @Local Profiler profiler) {
         if (this.blackoutManager != null && this.blackoutManager.shouldTickChunk()) {
             profiler.push("blackoutTick");
@@ -77,27 +77,25 @@ public abstract class ServerWorldMixin implements ServerWorldAccessor {
 
             for (int l = 0; l < chunkSections.length; l++) {
                 ChunkSection chunkSection = chunkSections[l];
+                int sectionY = ChunkSectionPos.getBlockCoord(chunk.sectionIndexToCoord(l));
+                boolean lightsOff = this.blackoutManager.lightsOffInChunk(chunkPos, sectionY);
 
-                if (chunkSection.hasRandomTicks()) {
-                    int sectionY = ChunkSectionPos.getBlockCoord(chunk.sectionIndexToCoord(l));
-                    boolean lightsOff = this.blackoutManager.lightsOffInChunk(chunkPos, sectionY);
-                    if (attachedSections.contains(l) != lightsOff) {
-                        this.blackoutManager.onChunkTick();
-                        this.blackoutManager.playSound(chunkPos, sectionY + 7, lightsOff);
-                        if (lightsOff) {
-                            attachedSections.add(l);
-                        } else {
-                            attachedSections.remove((Integer) l);
-                        }
+                if (attachedSections.contains(l) != lightsOff) {
+                    this.blackoutManager.onChunkTick();
+                    this.blackoutManager.playSound(chunkPos, sectionY + 7, lightsOff);
+                    if (lightsOff) {
+                        attachedSections.add(l);
+                    } else {
+                        attachedSections.remove((Integer) l);
+                    }
 
-                        for (int dx = 0; dx < 16; dx++) {
-                            for (int dy = 0; dy < 16; dy++) {
-                                for (int dz = 0; dz < 16; dz++) {
-                                    mutablePos.set(startX + dx, sectionY + dy, startZ + dz);
-                                    BlockState blockState = chunk.getBlockState(mutablePos);
-                                    if (blockState.getBlock() instanceof BlackoutListener listener) {
-                                        listener.blackoutUpdate(blockState, world, mutablePos, lightsOff, world.getRandom());
-                                    }
+                    for (int dx = 0; dx < 16; dx++) {
+                        for (int dy = 0; dy < 16; dy++) {
+                            for (int dz = 0; dz < 16; dz++) {
+                                mutablePos.set(startX + dx, sectionY + dy, startZ + dz);
+                                BlockState blockState = chunk.getBlockState(mutablePos);
+                                if (blockState.getBlock() instanceof BlackoutListener listener) {
+                                    listener.blackoutUpdate(blockState, world, mutablePos, lightsOff, world.getRandom());
                                 }
                             }
                         }

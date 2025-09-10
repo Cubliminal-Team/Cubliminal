@@ -134,7 +134,7 @@ public class LevelZeroChunkGenerator extends AbstractNbtChunkGenerator implement
 	@Override
 	public CompletableFuture<Chunk> populateBiomes(NoiseConfig noiseConfig, Blender blender, StructureAccessor structureAccessor, Chunk chunk) {
 		return CompletableFuture.supplyAsync(() -> {
-			((ChunkAccessor) chunk).cubliminal$populateBiomes(this.biomeSource);
+			((ChunkAccessor) chunk).cubliminal$chunkPopulateBiomes(this.biomeSource);
 			return chunk;
 		}, Util.getMainWorkerExecutor().named("init_biomes"));
 	}
@@ -142,38 +142,40 @@ public class LevelZeroChunkGenerator extends AbstractNbtChunkGenerator implement
 	@Override
 	public CompletableFuture<Chunk> populateNoise(ChunkRegion region, ChunkGenerationContext context, BoundedRegionArray<AbstractChunkHolder> chunks, Chunk chunk) {
 		BlockPos startPos = chunk.getPos().getStartPos();
-
-		for (int x = 0; x < 16; x++) {
-			for (int z = 0; z < 16; z++) {
-				region.setBlockState(startPos.add(x, 0, z), CubliminalBlocks.GABBRO.getDefaultState(), 0);
-			}
-		}
+		final int startX = startPos.getX();
+		final int startY = startPos.getY();
+		final int startZ = startPos.getZ();
+		BlockPos.Mutable mutable = new BlockPos.Mutable();
 
 		if (startPos.equals(BlockPos.ZERO)) {
-			generateNbt(region, startPos.up(layerHeight * layerCount + 1), nbtGroup.nbtId("manila_room", "manila_room"));
+			mutable.set(startX, startY + layerHeight * layerCount + 1, startZ);
+			generateNbt(region, mutable, nbtGroup.nbtId("manila_room", "manila_room"));
 		}
 
 		RegistryEntry<Biome> biome = this.biomeSource.calcBiome(startPos);
 
 		if (biome.matchesKey(CubliminalBiomes.PILLAR_BIOME)) {
 			for (int layer = 0; layer < this.layerCount; layer++) {
-				BlockPos placingPos = startPos.up(layer * this.layerHeight + 1);
-				Random random = Random.create(region.getSeed() + LimlibHelper.blockSeed(placingPos));
-				generateNbt(region, placingPos, nbtGroup.pick("pillars", random));
+				mutable.set(startX, startY + layer * this.layerHeight + 1, startZ);
+				Random random = Random.create(region.getSeed() + LimlibHelper.blockSeed(mutable));
+				generateNbt(region, mutable, nbtGroup.pick("pillars", random));
 			}
 		} else {
 			boolean redrooms = biome.matchesKey(CubliminalBiomes.REDROOMS_BIOME);
-			for (int layer = 0; layer < this.layerCount; layer++) {
-				for (int x = 0; x < 16; x++) {
-					for (int z = 0; z < 16; z++) {
-						BlockPos placingPos = startPos.add(x, layer * this.layerHeight + 1, z);
-						if (Math.floorMod(placingPos.getX(), this.thicknessX) == 0 && Math.floorMod(placingPos.getZ(), this.thicknessZ) == 0) {
-							if (!redrooms) {
-								decorateLobby(region, placingPos);
-							} else {
-								decorateRedrooms(region, placingPos);
-							}
+			for (int x = 0; x < 16; x++) {
+				for (int z = 0; z < 16; z++) {
+					int inX = startX + x;
+					int inZ = startZ + z;
+					mutable.set(inX, startY, inZ);
+					region.setBlockState(mutable, CubliminalBlocks.GABBRO.getDefaultState(), 0);
+					if (Math.floorMod(inX, this.thicknessX) != 0 || Math.floorMod(inZ, this.thicknessZ) != 0) continue;
+					for (int layer = 0; layer < this.layerCount; layer++) {
+						mutable.setY(startY + layer * this.layerHeight + 1);
+						if (redrooms) {
+							decorateRedrooms(region, mutable);
+							continue;
 						}
+						decorateLobby(region, mutable);
 					}
 				}
 			}

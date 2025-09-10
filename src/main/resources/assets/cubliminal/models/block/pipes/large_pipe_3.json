@@ -1,5 +1,4 @@
 {
-	"credit": "Made with Blockbench",
 	"textures": {
 		"2": "cubliminal:block/pipes/pipes",
 		"particle": "cubliminal:block/pipes/pipe-ring"

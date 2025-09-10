@@ -25,12 +25,10 @@ public class FluorescentLightBlock extends RotatableLightBlock {
     public static final BooleanProperty RED = CustomProperties.RED;
     private static final VoxelShape VOXEL_SHAPE = Block.createCuboidShape(0, 15,0, 16, 16, 16);
     private final boolean fused;
-    private final boolean flicker;
 
-    public FluorescentLightBlock(Settings settings, boolean fused, boolean flicker) {
+    public FluorescentLightBlock(Settings settings, boolean fused) {
         super(settings);
         this.fused = fused;
-        this.flicker = flicker;
         this.setDefaultState(this.getDefaultState()
                 .with(LIT, !fused)
                 .with(RED, false));
@@ -84,7 +82,7 @@ public class FluorescentLightBlock extends RotatableLightBlock {
 
     @Override
     protected void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
-        if (world instanceof ServerWorldAccessor accessor && this.flicker) {
+        if (world instanceof ServerWorldAccessor accessor) {
             BlackoutManager blackoutManager = accessor.blackoutManager();
             if ((blackoutManager == null || !blackoutManager.lightsOffIn(pos)) && random.nextInt(this.fused ? 2 : 3) == 0) {
                 world.setBlockState(pos, state.with(LIT, !this.fused));

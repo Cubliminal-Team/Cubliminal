@@ -37,15 +37,20 @@ public class CubliminalClient implements ClientModInitializer {
 				CubliminalBlocks.JUMBLED_DOCUMENTS,
 				CubliminalBlocks.LETTER_F,
 				CubliminalBlocks.FLUX_CAPACITOR,
-				CubliminalBlocks.WALL_LIGHT_BULB);
-		BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getCutoutMipped(),
-				CubliminalBlocks.CHAIN_WALL);
+				CubliminalBlocks.WALL_LIGHT_BULB,
+				CubliminalBlocks.SMOKE_DETECTOR,
+				CubliminalBlocks.VENTILATION_DUCT,
+				CubliminalBlocks.CHAIN_WALL,
+				CubliminalBlocks.RED_CHAIN_WALL,
+				CubliminalBlocks.WOODEN_PLANK
+		);
+		//BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getCutoutMipped());
 		BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getTranslucent(),
 				CubliminalBlocks.THE_LOBBY_GATEWAY_BLOCK,
 				CubliminalBlocks.EXIT_SIGN,
 				CubliminalBlocks.EXIT_SIGN_2,
-				CubliminalBlocks.SMOKE_DETECTOR,
-				CubliminalBlocks.VENTILATION_DUCT);
+				CubliminalBlocks.CONTROL_BOX
+		);
 
 		BlockEntityRendererFactories.register(CubliminalBlockEntities.THE_LOBBY_GATEWAY_BLOCK_ENTITY, ManilaGatewayRenderer::new);
 		BlockEntityRendererFactories.register(CubliminalBlockEntities.FLUX_CAPACITOR_BLOCK_ENTITY, FluxCapacitorRenderer::new);

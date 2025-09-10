@@ -1,7 +1,6 @@
 package net.limit.cubliminal.block.custom.pipe;
 
 import net.limit.cubliminal.block.state.IdentifierProperty;
-import net.limit.cubliminal.init.CubliminalFluids;
 import net.limit.cubliminal.mixin.FluidAccessor;
 import net.ludocrypt.limlib.api.world.LimlibHelper;
 import net.minecraft.block.*;
@@ -33,7 +32,19 @@ public abstract class PipeBlock extends Block implements Waterloggable {
         this.setDefaultState(this.getDefaultState()
                 .with(WATERLOGGED, false)
                 .with(LEAKING, false)
-                .with(FLUID_CONTAINER, IdentifierProperty.encode(Registries.FLUID.getId(CubliminalFluids.ALMOND_WATER))));
+                .with(FLUID_CONTAINER, toFluidContainer(Fluids.EMPTY)));
+    }
+
+    public static String toFluidContainer(Fluid fluid) {
+        return IdentifierProperty.encode(Registries.FLUID.getId(fluid));
+    }
+
+    public static Fluid toFluid(BlockState state) {
+        if (!state.contains(FLUID_CONTAINER)) {
+            throw new IllegalArgumentException("BlockState: " + state + " doesn't contain a fluid");
+        } else {
+            return Registries.FLUID.get(IdentifierProperty.decode(state.get(FLUID_CONTAINER)));
+        }
     }
 
     @Nullable

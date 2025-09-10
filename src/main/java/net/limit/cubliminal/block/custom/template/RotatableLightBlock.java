@@ -30,11 +30,6 @@ public class RotatableLightBlock extends RotatableBlock implements BlackoutListe
         this.setDefaultState(this.getDefaultState().with(LIT, true));
     }
 
-    @Override
-    protected boolean hasRandomTicks(BlockState state) {
-        return true;
-    }
-
     @Nullable
     @Override
     public BlockState getPlacementState(ItemPlacementContext ctx) {

@@ -1,7 +1,5 @@
 {
-	"format_version": "1.21.6",
-	"credit": "Made with Blockbench",
-	"parent": "block/cube_all",
+	"parent": "block/block",
 	"textures": {
 		"0": "cubliminal:block/pipes/pipes",
 		"particle": "cubliminal:block/pipes/pipes"

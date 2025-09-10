@@ -3,6 +3,7 @@ package net.limit.cubliminal.fluid;
 import net.limit.cubliminal.block.fluid.CustomFluidBlock;
 import net.limit.cubliminal.init.CubliminalBlocks;
 import net.limit.cubliminal.init.CubliminalFluids;
+import net.limit.cubliminal.init.CubliminalItems;
 import net.limit.cubliminal.init.CubliminalParticleTypes;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
@@ -44,7 +45,7 @@ public class AlmondWaterFluid extends BackroomsFlowableFluid {
 
     @Override
     public Item getBucketItem() {
-        return null;
+        return CubliminalItems.ALMOND_WATER_BUCKET;
     }
 
     @Override
