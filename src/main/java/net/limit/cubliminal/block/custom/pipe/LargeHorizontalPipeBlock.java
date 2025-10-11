@@ -1,9 +1,11 @@
 package net.limit.cubliminal.block.custom.pipe;
 
+import com.mojang.serialization.MapCodec;
 import net.limit.cubliminal.block.state.pipeType.LargeHorizontalPipeTypes;
 import net.limit.cubliminal.block.state.pipeType.TypedPipeSupport;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.HorizontalFacingBlock;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
@@ -14,12 +16,19 @@ import net.minecraft.world.WorldView;
 import org.jetbrains.annotations.Nullable;
 
 public class LargeHorizontalPipeBlock extends PipeBlock implements TypedPipeSupport {
+    public static MapCodec<LargeHorizontalPipeBlock> CODEC = LargeHorizontalPipeBlock.createCodec(LargeHorizontalPipeBlock::new);
+
     public static final BooleanProperty CONNECTOR = BooleanProperty.of("connector");
     public static final EnumProperty<LargeHorizontalPipeTypes> TYPE = TypedPipeSupport.build(LargeHorizontalPipeTypes.class);
 
     public LargeHorizontalPipeBlock(Settings settings) {
         super(settings);
         this.setDefaultState(this.getDefaultState().with(CONNECTOR, true));
+    }
+
+    @Override
+    protected MapCodec<? extends HorizontalFacingBlock> getCodec() {
+        return CODEC;
     }
 
     @Nullable

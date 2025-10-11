@@ -24,6 +24,7 @@ import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.entry.RegistryEntryInfo;
 import net.minecraft.registry.tag.TagKey;
+import net.minecraft.sound.MusicType;
 import net.minecraft.util.math.intprovider.ConstantIntProvider;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionOptions;
@@ -61,7 +62,7 @@ public class CubliminalRegistrar implements LimlibRegistrar {
 
 		getSoundEffects(HABITABLE_ZONE,
 				new SoundEffects(Optional.of(new StaticReverbEffect.Builder().setDecayTime(2f).setDensity(0.05f).build()),
-						Optional.empty(), Optional.empty()));
+						Optional.empty(), Optional.of(MusicType.createIngameMusic(CubliminalSounds.BLUE_HORIZON))));
 
 		// dim effects
 		getDimEffects(THE_LOBBY, new StaticDimensionEffects(Optional.empty(), false, "NONE", false, true, false, 0f));

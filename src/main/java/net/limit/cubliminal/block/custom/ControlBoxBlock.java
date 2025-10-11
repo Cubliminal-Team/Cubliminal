@@ -46,7 +46,7 @@ public class ControlBoxBlock extends RotatableBlock {
     private boolean tryToggleBlackout(BlockState state, World world, BlockPos pos) {
         if (world instanceof ServerWorldAccessor accessor) {
             BlackoutManager blackoutManager = accessor.blackoutManager();
-            if (blackoutManager != null && world.getRandom().nextFloat() < 0.025) {
+            if (blackoutManager != null && world.getRandom().nextFloat() < 0.05) {
                 RegistryKey<Biome> biome = world.getGeneratorStoredBiome(
                         BiomeCoords.fromBlock(pos.getX()), BiomeCoords.fromBlock(pos.getY()), BiomeCoords.fromBlock(pos.getZ())
                 ).getKey().orElseThrow();

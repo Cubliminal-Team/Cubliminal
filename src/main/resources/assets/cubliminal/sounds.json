@@ -167,5 +167,13 @@
       }
     ],
     "subtitle": "subtitle.block.short_circuit"
+  },
+  "music.blue_horizon": {
+    "sounds": [
+      {
+        "name": "cubliminal:music/blue_horizon",
+        "stream": true
+      }
+    ]
   }
 }

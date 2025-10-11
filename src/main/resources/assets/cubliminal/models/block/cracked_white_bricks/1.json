@@ -1,0 +1,6 @@
+{
+  "parent": "block/cube_all",
+  "textures": {
+    "all": "cubliminal:block/cracked_white_bricks/1"
+  }
+}

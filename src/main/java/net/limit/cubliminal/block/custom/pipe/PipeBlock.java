@@ -1,6 +1,8 @@
 package net.limit.cubliminal.block.custom.pipe;
 
+import net.limit.cubliminal.block.custom.template.BlockVariantHolder;
 import net.limit.cubliminal.block.state.IdentifierProperty;
+import net.limit.cubliminal.init.CubliminalFluids;
 import net.limit.cubliminal.mixin.FluidAccessor;
 import net.ludocrypt.limlib.api.world.LimlibHelper;
 import net.minecraft.block.*;
@@ -11,19 +13,18 @@ import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.registry.Registries;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
-import net.minecraft.state.property.EnumProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class PipeBlock extends Block implements Waterloggable {
+public abstract class PipeBlock extends HorizontalFacingBlock implements Waterloggable, BlockVariantHolder {
     public static final BooleanProperty WATERLOGGED = Properties.WATERLOGGED;
     public static final BooleanProperty LEAKING = BooleanProperty.of("leaking");
-    public static final EnumProperty<Direction> FACING = Properties.HORIZONTAL_FACING;
     public static final IdentifierProperty FLUID_CONTAINER = IdentifierProperty.of("fluid_container",
             () -> Registries.FLUID.getIds().stream().filter(id -> !id.getPath().contains("flowing")).toList());
 
@@ -87,6 +88,17 @@ public abstract class PipeBlock extends Block implements Waterloggable {
             if (!fluid.matchesType(Fluids.EMPTY)) {
                 world.addParticle(((FluidAccessor) fluid).invokeGetParticle(), x, y, z, 0.0f, 0.0f, 0.0f);
             }
+        }
+    }
+
+    @Override
+    public void changeToVariant(ChunkRegion region, BlockState prevState, BlockPos pos, Random random) {
+        if (random.nextFloat() < 0.1) {
+            Fluid fluid = toFluid(prevState);
+            region.setBlockState(pos, prevState
+                            .with(LEAKING, true)
+                            .with(FLUID_CONTAINER, toFluidContainer(fluid.equals(Fluids.EMPTY) ? CubliminalFluids.ALMOND_WATER : fluid)),
+                    Block.FORCE_STATE);
         }
     }
 }

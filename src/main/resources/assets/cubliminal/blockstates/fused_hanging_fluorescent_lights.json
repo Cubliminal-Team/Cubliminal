@@ -1,0 +1,34 @@
+{
+  "variants": {
+    "facing=west,lit=false": {
+      "model": "cubliminal:block/hanging_fluorescent_lights_off",
+      "y": 90
+    },
+    "facing=south,lit=false": {
+      "model": "cubliminal:block/hanging_fluorescent_lights_off"
+    },
+    "facing=north,lit=false": {
+      "model": "cubliminal:block/hanging_fluorescent_lights_off",
+      "y": 180
+    },
+    "facing=east,lit=false": {
+      "model": "cubliminal:block/hanging_fluorescent_lights_off",
+      "y": 270
+    },
+    "facing=west,lit=true": {
+      "model": "cubliminal:block/hanging_fluorescent_lights_on",
+      "y": 90
+    },
+    "facing=south,lit=true": {
+      "model": "cubliminal:block/hanging_fluorescent_lights_on"
+    },
+    "facing=north,lit=true": {
+      "model": "cubliminal:block/hanging_fluorescent_lights_on",
+      "y": 180
+    },
+    "facing=east,lit=true": {
+      "model": "cubliminal:block/hanging_fluorescent_lights_on",
+      "y": 270
+    }
+  }
+}

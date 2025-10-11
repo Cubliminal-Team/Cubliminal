@@ -38,6 +38,7 @@ public class CubliminalBiomes implements Initer {
 
 	public static final TagKey<Biome> CAN_NOCLIP_TO = TagKey.of(RegistryKeys.BIOME, Cubliminal.id("can_noclip_to"));
 	public static final TagKey<Biome> DEEP_LEVEL_ONE = TagKey.of(RegistryKeys.BIOME, Cubliminal.id("deep_level_one"));
+	public static final TagKey<Biome> LEVEL_ONE = TagKey.of(RegistryKeys.BIOME, Cubliminal.id("level_one"));
 
 	@Override
     public void init() {

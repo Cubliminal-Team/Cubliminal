@@ -1,37 +1,35 @@
 package net.limit.cubliminal.block.custom;
 
-import net.limit.cubliminal.access.ServerWorldAccessor;
+import net.limit.cubliminal.block.custom.template.BlockVariantHolder;
 import net.limit.cubliminal.block.custom.template.RotatableLightBlock;
 import net.limit.cubliminal.block.state.CustomProperties;
-import net.limit.cubliminal.event.backrooms.BlackoutManager;
 import net.limit.cubliminal.init.CubliminalBiomes;
+import net.limit.cubliminal.init.CubliminalBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.HorizontalFacingBlock;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
+import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.WorldView;
 import org.jetbrains.annotations.Nullable;
 
-public class FluorescentLightBlock extends RotatableLightBlock {
+public class FluorescentLightBlock extends RotatableLightBlock implements BlockVariantHolder {
 
     public static final BooleanProperty RED = CustomProperties.RED;
     private static final VoxelShape VOXEL_SHAPE = Block.createCuboidShape(0, 15,0, 16, 16, 16);
-    private final boolean fused;
 
     public FluorescentLightBlock(Settings settings, boolean fused) {
-        super(settings);
-        this.fused = fused;
-        this.setDefaultState(this.getDefaultState()
-                .with(LIT, !fused)
-                .with(RED, false));
+        super(settings, fused);
+        this.setDefaultState(this.getDefaultState().with(RED, false));
     }
 
     @Override
@@ -60,47 +58,36 @@ public class FluorescentLightBlock extends RotatableLightBlock {
     public BlockState getPlacementState(ItemPlacementContext ctx) {
         BlockState state = super.getPlacementState(ctx);
         if (state != null) {
-            return state
-                    .with(LIT, state.get(LIT) && !this.fused)
-                    .with(RED, ctx.getWorld().getBiome(ctx.getBlockPos())
-                            .getKey().orElseThrow().equals(CubliminalBiomes.REDROOMS_BIOME));
+            return state.with(RED, ctx.getWorld().getBiome(ctx.getBlockPos())
+                    .getKey().orElseThrow().equals(CubliminalBiomes.REDROOMS_BIOME));
         }
         return state;
-    }
-
-    @Override
-    protected void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
-        BlockState newState = state.with(LIT, !this.fused);
-        if (world instanceof ServerWorldAccessor accessor) {
-            BlackoutManager blackoutManager = accessor.blackoutManager();
-            if (blackoutManager != null) {
-                newState = state.with(LIT, !(this.fused || blackoutManager.lightsOffIn(pos)));
-            }
-        }
-        world.setBlockState(pos, newState);
-    }
-
-    @Override
-    protected void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
-        if (world instanceof ServerWorldAccessor accessor) {
-            BlackoutManager blackoutManager = accessor.blackoutManager();
-            if ((blackoutManager == null || !blackoutManager.lightsOffIn(pos)) && random.nextInt(this.fused ? 2 : 3) == 0) {
-                world.setBlockState(pos, state.with(LIT, !this.fused));
-                world.scheduleBlockTick(pos, state.getBlock(), 2);
-            }
-        }
-    }
-
-    @Override
-    public void blackoutUpdate(BlockState state, ServerWorld world, BlockPos pos, boolean lightsOff, Random random) {
-        if (!this.fused) {
-            world.setBlockState(pos, state.with(LIT, !lightsOff));
-        }
     }
 
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
         super.appendProperties(builder);
         builder.add(RED);
+    }
+
+    @Override
+    public void changeToVariant(ChunkRegion region, BlockState prevState, BlockPos pos) {
+        if (prevState.isOf(CubliminalBlocks.FLUORESCENT_LIGHT)) {
+            BlockVariantHolder.super.changeToVariant(region, prevState, pos);
+        }
+    }
+
+    @Override
+    public void changeToVariant(ChunkRegion region, BlockState state, BlockPos pos, Random random) {
+        if (random.nextFloat() > 0.9 || region.getStatesInBox(new Box(pos).expand(1))
+                .anyMatch(blockState -> blockState.isOf(CubliminalBlocks.FUSED_FLUORESCENT_LIGHT))) {
+            region.setBlockState(pos, CubliminalBlocks.FUSED_FLUORESCENT_LIGHT.getDefaultState()
+                    .with(HorizontalFacingBlock.FACING, state.get(HorizontalFacingBlock.FACING))
+                    .with(CustomProperties.RED, state.get(CustomProperties.RED)), Block.FORCE_STATE);
+        } else if (random.nextFloat() < 0.1) {
+            region.setBlockState(pos, CubliminalBlocks.FLICKERING_FLUORESCENT_LIGHT.getDefaultState()
+                    .with(HorizontalFacingBlock.FACING, state.get(HorizontalFacingBlock.FACING))
+                    .with(CustomProperties.RED, state.get(CustomProperties.RED)), Block.FORCE_STATE);
+        }
     }
 }

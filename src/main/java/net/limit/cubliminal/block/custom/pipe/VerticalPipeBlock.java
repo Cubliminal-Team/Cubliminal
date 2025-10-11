@@ -1,9 +1,11 @@
 package net.limit.cubliminal.block.custom.pipe;
 
+import com.mojang.serialization.MapCodec;
 import net.limit.cubliminal.block.state.pipeType.TypedPipeSupport;
 import net.limit.cubliminal.init.CubliminalBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.HorizontalFacingBlock;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.state.StateManager;
@@ -14,6 +16,8 @@ import net.minecraft.world.BlockView;
 import org.jetbrains.annotations.Nullable;
 
 public class VerticalPipeBlock extends PipeBlock implements TypedPipeSupport {
+    public static MapCodec<VerticalPipeBlock> CODEC = VerticalPipeBlock.createCodec(VerticalPipeBlock::new);
+
     public static final BooleanProperty CONNECTOR = BooleanProperty.of("connector");
     public static final VoxelShape SHAPE_WEST = Block.createCuboidShape(9.0, 0.0, 4.0, 16.0, 16.0, 12.0);
     public static final VoxelShape SHAPE_NORTH = Block.createCuboidShape(4.0, 0.0, 9.0, 12.0, 16.0, 16.0);
@@ -23,6 +27,11 @@ public class VerticalPipeBlock extends PipeBlock implements TypedPipeSupport {
     public VerticalPipeBlock(Settings settings) {
         super(settings);
         this.setDefaultState(this.getDefaultState().with(CONNECTOR, true));
+    }
+
+    @Override
+    protected MapCodec<? extends HorizontalFacingBlock> getCodec() {
+        return CODEC;
     }
 
     @Nullable

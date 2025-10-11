@@ -405,7 +405,31 @@ public class CubliminalBlocks implements Initer {
 					.requiresTool()
 					.slipperiness(0.87f));
 
-	public static final Block VERTICAL_LIGHT_TUBE = registerBlock("vertical_light_tube", new RotatableLightBlock(
+	public static final Block WHITE_BRICKS = register("white_bricks", Block::new,
+			AbstractBlock.Settings.create()
+					.mapColor(MapColor.WHITE)
+					.strength(3.5f, 6.0f)
+					.requiresTool());
+
+	public static final Block CRACKED_WHITE_BRICKS = register("cracked_white_bricks", Block::new,
+			AbstractBlock.Settings.create()
+					.mapColor(MapColor.WHITE)
+					.strength(2.5f, 5.5f)
+					.requiresTool());
+
+	public static final Block FUSED_VERTICAL_LIGHT_TUBE = registerBlock("fused_vertical_light_tube", new RotatableLightBlock(
+			AbstractBlock.Settings.create()
+					.registryKey(key("fused_vertical_light_tube"))
+					.mapColor(MapColor.STONE_GRAY)
+					.strength(1, 2)
+					.luminance(createLightLevelFromLitBlockState(6))
+					.sounds(BlockSoundGroup.GLASS)
+					.nonOpaque()
+					.ticksRandomly()
+					.requiresTool(), true)
+			.voxelShapes(6, 0, 0, 10, 32, 3));
+
+	public static final Block VERTICAL_LIGHT_TUBE = registerBlock("vertical_light_tube", new VariatedRotatableLightBlock(
 			AbstractBlock.Settings.create()
 					.registryKey(key("vertical_light_tube"))
 					.mapColor(MapColor.WHITE)
@@ -413,17 +437,28 @@ public class CubliminalBlocks implements Initer {
 					.luminance(createLightLevelFromLitBlockState(15))
 					.sounds(BlockSoundGroup.GLASS)
 					.nonOpaque()
-					.requiresTool())
+					.requiresTool(), 0.3f, FUSED_VERTICAL_LIGHT_TUBE.getDefaultState())
 			.voxelShapes(6, 0, 0, 10, 32, 3));
 
-	public static final Block HANGING_FLUORESCENT_LIGHTS = registerBlock("hanging_fluorescent_lights", new RotatableLightBlock(
+	public static final Block FUSED_HANGING_FLUORESCENT_LIGHTS = registerBlock("fused_hanging_fluorescent_lights", new RotatableLightBlock(
+			AbstractBlock.Settings.create()
+					.registryKey(key("fused_hanging_fluorescent_lights"))
+					.mapColor(MapColor.STONE_GRAY)
+					.strength(1, 2)
+					.luminance(createLightLevelFromLitBlockState(6))
+					.sounds(BlockSoundGroup.GLASS)
+					.nonOpaque()
+					.ticksRandomly(), true)
+			.voxelShapes(0, 14.4, 5, 16, 15.9, 11));
+
+	public static final Block HANGING_FLUORESCENT_LIGHTS = registerBlock("hanging_fluorescent_lights", new VariatedRotatableLightBlock(
 			AbstractBlock.Settings.create()
 					.registryKey(key("hanging_fluorescent_lights"))
 					.mapColor(MapColor.WHITE)
 					.strength(1, 2)
 					.luminance(createLightLevelFromLitBlockState(15))
 					.sounds(BlockSoundGroup.GLASS)
-					.nonOpaque())
+					.nonOpaque(), 0.3f, FUSED_HANGING_FLUORESCENT_LIGHTS.getDefaultState())
 			.voxelShapes(0, 14.4, 5, 16, 15.9, 11));
 
 	public static final Block SMALL_HANGING_PIPE = register("small_hanging_pipe", SmallHangingPipeBlock::new,
@@ -477,7 +512,19 @@ public class CubliminalBlocks implements Initer {
 					.sounds(BlockSoundGroup.METAL)
 					.requiresTool());
 
-	public static final Block WALL_LIGHT_BULB = registerBlock("wall_light_bulb", new RotatableLightBlock(
+	public static final Block FUSED_WALL_LIGHT_BULB = registerBlock("fused_wall_light_bulb", new RotatableLightBlock(
+			AbstractBlock.Settings.create()
+					.registryKey(key("fused_wall_light_bulb"))
+					.mapColor(MapColor.STONE_GRAY)
+					.strength(1, 2)
+					.luminance(createLightLevelFromLitBlockState(6))
+					.sounds(BlockSoundGroup.GLASS)
+					.nonOpaque()
+					.ticksRandomly()
+					.requiresTool(), true)
+			.voxelShapes(3.5, 3.5, 0, 12.5, 12.5, 7.5));
+
+	public static final Block WALL_LIGHT_BULB = registerBlock("wall_light_bulb", new VariatedRotatableLightBlock(
 			AbstractBlock.Settings.create()
 					.registryKey(key("wall_light_bulb"))
 					.mapColor(MapColor.WHITE)
@@ -485,7 +532,7 @@ public class CubliminalBlocks implements Initer {
 					.luminance(createLightLevelFromLitBlockState(15))
 					.sounds(BlockSoundGroup.GLASS)
 					.nonOpaque()
-					.requiresTool())
+					.requiresTool(), 0.3f, FUSED_WALL_LIGHT_BULB.getDefaultState())
 			.voxelShapes(3.5, 3.5, 0, 12.5, 12.5, 7.5));
 
 	public static final Block CHAIN_WALL = registerBlock("chain_wall", new BoardBlock(
@@ -505,7 +552,7 @@ public class CubliminalBlocks implements Initer {
 					.nonOpaque())
 			.voxelShapes(2));
 
-	public static final Block WOODEN_CRATE = register("wooden_crate", Block::new, AbstractBlock.Settings.copy(Blocks.BARREL));
+	public static final Block WOODEN_CRATE = register("wooden_crate", WoodenCrateBlock::new, AbstractBlock.Settings.copy(Blocks.BARREL));
 
 	public static final Block CONTROL_BOX = registerBlock("control_box", new ControlBoxBlock(
 			AbstractBlock.Settings.create()
@@ -552,6 +599,17 @@ public class CubliminalBlocks implements Initer {
 					.luminance(createLightLevelFromLitBlockState(15))
 					.nonOpaque()
 					.requiresTool());
+
+	public static final Block FUSED_LARGE_HANGING_LAMP = registerBlock("fused_large_hanging_lamp", new LargeHangingLampBlock(
+			AbstractBlock.Settings.create()
+					.registryKey(key("fused_large_hanging_lamp"))
+					.mapColor(MapColor.STONE_GRAY)
+					.strength(3f, 2.6f)
+					.sounds(BlockSoundGroup.GLASS)
+					.luminance(createLightLevelFromLitBlockState(6))
+					.nonOpaque()
+					.ticksRandomly()
+					.requiresTool(), true));
 
 	public static final Block REINFORCED_CONCRETE_BEAM = register("reinforced_concrete_beam", LargeBeamBlock::new,
 			AbstractBlock.Settings.create()
@@ -671,7 +729,9 @@ public class CubliminalBlocks implements Initer {
 
 	public static final Block POOL_TILE_WALL = register("pool_tile_wall", WallBlock::new, AbstractBlock.Settings.copy(Blocks.REINFORCED_DEEPSLATE).solid());
 
-	public static Block ALMOND_WATER_BLOCK = registerFluidBlock("almond_water", CubliminalFluids.ALMOND_WATER, AlmondWaterFluidBlock::new,
+	public static final Block CRATE_AIR = registerWithoutItem("crate_air", CrateAirBlock::new, AbstractBlock.Settings.copy(Blocks.AIR));
+
+	public static final Block ALMOND_WATER_BLOCK = registerFluidBlock("almond_water", CubliminalFluids.ALMOND_WATER, AlmondWaterFluidBlock::new,
 			CustomFluidBlock.Settings.create()
 					.setColor(0xFFECB3)
 					.setSplashParticles(CustomFluidBlock.FluidSplashParticleManager.create()
@@ -679,7 +739,7 @@ public class CubliminalBlocks implements Initer {
 					)
 	);
 
-	public static Block CONTAMINATED_WATER_BLOCK = registerFluidBlock("contaminated_water", CubliminalFluids.CONTAMINATED_WATER, ContaminatedWaterBlock::new,
+	public static final Block CONTAMINATED_WATER_BLOCK = registerFluidBlock("contaminated_water", CubliminalFluids.CONTAMINATED_WATER, ContaminatedWaterBlock::new,
 			CustomFluidBlock.Settings.create()
 					.setColor(0x556B2F)
 					.setFogEnd(10.0f)
@@ -690,7 +750,7 @@ public class CubliminalBlocks implements Initer {
 					)
 	);
 
-	public static Block BLACK_SLUDGE_BLOCK = registerFluidBlock("black_sludge", CubliminalFluids.BLACK_SLUDGE, BlackSludgeFluidBlock::new,
+	public static final Block BLACK_SLUDGE_BLOCK = registerFluidBlock("black_sludge", CubliminalFluids.BLACK_SLUDGE, BlackSludgeFluidBlock::new,
 			CustomFluidBlock.Settings.create()
 					.setColor(0x1C1F1C)
 					.setSpeed(0.005f)

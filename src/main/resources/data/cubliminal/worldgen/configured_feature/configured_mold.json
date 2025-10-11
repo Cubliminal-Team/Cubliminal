@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:multiface_growth",
+  "config": {
+    "block": "cubliminal:mold",
+    "search_range": 10,
+    "chance_of_spreading": 0.7,
+    "can_place_on_floor": true,
+    "can_place_on_ceiling": true,
+    "can_place_on_wall": true,
+    "can_be_placed_on": [
+      "cubliminal:white_bricks",
+      "cubliminal:cracked_white_bricks",
+      "cubliminal:ventilation_pipe",
+      "cubliminal:gray_asphalt",
+      "minecraft:gray_concrete_powder"
+    ]
+  }
+}

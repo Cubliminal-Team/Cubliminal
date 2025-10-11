@@ -1,9 +1,11 @@
 package net.limit.cubliminal.event.backrooms;
 
 import com.mojang.datafixers.util.Pair;
+import net.limit.cubliminal.block.custom.VentilationPipeBlock;
 import net.limit.cubliminal.init.CubliminalBiomes;
 import net.limit.cubliminal.init.CubliminalBlocks;
 import net.limit.cubliminal.init.CubliminalRegistrar;
+import net.minecraft.block.BlockState;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.entry.RegistryEntry;
@@ -95,7 +97,7 @@ public record NoclipDestination (RegistryKey<World> destination, Function<Server
             ServerWorld world = player.getServer().getWorld(CubliminalRegistrar.HABITABLE_ZONE_KEY);
             Pair<BlockPos, RegistryEntry<Biome>> pair = world.locateBiome(registryEntry -> registryEntry
                     .isIn(CubliminalBiomes.CAN_NOCLIP_TO), new BlockPos(player.getBlockX(),
-                    world.getBottomY() + 2, player.getBlockZ()), 1600, 16, 32);
+                    world.getBottomY() + 2, player.getBlockZ()), 1600, 16, 16);
 
             BlockPos finalPos = centerPos(player.getBlockPos(), 3);
             if (pair != null) {
@@ -112,7 +114,9 @@ public record NoclipDestination (RegistryKey<World> destination, Function<Server
                     Optional<BlockPos> validPos = BlockPos.findClosest(spawnPos.get(), 32, world.getTopYInclusive() - 1, p -> {
                         WorldChunk chunk = getChunk(world, p);
                         if (world.isInHeightLimit(p.down().getY()) && chunk.getBlockState(p.up()).isOpaqueFullCube()) {
-                            return !chunk.getBlockState(p).isOpaqueFullCube() && chunk.getBlockState(p.down()).isAir();
+                            BlockState state = chunk.getBlockState(p);
+                            return !(state.getBlock() instanceof VentilationPipeBlock)
+                                    && !state.isOpaqueFullCube() && chunk.getBlockState(p.down()).isAir();
                         }
                         return false;
                     });

@@ -1,0 +1,64 @@
+{
+  "variants": {
+    "facing=west,lit=true,connected=false": {
+      "model": "cubliminal:block/large_hanging_lamp/on",
+      "y": 90
+    },
+    "facing=south,lit=true,connected=false": {
+      "model": "cubliminal:block/large_hanging_lamp/on"
+    },
+    "facing=north,lit=true,connected=false": {
+      "model": "cubliminal:block/large_hanging_lamp/on",
+      "y": 180
+    },
+    "facing=east,lit=true,connected=false": {
+      "model": "cubliminal:block/large_hanging_lamp/on",
+      "y": 270
+    },
+    "facing=west,lit=true,connected=true": {
+      "model": "cubliminal:block/large_hanging_lamp/connected_on",
+      "y": 90
+    },
+    "facing=south,lit=true,connected=true": {
+      "model": "cubliminal:block/large_hanging_lamp/connected_on"
+    },
+    "facing=north,lit=true,connected=true": {
+      "model": "cubliminal:block/large_hanging_lamp/connected_on",
+      "y": 180
+    },
+    "facing=east,lit=true,connected=true": {
+      "model": "cubliminal:block/large_hanging_lamp/connected_on",
+      "y": 270
+    },
+    "facing=west,lit=false,connected=false": {
+      "model": "cubliminal:block/large_hanging_lamp/off",
+      "y": 90
+    },
+    "facing=south,lit=false,connected=false": {
+      "model": "cubliminal:block/large_hanging_lamp/off"
+    },
+    "facing=north,lit=false,connected=false": {
+      "model": "cubliminal:block/large_hanging_lamp/off",
+      "y": 180
+    },
+    "facing=east,lit=false,connected=false": {
+      "model": "cubliminal:block/large_hanging_lamp/off",
+      "y": 270
+    },
+    "facing=west,lit=false,connected=true": {
+      "model": "cubliminal:block/large_hanging_lamp/connected_off",
+      "y": 90
+    },
+    "facing=south,lit=false,connected=true": {
+      "model": "cubliminal:block/large_hanging_lamp/connected_off"
+    },
+    "facing=north,lit=false,connected=true": {
+      "model": "cubliminal:block/large_hanging_lamp/connected_off",
+      "y": 180
+    },
+    "facing=east,lit=false,connected=true": {
+      "model": "cubliminal:block/large_hanging_lamp/connected_off",
+      "y": 270
+    }
+  }
+}
