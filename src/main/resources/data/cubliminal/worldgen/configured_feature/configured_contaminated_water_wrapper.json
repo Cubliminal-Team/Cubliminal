@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:random_selector",
+  "config": {
+    "features": [
+      {
+        "chance": 0.5,
+        "feature": "cubliminal:contaminated_leak"
+      },
+      {
+        "chance": 0.5,
+        "feature": "cubliminal:contaminated_puddle"
+      }
+    ],
+    "default": "cubliminal:contaminated_puddle"
+  }
+}

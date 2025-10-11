@@ -1,4 +1,5 @@
 {
+	"parent": "block/block",
 	"texture_size": [32, 32],
 	"textures": {
 		"0": "cubliminal:block/large_hanging_lamp_off",

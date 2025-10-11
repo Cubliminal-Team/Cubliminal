@@ -1,0 +1,12 @@
+{
+  "type": "cubliminal:wooden_crate",
+  "config": {
+    "count": {
+      "type": "minecraft:clamped_normal",
+      "min_inclusive": 3,
+      "max_inclusive": 18,
+      "mean": 10,
+      "deviation": 4
+    }
+  }
+}

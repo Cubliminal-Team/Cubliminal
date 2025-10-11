@@ -1,0 +1,24 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "cubliminal:block/cracked_white_bricks/0"
+      },
+      {
+        "model": "cubliminal:block/cracked_white_bricks/1"
+      },
+      {
+        "model": "cubliminal:block/cracked_white_bricks/2"
+      },
+      {
+        "model": "cubliminal:block/cracked_white_bricks/3"
+      },
+      {
+        "model": "cubliminal:block/cracked_white_bricks/4"
+      },
+      {
+        "model": "cubliminal:block/cracked_white_bricks/5"
+      }
+    ]
+  }
+}

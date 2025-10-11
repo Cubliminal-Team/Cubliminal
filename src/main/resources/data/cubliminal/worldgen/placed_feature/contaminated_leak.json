@@ -1,0 +1,94 @@
+{
+  "feature": {
+    "config": {
+      "tries": 5,
+      "xz_spread": 3,
+      "y_spread": 0,
+      "feature": {
+        "feature": {
+          "config": {
+            "features": [
+              {
+                "chance": 0.66,
+                "feature": {
+                  "feature": {
+                    "config": {
+                      "to_place": {
+                        "type": "minecraft:simple_state_provider",
+                        "state": {
+                          "Name": "minecraft:diorite"
+                        }
+                      }
+                    },
+                    "type": "minecraft:simple_block"
+                  },
+                  "placement": [
+                    {
+                      "type": "minecraft:block_predicate_filter",
+                      "predicate": {
+                        "type": "minecraft:matching_block_tag",
+                        "tag": "cubliminal:solid_block"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "chance": 0.33,
+                "feature": {
+                  "feature": {
+                    "config": {
+                      "state": {
+                        "Name": "cubliminal:contaminated_water",
+                        "Properties": {
+                          "falling": "true"
+                        }
+                      }
+                    },
+                    "type": "cubliminal:fluid_tick_scheduler"
+                  },
+                  "placement": []
+                }
+              }
+            ],
+            "default": {
+              "feature": {
+                "config": {
+                  "to_place": {
+                    "type": "minecraft:simple_state_provider",
+                    "state": {
+                      "Name": "minecraft:diorite"
+                    }
+                  }
+                },
+                "type": "minecraft:simple_block"
+              },
+              "placement": [
+                {
+                  "type": "minecraft:block_predicate_filter",
+                  "predicate": {
+                    "type": "minecraft:matching_block_tag",
+                    "tag": "cubliminal:solid_block"
+                  }
+                }
+              ]
+            }
+          },
+          "type": "minecraft:random_selector"
+        },
+        "placement": []
+      }
+    },
+    "type": "minecraft:random_patch"
+  },
+  "placement": [
+    {
+      "type": "minecraft:block_predicate_filter",
+      "predicate": {
+        "type": "minecraft:matching_block_tag",
+        "offset": [0, -1, 0],
+        "tag": "minecraft:air"
+      }
+    }
+  ]
+}

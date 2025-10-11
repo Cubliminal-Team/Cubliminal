@@ -59,7 +59,7 @@ public class SmallHangingPipeBlock extends HorizontalConnectingBlock {
 
     @Override
     protected boolean connectsTo(BlockState state) {
-        return state.getBlock() instanceof SmallHangingPipeBlock;
+        return state.getBlock().equals(this);
     }
 
     @Override

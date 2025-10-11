@@ -19,6 +19,7 @@ public class RotatableLightBlock extends RotatableBlock implements BlackoutListe
     public static final MapCodec<RotatableLightBlock> CODEC = RotatableLightBlock.createCodec(RotatableLightBlock::new);
 
     public static final BooleanProperty LIT = Properties.LIT;
+    protected final boolean fused;
 
     @Override
     protected MapCodec<? extends HorizontalFacingBlock> getCodec() {
@@ -26,8 +27,13 @@ public class RotatableLightBlock extends RotatableBlock implements BlackoutListe
     }
 
     public RotatableLightBlock(Settings settings) {
+        this(settings, false);
+    }
+
+    public RotatableLightBlock(Settings settings, boolean fused) {
         super(settings);
-        this.setDefaultState(this.getDefaultState().with(LIT, true));
+        this.fused = fused;
+        this.setDefaultState(this.getDefaultState().with(LIT, !fused));
     }
 
     @Nullable
@@ -37,15 +43,38 @@ public class RotatableLightBlock extends RotatableBlock implements BlackoutListe
         if (state != null && ctx.getWorld() instanceof ServerWorldAccessor accessor) {
             BlackoutManager blackoutManager = accessor.blackoutManager();
             if (blackoutManager != null) {
-                return state.with(LIT, !blackoutManager.lightsOffIn(ctx.getBlockPos()));
+                return state.with(LIT, !this.fused && !blackoutManager.lightsOffIn(ctx.getBlockPos()));
             }
         }
         return state;
     }
 
     @Override
+    protected void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
+        BlockState newState;
+        BlackoutManager blackoutManager = ((ServerWorldAccessor) world).blackoutManager();
+        if (blackoutManager != null) {
+            newState = state.with(LIT, !(this.fused || blackoutManager.lightsOffIn(pos)));
+        } else {
+            newState = state.with(LIT, !this.fused);
+        }
+        world.setBlockState(pos, newState);
+    }
+
+    @Override
+    protected void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
+        BlackoutManager blackoutManager = ((ServerWorldAccessor) world).blackoutManager();
+        if ((blackoutManager == null || !blackoutManager.lightsOffIn(pos)) && random.nextInt(this.fused ? 2 : 3) == 0) {
+            world.setBlockState(pos, state.with(LIT, !this.fused));
+            world.scheduleBlockTick(pos, state.getBlock(), 2);
+        }
+    }
+
+    @Override
     public void blackoutUpdate(BlockState state, ServerWorld world, BlockPos pos, boolean lightsOff, Random random) {
-        world.setBlockState(pos, state.with(LIT, !lightsOff));
+        if (!this.fused) {
+            world.setBlockState(pos, state.with(LIT, !lightsOff));
+        }
     }
 
     @Override

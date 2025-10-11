@@ -1,10 +1,12 @@
 package net.limit.cubliminal.block.custom.pipe;
 
+import com.mojang.serialization.MapCodec;
 import net.limit.cubliminal.block.state.pipeType.CeilingPipeTypes;
 import net.limit.cubliminal.block.state.pipeType.TypedPipeSupport;
 import net.limit.cubliminal.init.CubliminalBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.HorizontalFacingBlock;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.state.StateManager;
@@ -20,12 +22,19 @@ import net.minecraft.world.tick.ScheduledTickView;
 import org.jetbrains.annotations.Nullable;
 
 public class CeilingPipeBlock extends PipeBlock implements TypedPipeSupport {
+    public static MapCodec<CeilingPipeBlock> CODEC = CeilingPipeBlock.createCodec(CeilingPipeBlock::new);
+
     public static final VoxelShape ONE_LAYER = Block.createCuboidShape(0, 0, 0, 16, 5, 16);
     public static final VoxelShape TWO_LAYER = Block.createCuboidShape(0, 0, 0, 16, 10, 16);
     public static final EnumProperty<CeilingPipeTypes> TYPE = TypedPipeSupport.build(CeilingPipeTypes.class);
 
     public CeilingPipeBlock(Settings settings) {
         super(settings);
+    }
+
+    @Override
+    protected MapCodec<? extends HorizontalFacingBlock> getCodec() {
+        return CODEC;
     }
 
     @Override

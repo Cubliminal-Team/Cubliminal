@@ -3,7 +3,7 @@ package net.limit.cubliminal.world.chunk;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.limit.cubliminal.Cubliminal;
-import net.limit.cubliminal.block.state.CustomProperties;
+import net.limit.cubliminal.block.custom.template.BlockVariantHolder;
 import net.limit.cubliminal.init.CubliminalBiomes;
 import net.limit.cubliminal.init.CubliminalBlocks;
 import net.limit.cubliminal.init.CubliminalRegistrar;
@@ -27,6 +27,7 @@ import net.minecraft.util.math.*;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.GenerationSettings;
 import net.minecraft.world.chunk.*;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.chunk.Blender;
@@ -35,7 +36,6 @@ import net.minecraft.world.gen.noise.NoiseConfig;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Supplier;
 
 public class LevelZeroChunkGenerator extends AbstractNbtChunkGenerator implements BackroomsLevel {
 	public static final MapCodec<LevelZeroChunkGenerator> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
@@ -52,7 +52,7 @@ public class LevelZeroChunkGenerator extends AbstractNbtChunkGenerator implement
 	private final int thicknessZ;
 
 	public LevelZeroChunkGenerator(SimplexBiomeSource biomeSource, NbtGroup group, Level level) {
-		super(biomeSource, group);
+		super(biomeSource, biome -> GenerationSettings.INSTANCE, group);
 		this.biomeSource = biomeSource;
 		this.level = level;
 		this.layerCount = level.layer_count;
@@ -192,45 +192,26 @@ public class LevelZeroChunkGenerator extends AbstractNbtChunkGenerator implement
 
 		super.modifyStructure(region, pos, state, blockEntityNbt);
 
-		Supplier<Random> random = () -> Random.create(region.getSeed() + LimlibHelper.blockSeed(pos));
-
-		if (state.isOf(CubliminalBlocks.FLUORESCENT_LIGHT)) {
-			if (random.get().nextFloat() > 0.9 || region.getStatesInBox(new Box(pos).expand(1))
-					.anyMatch(blockState -> blockState.isOf(CubliminalBlocks.FUSED_FLUORESCENT_LIGHT))) {
-				region.setBlockState(pos, CubliminalBlocks.FUSED_FLUORESCENT_LIGHT.getDefaultState()
-						.with(HorizontalFacingBlock.FACING, state.get(HorizontalFacingBlock.FACING))
-								.with(CustomProperties.RED, state.get(CustomProperties.RED)), 0);
-			} else if (random.get().nextFloat() < 0.1) {
-				region.setBlockState(pos, CubliminalBlocks.FLICKERING_FLUORESCENT_LIGHT.getDefaultState()
-						.with(HorizontalFacingBlock.FACING, state.get(HorizontalFacingBlock.FACING))
-								.with(CustomProperties.RED, state.get(CustomProperties.RED)), 0);
-			}
+		if (state.getBlock() instanceof BlockVariantHolder holder) {
+			holder.changeToVariant(region, state, pos);
 		} else if (state.isOf(CubliminalBlocks.SOCKET)) {
-			if (random.get().nextFloat() < 0.9) {
-				region.setBlockState(pos, Blocks.LIGHT.getDefaultState().with(LightBlock.LEVEL_15, 3), 0);
+			if (blockSeed(region, pos).nextFloat() < 0.9) {
+				region.setBlockState(pos, Blocks.LIGHT.getDefaultState().with(LightBlock.LEVEL_15, 3), Block.FORCE_STATE);
 			}
 		} else if (state.isOf(CubliminalBlocks.DAMAGED_YELLOW_WALLPAPERS)) {
-			if (random.get().nextFloat() < 0.95) {
-				region.setBlockState(pos, CubliminalBlocks.YELLOW_WALLPAPERS.getDefaultState(), 0);
+			if (blockSeed(region, pos).nextFloat() < 0.95) {
+				region.setBlockState(pos, CubliminalBlocks.YELLOW_WALLPAPERS.getDefaultState(), Block.FORCE_STATE);
 			}
 		} else if (state.isOf(CubliminalBlocks.DIRTY_DAMP_CARPET)) {
-			if (random.get().nextFloat() < 0.95) {
-				region.setBlockState(pos, CubliminalBlocks.DAMP_CARPET.getDefaultState(), 0);
-			}
-		} else if (state.isOf(CubliminalBlocks.SMOKE_DETECTOR)) {
-			if (random.get().nextFloat() < 0.9) {
-				region.setBlockState(pos, Blocks.LIGHT.getDefaultState().with(LightBlock.LEVEL_15, 3), 0);
+			if (blockSeed(region, pos).nextFloat() < 0.95) {
+				region.setBlockState(pos, CubliminalBlocks.DAMP_CARPET.getDefaultState(), Block.FORCE_STATE);
 			}
 		} else if (state.isOf(Blocks.BROWN_MUSHROOM)) {
-			float randomFloat = random.get().nextFloat();
+			float randomFloat = blockSeed(region, pos).nextFloat();
 			if (randomFloat > 0.9) {
-				region.setBlockState(pos, Blocks.RED_MUSHROOM.getDefaultState(), 0);
+				region.setBlockState(pos, Blocks.RED_MUSHROOM.getDefaultState(), Block.FORCE_STATE);
 			} else if (randomFloat > 0.1) {
-				region.setBlockState(pos, Blocks.AIR.getDefaultState(), 0);
-			}
-		} else if (state.isOf(CubliminalBlocks.MOLD)) {
-			if (random.get().nextFloat() < 0.9) {
-				region.setBlockState(pos, Blocks.AIR.getDefaultState(), 0);
+				region.setBlockState(pos, Blocks.AIR.getDefaultState(), Block.FORCE_STATE);
 			}
 		}
 	}

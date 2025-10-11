@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:simple_random_selector",
+  "config": {
+    "features": [
+      "cubliminal:wooden_crate_up",
+      "cubliminal:wooden_crate_down"
+    ]
+  }
+}
