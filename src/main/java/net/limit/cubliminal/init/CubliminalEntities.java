@@ -2,9 +2,8 @@ package net.limit.cubliminal.init;
 
 import net.limit.cubliminal.Cubliminal;
 import net.limit.cubliminal.Initer;
-import net.limit.cubliminal.entity.custom.SeatEntity;
+import net.limit.cubliminal.entity.SeatEntity;
 import net.limit.cubliminal.entity.custom.hostile.SmilerEntity;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.registry.Registries;
