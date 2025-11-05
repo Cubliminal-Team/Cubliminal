@@ -1,9 +1,10 @@
 package net.limit.cubliminal.init;
 
+import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.limit.cubliminal.Cubliminal;
 import net.limit.cubliminal.Initer;
 import net.limit.cubliminal.entity.SeatEntity;
-import net.limit.cubliminal.entity.custom.hostile.SmilerEntity;
+import net.limit.cubliminal.entity.hostile.SmilerEntity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.registry.Registries;
@@ -26,12 +27,16 @@ public class CubliminalEntities implements Initer {
             SMILER_KEY,
             EntityType.Builder.create(SmilerEntity::new, SpawnGroup.MONSTER)
                     .dimensions(1f, 2f)
-                    .build(RegistryKey.of(RegistryKeys.ENTITY_TYPE, Cubliminal.id(SMILER_KEY.getRegistry().getPath())))
+                    .build(SMILER_KEY)
     );
 
     private static RegistryKey<EntityType<?>> keyOf(String name){
         return RegistryKey.of(RegistryKeys.ENTITY_TYPE, Cubliminal.id(name));
     }
 
+    @Override
+    public void init() {
+        FabricDefaultAttributeRegistry.register(SMILER, SmilerEntity.createAttributes());
+    }
 }
 

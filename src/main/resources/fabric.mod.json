@@ -46,6 +46,7 @@
         ],
         "initerclient": [
             "net.limit.cubliminal.client.render.RenderLayers",
+            "net.limit.cubliminal.init.CubliminalModelLayers",
             "net.limit.cubliminal.networking.c2s.C2SPackets"
         ]
     },

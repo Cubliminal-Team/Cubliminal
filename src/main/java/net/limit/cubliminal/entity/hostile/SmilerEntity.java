@@ -1,4 +1,4 @@
-package net.limit.cubliminal.entity.custom.hostile;
+package net.limit.cubliminal.entity.hostile;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SmilerEntity extends HostileEntity {
+
     public SmilerEntity(EntityType<? extends HostileEntity> entityType, World world) {
         super(entityType, world);
     }
@@ -32,7 +33,7 @@ public class SmilerEntity extends HostileEntity {
 
     @Override
     protected void initGoals() {
-        List<Block> targetBlocks = new ArrayList<Block>(List.of(Blocks.TORCH, Blocks.WALL_TORCH, Blocks.CAMPFIRE, Blocks.LANTERN, Blocks.GLOWSTONE, Blocks.SEA_LANTERN, Blocks.JACK_O_LANTERN, Blocks.REDSTONE_TORCH));
+        List<Block> targetBlocks = new ArrayList<>(List.of(Blocks.TORCH, Blocks.WALL_TORCH, Blocks.CAMPFIRE, Blocks.LANTERN, Blocks.GLOWSTONE, Blocks.SEA_LANTERN, Blocks.JACK_O_LANTERN, Blocks.REDSTONE_TORCH));
         GoalSelector goal = this.goalSelector;
         goal.add(2, new MeleeAttackGoal(this, 0.6f, true));
         for (Block targetBlock : targetBlocks) {
