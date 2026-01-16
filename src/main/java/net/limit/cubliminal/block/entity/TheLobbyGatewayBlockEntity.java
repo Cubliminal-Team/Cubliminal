@@ -43,6 +43,7 @@ public class TheLobbyGatewayBlockEntity extends BlockEntity {
 
 	public void writeExitPos(BlockPos blockPos) {
 		this.exitPos = blockPos;
+		markDirty();
 	}
 
 	@Override

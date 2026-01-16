@@ -1,6 +1,6 @@
 {
   "parent": "block/cube_all",
   "textures": {
-    "all": "cubliminal:block/damaged_yellow_wallpapers5"
+    "all": "cubliminal:block/damaged_yellow_wallpapers/5"
   }
 }

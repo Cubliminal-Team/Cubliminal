@@ -29,4 +29,7 @@ public class CubliminalBlockEntities implements Initer {
 	public static final BlockEntityType<USBlockBlockEntity> USBLOCK_BLOCK_ENTITY =
 			register("unlimited_structure_block", FabricBlockEntityTypeBuilder.create(USBlockBlockEntity::new, CubliminalBlocks.UNLIMITED_STRUCTURE_BLOCK).build());
 
+	public static final BlockEntityType<WrittenDocumentBlockEntity> WRITTEN_DOCUMENT_BLOCK_ENTITY =
+			register("written_document", FabricBlockEntityTypeBuilder.create(WrittenDocumentBlockEntity::new, CubliminalBlocks.WRITTEN_DOCUMENT).build());
+
 }

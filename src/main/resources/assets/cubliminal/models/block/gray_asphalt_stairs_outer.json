@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/outer_stairs",
+  "textures": {
+    "bottom": "cubliminal:block/gray_asphalt",
+    "side": "cubliminal:block/gray_asphalt",
+    "top": "cubliminal:block/gray_asphalt"
+  }
+}

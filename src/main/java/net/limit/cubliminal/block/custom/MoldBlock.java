@@ -68,7 +68,7 @@ public class MoldBlock extends MultifaceGrowthBlock implements Waterloggable, Bl
 
     @Override
     public void changeToVariant(ChunkRegion region, BlockState prevState, BlockPos pos, Random random) {
-        if (random.nextFloat() < 0.9) {
+        if (random.nextFloat() < 0.3) {
             region.setBlockState(pos, Blocks.AIR.getDefaultState(), Block.FORCE_STATE);
         }
     }

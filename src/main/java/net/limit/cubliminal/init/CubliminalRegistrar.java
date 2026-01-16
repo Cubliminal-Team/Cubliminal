@@ -100,7 +100,7 @@ public class CubliminalRegistrar implements LimlibRegistrar {
 										.getOptional(RegistryKey.of(RegistryKeys.DIMENSION_TYPE, Cubliminal.id(HABITABLE_ZONE)))
 										.orElseThrow(),
 								new LevelOneChunkGenerator(
-										new LevelOneBiomeSource(registry.get(RegistryKeys.BIOME), 0.008f),
+										new LevelOneBiomeSource(0.008f),
 										LevelOneChunkGenerator.createGroup(), Levels.LEVEL_1))));
 
 

@@ -28,10 +28,13 @@ public class ContaminatedWaterBlock extends CustomFluidBlock implements BlockVar
 
     @Override
     public void changeToVariant(ChunkRegion region, BlockState prevState, BlockPos pos, Random random) {
+        /*
         if (random.nextFloat() > 0.02) {
             region.setBlockState(pos, Blocks.AIR.getDefaultState(), Block.FORCE_STATE);
         } else {
             region.scheduleFluidTick(pos, CubliminalFluids.CONTAMINATED_WATER, 0);
         }
+         */
+        region.scheduleFluidTick(pos, CubliminalFluids.CONTAMINATED_WATER, 0);
     }
 }

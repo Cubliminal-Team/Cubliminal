@@ -160,6 +160,13 @@ public class LevelZeroChunkGenerator extends AbstractNbtChunkGenerator implement
 				Random random = Random.create(region.getSeed() + LimlibHelper.blockSeed(mutable));
 				generateNbt(region, mutable, nbtGroup.pick("pillars", random));
 			}
+			mutable.setY(startY);
+			for (int x = 0; x < 16; x++) {
+				mutable.setX(startX + x);
+				for (int z = 0; z < 16; z++) {
+					region.setBlockState(mutable.setZ(startZ + z), CubliminalBlocks.GABBRO.getDefaultState(), 0);
+				}
+			}
 		} else {
 			boolean redrooms = biome.matchesKey(CubliminalBiomes.REDROOMS_BIOME);
 			for (int x = 0; x < 16; x++) {

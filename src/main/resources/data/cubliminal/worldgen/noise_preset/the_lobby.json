@@ -17,7 +17,7 @@
       "rarity": 8.0,
       "spacing": 140.0,
       "safety": 4.2,
-      "decay_factor": 0.1
+      "decay_factor": 0.2
     },
     "cubliminal:redrooms": {
       "rarity": -6.0,

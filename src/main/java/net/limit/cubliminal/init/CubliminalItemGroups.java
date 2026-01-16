@@ -36,11 +36,18 @@ public class CubliminalItemGroups implements Initer {
 						entries.add(CubliminalBlocks.FUSED_FLUORESCENT_LIGHT);
 						entries.add(CubliminalBlocks.MANILA_WALLPAPERS);
 						entries.add(CubliminalBlocks.TOP_MANILA_WALLPAPERS);
+                        entries.add(CubliminalBlocks.CYAN_TERRACOTTA_STAIRS);
                         entries.add(CubliminalBlocks.GRAY_ASPHALT);
                         entries.add(CubliminalBlocks.GRAY_ASPHALT_SLAB);
+                        entries.add(CubliminalBlocks.GRAY_ASPHALT_STAIRS);
                         entries.add(CubliminalBlocks.WET_GRAY_ASPHALT);
+                        entries.add(CubliminalBlocks.WHITER_CONCRETE);
                         entries.add(CubliminalBlocks.WHITE_BRICKS);
+                        entries.add(CubliminalBlocks.WHITE_BRICK_SLAB);
                         entries.add(CubliminalBlocks.CRACKED_WHITE_BRICKS);
+                        entries.add(CubliminalBlocks.CHAIN_BLOCK);
+                        entries.add(CubliminalBlocks.CHAIN_SLAB);
+                        entries.add(CubliminalBlocks.CHAIN_STAIRS);
                         entries.add(CubliminalBlocks.CHAIN_WALL);
                         entries.add(CubliminalBlocks.RED_CHAIN_WALL);
                         entries.add(CubliminalBlocks.WHITE_METAL_PANE);
@@ -78,6 +85,7 @@ public class CubliminalItemGroups implements Initer {
 						entries.add(CubliminalBlocks.SOCKET);
                         entries.add(CubliminalBlocks.COMPUTER);
                         entries.add(CubliminalBlocks.JUMBLED_DOCUMENTS);
+                        entries.add(CubliminalBlocks.WRITTEN_DOCUMENT);
                         entries.add(CubliminalBlocks.ALMOND_WATER_CAN);
                         entries.add(CubliminalBlocks.CAN);
                         entries.add(CubliminalItems.ALMOND_WATER_BUCKET);

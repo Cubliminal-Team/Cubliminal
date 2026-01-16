@@ -175,5 +175,50 @@
         "stream": true
       }
     ]
+  },
+  "block.paper_break": {
+    "category": "blocks",
+    "sounds": [
+      {
+        "name": "cubliminal:block/paper/paper_tear"
+      }
+    ],
+    "subtitle": "subtitle.block.paper_break"
+  },
+  "block.paper_step": {
+    "category": "blocks",
+    "sounds": [
+      {
+        "name": "cubliminal:block/paper/paper_step"
+      }
+    ],
+    "subtitle": "subtitles.block.generic.footsteps"
+  },
+  "block.paper_place": {
+    "category": "blocks",
+    "sounds": [
+      {
+        "name": "cubliminal:block/paper/paper_place"
+      }
+    ],
+    "subtitle": "subtitles.block.generic.place"
+  },
+  "block.paper_hit": {
+    "category": "blocks",
+    "sounds": [
+      {
+        "name": "cubliminal:block/paper/paper_hit"
+      }
+    ],
+    "subtitle": "subtitle.block.paper_hit"
+  },
+  "block.paper_fall": {
+    "category": "blocks",
+    "sounds": [
+      {
+        "name": "cubliminal:block/paper/paper_fall"
+      }
+    ],
+    "subtitle": "subtitle.block.paper_fall"
   }
 }

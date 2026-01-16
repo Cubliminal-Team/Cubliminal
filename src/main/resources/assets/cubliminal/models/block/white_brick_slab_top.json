@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab_top",
+  "textures": {
+    "bottom": "cubliminal:block/white_bricks",
+    "side": "cubliminal:block/white_bricks",
+    "top": "cubliminal:block/white_bricks"
+  }
+}
