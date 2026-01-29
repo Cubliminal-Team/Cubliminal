@@ -4,6 +4,7 @@
 
 package net.limit.cubliminal.client.render.entity.model;
 
+import net.limit.cubliminal.util.DebugLogger;
 import net.minecraft.client.model.*;
 import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.render.entity.state.LivingEntityRenderState;

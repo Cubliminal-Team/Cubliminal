@@ -4,6 +4,7 @@ import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRe
 import net.limit.cubliminal.Cubliminal;
 import net.limit.cubliminal.Initer;
 import net.limit.cubliminal.entity.SeatEntity;
+import net.limit.cubliminal.entity.hostile.HoundEntity;
 import net.limit.cubliminal.entity.hostile.SmilerEntity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
@@ -14,6 +15,7 @@ import net.minecraft.registry.RegistryKeys;
 
 public class CubliminalEntities implements Initer {
     public static final RegistryKey<EntityType<?>> SMILER_KEY = keyOf("smiler");
+    public static final RegistryKey<EntityType<?>> HOUND_KEY = keyOf("hound");
 
     public static final EntityType<SeatEntity> SEAT_ENTITY = Registry.register(
             Registries.ENTITY_TYPE,
@@ -30,6 +32,14 @@ public class CubliminalEntities implements Initer {
                     .build(SMILER_KEY)
     );
 
+    public static EntityType<HoundEntity> HOUND = Registry.register(
+            Registries.ENTITY_TYPE,
+            HOUND_KEY,
+            EntityType.Builder.create(HoundEntity::new, SpawnGroup.MONSTER)
+                    .dimensions(1f, 2f)
+                    .build(HOUND_KEY)
+    );
+
     private static RegistryKey<EntityType<?>> keyOf(String name){
         return RegistryKey.of(RegistryKeys.ENTITY_TYPE, Cubliminal.id(name));
     }
@@ -37,6 +47,7 @@ public class CubliminalEntities implements Initer {
     @Override
     public void init() {
         FabricDefaultAttributeRegistry.register(SMILER, SmilerEntity.createAttributes());
+        FabricDefaultAttributeRegistry.register(HOUND, HoundEntity.createAttributes());
     }
 }
 
