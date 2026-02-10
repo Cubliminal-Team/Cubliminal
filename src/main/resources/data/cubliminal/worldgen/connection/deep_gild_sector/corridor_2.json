@@ -1,0 +1,48 @@
+{
+  "placement": {
+    "spacing": 12,
+    "separation": 4,
+    "salt": 75363269,
+    "type": "cubliminal:random_spread",
+    "exclusion_zone": {
+      "other_connection": "cubliminal:test_c",
+      "cell_count": 4
+    }
+  },
+  "room": {
+    "floors": [
+      {
+        "floor": 0,
+        "components": [
+          {
+            "pos": [0,0],
+            "width": 1,
+            "height": 1,
+            "structures": {
+              "connection:corridor_connection_1_0": 1.0
+            }
+          }
+        ],
+        "doors": "n_1"
+      },
+      {
+        "floor": 1,
+        "components": [
+          {
+            "pos": [0,0],
+            "width": 1,
+            "height": 1,
+            "structures": {
+              "connection:corridor_connection_1_1": 1.0
+            }
+          }
+        ],
+        "doors": "w_1"
+      }
+    ],
+    "width": 1,
+    "height": 1,
+    "padding": 1,
+    "is_padding_below": true
+  }
+}

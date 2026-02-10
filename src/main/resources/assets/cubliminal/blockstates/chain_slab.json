@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "cubliminal:block/chain_slab"
+    },
+    "type=double": {
+      "model": "cubliminal:block/chain_block"
+    },
+    "type=top": {
+      "model": "cubliminal:block/chain_slab_top"
+    }
+  }
+}

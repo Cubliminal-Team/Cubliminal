@@ -2,8 +2,8 @@
 	"ambientocclusion": false,
 	"texture_size": [32, 32],
 	"textures": {
-		"0": "cubliminal:block/jumbled_documents2b",
-		"particle": "cubliminal:block/jumbled_documents2b"
+		"0": "cubliminal:block/jumbled_documents/2b",
+		"particle": "cubliminal:block/jumbled_documents/2b"
 	},
 	"elements": [
 		{

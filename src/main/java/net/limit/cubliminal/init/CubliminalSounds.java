@@ -40,6 +40,12 @@ public class CubliminalSounds implements Initer {
 	public static final RegistryEntry.Reference<SoundEvent> SHORT_CIRCUIT = registerReference("block.short_circuit");
 	public static final RegistryEntry.Reference<SoundEvent> BLUE_HORIZON = registerReference("music.blue_horizon");
 
+	public static final SoundEvent PAPER_BREAK = register("block.paper_break");
+	public static final SoundEvent PAPER_STEP = register("block.paper_step");
+	public static final SoundEvent PAPER_PLACE = register("block.paper_place");
+	public static final SoundEvent PAPER_HIT = register("block.paper_hit");
+	public static final SoundEvent PAPER_FALL = register("block.paper_fall");
+
 
 	public static void clientPlaySoundSingle(ServerPlayerEntity target, RegistryEntry<SoundEvent> sound, SoundCategory category, double x, double y, double z, float volume, float pitch, long seed) {
 		PlaySoundS2CPacket playSoundS2CPacket = new PlaySoundS2CPacket(sound, category, x, y, z, volume, pitch, seed);

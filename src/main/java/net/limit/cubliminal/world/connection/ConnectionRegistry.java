@@ -26,23 +26,23 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
-public class ConnectionRegistry implements SimpleResourceReloadListener<Object2ObjectOpenHashMap<RegistryKey<Biome>, Pair<Identifier, Connection>>> {
+public class ConnectionRegistry implements SimpleResourceReloadListener<Object2ObjectOpenHashMap<Identifier, Pair<RegistryKey<Biome>, Connection>>> {
 
     private static final Object2ObjectOpenHashMap<Identifier, Connection> BY_ID = new Object2ObjectOpenHashMap<>();
     private static final Multimap<RegistryKey<Biome>, Connection> BY_BIOME = HashMultimap.create();
 
     @Override
-    public CompletableFuture<Object2ObjectOpenHashMap<RegistryKey<Biome>, Pair<Identifier, Connection>>> load(ResourceManager resourceManager, Executor executor) {
+    public CompletableFuture<Object2ObjectOpenHashMap<Identifier, Pair<RegistryKey<Biome>, Connection>>> load(ResourceManager resourceManager, Executor executor) {
         return CompletableFuture.supplyAsync(() -> {
-            Object2ObjectOpenHashMap<RegistryKey<Biome>, Pair<Identifier, Connection>> data = new Object2ObjectOpenHashMap<>();
+            Object2ObjectOpenHashMap<Identifier, Pair<RegistryKey<Biome>, Connection>> data = new Object2ObjectOpenHashMap<>();
             for (Map.Entry<Identifier, Resource> entry : resourceManager.findResources("worldgen/connection", id -> id.getPath().endsWith(".json")).entrySet()) {
                 Identifier resourceId = entry.getKey();
                 try (Reader reader = entry.getValue().getReader()) {
-                    RegistryKey<Biome> biome = RegistryKey.of(RegistryKeys.BIOME, biomeId(resourceId));
-                    data.computeIfAbsent(biome, key -> {
-                        Identifier id = Identifier.of(resourceId.getNamespace(), FilenameUtils.getBaseName(resourceId.getPath()));
+                    Identifier id = Identifier.of(resourceId.getNamespace(), FilenameUtils.getBaseName(resourceId.getPath()));
+                    data.computeIfAbsent(id, key -> {
+                        RegistryKey<Biome> biome = RegistryKey.of(RegistryKeys.BIOME, biomeId(resourceId));
                         DataResult<Connection> connection = Connection.CODEC.codec().parse(JsonOps.INSTANCE, JsonHelper.deserialize(reader));
-                        return Pair.of(id, connection.getOrThrow());
+                        return Pair.of(biome, connection.getOrThrow());
                     });
                 } catch (IOException e) {
                     Cubliminal.LOGGER.error("Couldn't parse json file in: {}", resourceId);
@@ -54,14 +54,13 @@ public class ConnectionRegistry implements SimpleResourceReloadListener<Object2O
     }
 
     @Override
-    public CompletableFuture<Void> apply(Object2ObjectOpenHashMap<RegistryKey<Biome>, Pair<Identifier, Connection>> data, ResourceManager manager, Executor executor) {
+    public CompletableFuture<Void> apply(Object2ObjectOpenHashMap<Identifier, Pair<RegistryKey<Biome>, Connection>> data, ResourceManager manager, Executor executor) {
         return CompletableFuture.runAsync(() -> {
             BY_ID.clear();
             BY_BIOME.clear();
-            data.forEach((biome, pair) -> {
-                if (BY_ID.containsKey(pair.getFirst())) Cubliminal.LOGGER.error("Found duplicate connection: {}", pair.getFirst());
-                BY_ID.put(pair.getFirst(), pair.getSecond());
-                BY_BIOME.put(biome, pair.getSecond());
+            data.forEach((id, pair) -> {
+                BY_ID.put(id, pair.getSecond());
+                BY_BIOME.put(pair.getFirst(), pair.getSecond());
             });
         });
     }

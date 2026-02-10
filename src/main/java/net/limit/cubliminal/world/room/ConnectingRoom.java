@@ -12,7 +12,7 @@ import net.limit.cubliminal.world.room.CompositeRoom.Component;
 import java.util.ArrayList;
 import java.util.List;
 
-public record ConnectingRoom(FloorData[] floorData, byte width, byte height, byte padding) implements Room {
+public record ConnectingRoom(FloorData[] floorData, byte width, byte height, byte padding, boolean isPaddingBelow) implements Room {
     public static final MapCodec<ConnectingRoom> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             Codec.pair(Codec.intRange(0, Integer.MAX_VALUE).fieldOf("floor").codec(),
                     Codec.pair(
@@ -21,11 +21,12 @@ public record ConnectingRoom(FloorData[] floorData, byte width, byte height, byt
             )).listOf().fieldOf("floors").forGetter(ConnectingRoom::pack),
             Codec.BYTE.fieldOf("width").forGetter(ConnectingRoom::getWidth),
             Codec.BYTE.fieldOf("height").forGetter(ConnectingRoom::getHeight),
-            Codec.BYTE.optionalFieldOf("padding", (byte) 0).forGetter(ConnectingRoom::padding)
+            Codec.BYTE.optionalFieldOf("padding", (byte) 0).forGetter(ConnectingRoom::padding),
+            Codec.BOOL.optionalFieldOf("is_padding_below", true).forGetter(ConnectingRoom::isPaddingBelow)
     ).apply(instance, ConnectingRoom::new));
 
-    public ConnectingRoom(List<Pair<Integer, Pair<List<Component>, String>>> packedData, byte width, byte height, byte padding) {
-        this(ConnectingRoom.unpack(packedData, width, height), width, height, padding);
+    public ConnectingRoom(List<Pair<Integer, Pair<List<Component>, String>>> packedData, byte width, byte height, byte padding, boolean isPaddingBelow) {
+        this(ConnectingRoom.unpack(packedData, width, height), width, height, padding, isPaddingBelow);
         if (width < 1 || height < 1) {
             throw new IllegalArgumentException("Room width: " + width + " and height: " + height + " must be set above 0");
         }

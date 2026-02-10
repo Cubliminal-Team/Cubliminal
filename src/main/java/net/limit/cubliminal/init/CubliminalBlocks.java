@@ -17,6 +17,7 @@ import net.limit.cubliminal.block.fluid.CustomFluidBlock;
 import net.limit.cubliminal.block.fluid.FluidBlockFactory;
 import net.limit.cubliminal.item.AlmondWaterItem;
 import net.limit.cubliminal.item.CanItem;
+import net.limit.cubliminal.item.WrittenDocumentItem;
 import net.minecraft.block.*;
 import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.component.DataComponentTypes;
@@ -34,7 +35,6 @@ import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.sound.BlockSoundGroup;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Rarity;
@@ -122,6 +122,8 @@ public class CubliminalBlocks implements Initer {
 	}
 
 	public static final TagKey<Block> FLOOR_PALETTE = of("floor_palette");
+
+	public static final BlockSoundGroup PAPER = new BlockSoundGroup(1.0f, 1.0f, CubliminalSounds.PAPER_BREAK, CubliminalSounds.PAPER_STEP, CubliminalSounds.PAPER_PLACE, CubliminalSounds.PAPER_HIT, CubliminalSounds.PAPER_FALL);
 
 	public static final Block UNLIMITED_STRUCTURE_BLOCK = register("unlimited_structure_block", UnlimitedStructureBlock::new,
 			AbstractBlock.Settings.copy(Blocks.STRUCTURE_BLOCK), OperatorOnlyBlockItem::new, new Item.Settings().rarity(Rarity.EPIC));
@@ -288,12 +290,23 @@ public class CubliminalBlocks implements Initer {
 			AbstractBlock.Settings.create()
 					.mapColor(MapColor.WHITE)
 					.breakInstantly()
-					.sounds(new BlockSoundGroup(1.0f, 1.0f, SoundEvents.ITEM_BOOK_PAGE_TURN, SoundEvents.ITEM_BOOK_PAGE_TURN,
-							SoundEvents.ITEM_BOOK_PAGE_TURN, SoundEvents.ITEM_BOOK_PAGE_TURN, SoundEvents.ITEM_BOOK_PAGE_TURN))
+					.sounds(PAPER)
 					.nonOpaque()
 					.noCollision()
 					.noBlockBreakParticles()
 					.pistonBehavior(PistonBehavior.DESTROY));
+
+	public static final Block WRITTEN_DOCUMENT = register("written_document", WrittenDocumentBlock::new,
+			AbstractBlock.Settings.create()
+					.mapColor(MapColor.WHITE)
+					.breakInstantly()
+					.sounds(PAPER)
+					.nonOpaque()
+					.noCollision()
+					.noBlockBreakParticles()
+					.dropsNothing()
+					.pistonBehavior(PistonBehavior.DESTROY),
+			WrittenDocumentItem::new, new Item.Settings().maxCount(16));
 
 	public static final Block TWO_LONG_SPRUCE_TABLE = register("two_long_spruce_table", TwoLongTableBlock::new,
 			AbstractBlock.Settings.copy(Blocks.SPRUCE_PLANKS).requiresTool());
@@ -386,17 +399,18 @@ public class CubliminalBlocks implements Initer {
 					.pistonBehavior(PistonBehavior.BLOCK)
 					.requiresTool());
 
+	public static final Block CYAN_TERRACOTTA_STAIRS = register("cyan_terracotta_stairs", StairsBlock::new, AbstractBlock.Settings.copy(Blocks.CYAN_TERRACOTTA), Blocks.CYAN_TERRACOTTA.getDefaultState());
+
 	public static final Block GRAY_ASPHALT = register("gray_asphalt", Block::new,
 			AbstractBlock.Settings.create()
 					.mapColor(DyeColor.GRAY)
 					.strength(2f)
 					.requiresTool());
 
-	public static final Block GRAY_ASPHALT_SLAB = register("gray_asphalt_slab", SlabBlock::new,
-			AbstractBlock.Settings.create()
-					.mapColor(DyeColor.GRAY)
-					.strength(2f)
-					.requiresTool());
+	public static final Block GRAY_ASPHALT_SLAB = register("gray_asphalt_slab", SlabBlock::new, AbstractBlock.Settings.copy(GRAY_ASPHALT));
+
+	public static final Block GRAY_ASPHALT_STAIRS = register("gray_asphalt_stairs", StairsBlock::new,
+			AbstractBlock.Settings.copy(GRAY_ASPHALT), GRAY_ASPHALT.getDefaultState());
 
 	public static final Block WET_GRAY_ASPHALT = register("wet_gray_asphalt", Block::new,
 			AbstractBlock.Settings.create()
@@ -405,11 +419,19 @@ public class CubliminalBlocks implements Initer {
 					.requiresTool()
 					.slipperiness(0.87f));
 
+	public static final Block WHITER_CONCRETE = register("whiter_concrete", Block::new,
+			AbstractBlock.Settings.create()
+					.mapColor(MapColor.WHITE)
+					.strength(3.5f, 6.0f)
+					.requiresTool());
+
 	public static final Block WHITE_BRICKS = register("white_bricks", Block::new,
 			AbstractBlock.Settings.create()
 					.mapColor(MapColor.WHITE)
 					.strength(3.5f, 6.0f)
 					.requiresTool());
+
+	public static final Block WHITE_BRICK_SLAB = register("white_brick_slab", SlabBlock::new, AbstractBlock.Settings.copy(WHITE_BRICKS));
 
 	public static final Block CRACKED_WHITE_BRICKS = register("cracked_white_bricks", Block::new,
 			AbstractBlock.Settings.create()
@@ -437,7 +459,7 @@ public class CubliminalBlocks implements Initer {
 					.luminance(createLightLevelFromLitBlockState(15))
 					.sounds(BlockSoundGroup.GLASS)
 					.nonOpaque()
-					.requiresTool(), 0.3f, FUSED_VERTICAL_LIGHT_TUBE.getDefaultState())
+					.requiresTool(), 0.15f, FUSED_VERTICAL_LIGHT_TUBE.getDefaultState())
 			.voxelShapes(6, 0, 0, 10, 32, 3));
 
 	public static final Block FUSED_HANGING_FLUORESCENT_LIGHTS = registerBlock("fused_hanging_fluorescent_lights", new RotatableLightBlock(
@@ -458,7 +480,7 @@ public class CubliminalBlocks implements Initer {
 					.strength(1, 2)
 					.luminance(createLightLevelFromLitBlockState(15))
 					.sounds(BlockSoundGroup.GLASS)
-					.nonOpaque(), 0.3f, FUSED_HANGING_FLUORESCENT_LIGHTS.getDefaultState())
+					.nonOpaque(), 0.15f, FUSED_HANGING_FLUORESCENT_LIGHTS.getDefaultState())
 			.voxelShapes(0, 14.4, 5, 16, 15.9, 11));
 
 	public static final Block SMALL_HANGING_PIPE = register("small_hanging_pipe", SmallHangingPipeBlock::new,
@@ -532,15 +554,23 @@ public class CubliminalBlocks implements Initer {
 					.luminance(createLightLevelFromLitBlockState(15))
 					.sounds(BlockSoundGroup.GLASS)
 					.nonOpaque()
-					.requiresTool(), 0.3f, FUSED_WALL_LIGHT_BULB.getDefaultState())
+					.requiresTool(), 0.15f, FUSED_WALL_LIGHT_BULB.getDefaultState())
 			.voxelShapes(3.5, 3.5, 0, 12.5, 12.5, 7.5));
 
-	public static final Block CHAIN_WALL = registerBlock("chain_wall", new BoardBlock(
+	public static final Block CHAIN_BLOCK = register("chain_block", Block::new,
 			AbstractBlock.Settings.copy(Blocks.IRON_BARS)
-					.registryKey(key("chain_wall"))
+					.registryKey(key("chain_block"))
 					.sounds(BlockSoundGroup.CHAIN)
 					.requiresTool()
-					.nonOpaque())
+					.nonOpaque());
+
+	public static final Block CHAIN_SLAB = register("chain_slab", SlabBlock::new, AbstractBlock.Settings.copy(CHAIN_BLOCK));
+
+	public static final Block CHAIN_STAIRS = register("chain_stairs", StairsBlock::new,
+			AbstractBlock.Settings.copy(CHAIN_BLOCK), CHAIN_BLOCK.getDefaultState());
+
+	public static final Block CHAIN_WALL = registerBlock("chain_wall", new BoardBlock(
+			AbstractBlock.Settings.copy(CHAIN_BLOCK).registryKey(key("chain_wall")))
 			.voxelShapes(2));
 
 	public static final Block RED_CHAIN_WALL = registerBlock("red_chain_wall", new BoardBlock(

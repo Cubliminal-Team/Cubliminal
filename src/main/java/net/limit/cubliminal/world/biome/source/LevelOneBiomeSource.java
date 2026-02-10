@@ -10,9 +10,6 @@ import net.limit.cubliminal.level.Level;
 import net.limit.cubliminal.level.Levels;
 import net.limit.cubliminal.world.biome.noise.NoiseParameters;
 import net.limit.cubliminal.world.biome.noise.RegistryNoisePreset;
-import net.minecraft.registry.RegistryEntryLookup;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.RegistryOps;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.noise.SimplexNoiseSampler;
@@ -29,7 +26,6 @@ import java.util.stream.Stream;
 
 public class LevelOneBiomeSource extends BiomeSource implements LiminalBiomeSource {
     public static final MapCodec<LevelOneBiomeSource> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            RegistryOps.getEntryLookupCodec(RegistryKeys.BIOME),
             Codec.FLOAT.optionalFieldOf("scale", 0.1f).forGetter(biomeSource -> biomeSource.scale)
     ).apply(instance, instance.stable(LevelOneBiomeSource::new)));
 
@@ -51,15 +47,17 @@ public class LevelOneBiomeSource extends BiomeSource implements LiminalBiomeSour
     private final RegistryEntry<Biome> corridorsBiome;
 
     // Note that tags won't have been initialized yet by the time we create a biome source
-    public LevelOneBiomeSource(RegistryEntryLookup<Biome> lookup, float scale) {
+    public LevelOneBiomeSource(float scale) {
         this.level = Levels.LEVEL_1;
         this.scale = scale;
         this.noisePreset = RegistryNoisePreset.getPreset(CubliminalRegistrar.HABITABLE_ZONE_KEY);
-        this.levelBiomes = this.noisePreset.biomes().keySet();
-        this.deepBiomes = this.noisePreset.biomes().keySet().stream().filter(biome -> {
+        this.levelBiomes = this.noisePreset.biomes().entrySet().stream()
+                .filter(entry -> entry.getValue().generate())
+                .map(Map.Entry::getKey).collect(Collectors.toSet());
+        this.deepBiomes = this.levelBiomes.stream().filter(biome -> {
             String biomeStr = biome.getKey().orElseThrow().getValue().getPath();
             if (!biomeStr.startsWith("deep")) {
-                this.biomeMap.computeIfAbsent(biome, entry -> this.noisePreset.biomes().keySet()
+                this.biomeMap.computeIfAbsent(biome, entry -> this.levelBiomes
                         .stream()
                         .filter(biomex -> {
                             String biomexStr = biomex.getKey().orElseThrow().getValue().getPath();
@@ -74,7 +72,10 @@ public class LevelOneBiomeSource extends BiomeSource implements LiminalBiomeSour
         this.rarityScale = this.noisePreset.globalSettings().rarity();
         this.maxSpacing = this.noisePreset.globalSettings().spacing();
         this.levelSafety = this.noisePreset.globalSettings().safety();
-        this.corridorsBiome = lookup.getOrThrow(CubliminalBiomes.HABITABLE_CORRIDORS_BIOME);
+        this.corridorsBiome = this.noisePreset.biomes().keySet()
+                .stream()
+                .filter(biome -> biome.getKey().orElseThrow().equals(CubliminalBiomes.HABITABLE_CORRIDORS_BIOME))
+                .toList().getFirst();
     }
 
     private void initSamplers() {
