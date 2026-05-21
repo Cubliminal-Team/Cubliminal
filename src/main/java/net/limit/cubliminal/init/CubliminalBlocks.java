@@ -761,6 +761,10 @@ public class CubliminalBlocks implements Initer {
 
 	public static final Block CRATE_AIR = registerWithoutItem("crate_air", CrateAirBlock::new, AbstractBlock.Settings.copy(Blocks.AIR));
 
+	/**
+	 * The almond water fluid block will primarily be used in levels that contains oceans of almond water.
+	 * This fluid block is currently just for decoration.
+	 */
 	public static final Block ALMOND_WATER_BLOCK = registerFluidBlock("almond_water", CubliminalFluids.ALMOND_WATER, AlmondWaterFluidBlock::new,
 			CustomFluidBlock.Settings.create()
 					.setColor(0xFFECB3)
@@ -769,6 +773,10 @@ public class CubliminalBlocks implements Initer {
 					)
 	);
 
+	/**
+	 * contaminated water will primarily be used in level 2, also known as pipe dreams.
+	 * This fluid gives negative effects to entities.
+	 */
 	public static final Block CONTAMINATED_WATER_BLOCK = registerFluidBlock("contaminated_water", CubliminalFluids.CONTAMINATED_WATER, ContaminatedWaterBlock::new,
 			CustomFluidBlock.Settings.create()
 					.setColor(0x556B2F)
@@ -780,6 +788,10 @@ public class CubliminalBlocks implements Initer {
 					)
 	);
 
+	/**
+	 * This fluid block will be on levels such as level 2, as well as any other levels that contains black sludge.
+	 * Black sludge is a thick fluid that is very harmful to an entity sanity.
+ 	 */
 	public static final Block BLACK_SLUDGE_BLOCK = registerFluidBlock("black_sludge", CubliminalFluids.BLACK_SLUDGE, BlackSludgeFluidBlock::new,
 			CustomFluidBlock.Settings.create()
 					.setColor(0x1C1F1C)
