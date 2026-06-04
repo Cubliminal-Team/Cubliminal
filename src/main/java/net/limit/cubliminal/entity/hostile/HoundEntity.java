@@ -29,15 +29,21 @@ public class HoundEntity extends HostileEntity {
     protected void initGoals() {
         super.initGoals();
 
+        // Receives the target and goal selector.
         GoalSelector target = this.targetSelector;
         GoalSelector goal = this.goalSelector;
 
+        // Allow Hounds to attack players.
         target.add(1, new ActiveTargetGoal<>(this, PlayerEntity.class, true));
+        // Allow Hounds to attack villagers.
         target.add(2, new ActiveTargetGoal<>(this, VillagerEntity.class, true));
 
         goal.add(0, new getIntimidated(this, PlayerEntity.class, 1.0f, 0f, 1.0f));
+        // Allows the Hound to attack players.
         goal.add(2, new MeleeAttackGoal(this, 1.0f, true));
+        // Allows the Hound to wander far distances.
         goal.add(4, new WanderAroundFarGoal(this, 1.0f));
+        // Allows the Hound to wander at short distances.
         goal.add(5, new WanderAroundGoal(this, 0.5f));
     }
 

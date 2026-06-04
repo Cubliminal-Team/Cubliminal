@@ -14,7 +14,7 @@ import net.minecraft.particle.ParticleType;
 import java.util.function.Function;
 
 @Environment(EnvType.CLIENT)
-public class CustomParticleManager {
+public class CubliminalParticleManager {
     public static void init() {
         registerSplashFactory(CubliminalParticleTypes.SPLASH, WaterSplashParticle.SplashFactory::new);
         registerFactory(CubliminalParticleTypes.CONTAMINATED_WATER_SPLASH, ContaminatedWaterSplash.Factory::new);

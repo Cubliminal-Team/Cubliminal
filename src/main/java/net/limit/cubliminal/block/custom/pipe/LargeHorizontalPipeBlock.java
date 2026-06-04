@@ -31,6 +31,7 @@ public class LargeHorizontalPipeBlock extends PipeBlock implements TypedPipeSupp
         return CODEC;
     }
 
+    // TODO: northernlimit, add documentation here.
     @Nullable
     @Override
     public BlockState getPlacementState(ItemPlacementContext ctx) {

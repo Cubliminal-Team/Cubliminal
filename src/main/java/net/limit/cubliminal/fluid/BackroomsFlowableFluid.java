@@ -27,19 +27,36 @@ public abstract class BackroomsFlowableFluid extends FlowableFluid {
     private final SoundEvent ambience;
     private final SoundCategory category;
 
+    /**
+     * Initializes the flowable fluid class.
+     * @param ambience The ambience the fluid will play in the background.
+     * @param category The sound category for the ambience.
+     */
     public BackroomsFlowableFluid(SoundEvent ambience, SoundCategory category){
         this.ambience = ambience;
         this.category = category;
     }
 
+    /**
+     * Set the bottle item that will be traded with the player when the player
+     * tries to interact with the fluid.
+     * @return The item that will possibly contain the contained fluid and replace the empty glass bottle with.
+     */
     public abstract ItemStack getBottleItem();
 
+    /**
+     * The fluid block to used. It's primarily use is so mixins can use the block settings.
+     * @return The custom fluid block.
+     */
     public abstract CustomFluidBlock getFluidBlock();
 
     @Override
     protected void randomDisplayTick(World world, BlockPos pos, FluidState state, net.minecraft.util.math.random.Random random) {
+        // Checks to see if water is still and not falling.
         if (!state.isStill() && !(Boolean)state.get(FALLING)) {
+            // Continues at a random tick.
             if (random.nextInt(64) == 0) {
+                // At random, it will play the ambient sounds.
                 world.playSound((double)pos.getX() + 0.5D,
                         (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D,
                         this.ambience, this.category,

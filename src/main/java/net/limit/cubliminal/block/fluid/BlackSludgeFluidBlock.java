@@ -14,6 +14,7 @@ public class BlackSludgeFluidBlock extends CustomFluidBlock {
     @Override
     protected StatusEffectInstance[] applyEffectsToEntities() {
         super.applyEffectsToEntities();
+        // This applies the slowness effect to entities.
         return new StatusEffectInstance[]{
                 new StatusEffectInstance(StatusEffects.SLOWNESS, 1800, 1, true, false, true)
         };
