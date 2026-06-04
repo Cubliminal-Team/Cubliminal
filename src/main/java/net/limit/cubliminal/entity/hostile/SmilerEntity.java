@@ -1,6 +1,7 @@
 package net.limit.cubliminal.entity.hostile;
 
 import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
+import net.limit.cubliminal.util.DebugLogger;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -18,10 +19,11 @@ import net.minecraft.entity.mob.PathAwareEntity;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.registry.Registries;
-import net.minecraft.world.Difficulty;
-import net.minecraft.world.LocalDifficulty;
-import net.minecraft.world.ServerWorldAccess;
-import net.minecraft.world.World;
+import net.minecraft.state.property.BooleanProperty;
+import net.minecraft.state.property.Properties;
+import net.minecraft.state.property.Property;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.*;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -58,18 +60,20 @@ public class SmilerEntity extends HostileEntity {
         return this.canBreakDoors;
     }
 
+    /* TODO | If possible, due to possible conflicts with goal priorities with lighting, it should
+        focus on on light sources that are the closest to players.
+     */
     @Override
     protected void initGoals() {
-        // A list of known light emitting blocks.
-        List<Block> targetBlocks = new ArrayList<>(List.of(Blocks.TORCH, Blocks.WALL_TORCH, Blocks.CAMPFIRE, Blocks.LANTERN, Blocks.GLOWSTONE, Blocks.SEA_LANTERN, Blocks.JACK_O_LANTERN, Blocks.REDSTONE_TORCH));
         // The variables used in the most dynamic way to set target goals.
-        /// Gets the element size of how many light emitting blocks.
-        int elementSize = targetBlocks.size();
-        /// The start number from the priority of goals.
+        // Gets the element size of how many light emitting blocks.
+        int elementSize = LIGHT_BLOCKS.size();
+        // The start number from the priority of goals.
         int startNumber = 3;
-        /// Gets the total size by adding the start number with the light block array.
+        // Gets the total size by adding the start number with the light block array.
         int totalSize = startNumber + elementSize;
 
+        //region The Target Selectors
         // Receives the target selector.
         GoalSelector target = this.targetSelector;
         target.add(1, new RevengeGoal(this));
@@ -77,27 +81,25 @@ public class SmilerEntity extends HostileEntity {
         target.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, true));
         // Have Smilers attack villagers.
         target.add(3, new ActiveTargetGoal<>(this, VillagerEntity.class, true));
+        //endregion
+
+        //region The Goal Selectors
 
         // Receives the goal selector.
         GoalSelector goal = this.goalSelector;
         // Give Smilers the ability to Melee attack the targeted entities.
-        goal.add(2, new MeleeAttackGoal(this, 0.6f, true));
-        // This makes the smiler destroy any light source.
-        // Loops through the array of light emitting blocks.
-        for (int i = 0; i < elementSize; i++){
-            // Gets the current light emitting block.
-            Block block = targetBlocks.get(i);
-            // Adds a goal to destroy that light emitting block.
-            goal.add(startNumber + i, new DestroyLightSourceGoal(block, this, 0.7f, 45, 10));
-        }
+        goal.add(0, new MeleeAttackGoal(this, 0.6f, true));
+        // This makes the smiler destroy all valid light sources.
+        goal.add(1, new DestroyLightSourceGoal(this, 0.7f, 45, 10));
         // Allows Smilers to wander around at a far distance and spread out better.
-        goal.add(totalSize + 2, new WanderAroundFarGoal(this,0.3f));
+        goal.add(2, new WanderAroundFarGoal(this,0.3f));
         // Gives Smilers the ability to move through villages.
-        goal.add(totalSize + 3, new MoveThroughVillageGoal(this, 1.0, true, 4, this::canBreakDoors));
+        goal.add(3, new MoveThroughVillageGoal(this, 1.0, true, 4, this::canBreakDoors));
         // Allows Smilers to wander around at shorter distances.
-        goal.add(totalSize + 4, new WanderAroundGoal(this,0.6f));
+        goal.add(4, new WanderAroundGoal(this,0.6f));
         // Gives Smilers the ability to break doors so they are able to reach their target.
-        goal.add(totalSize + 6, new BreakDoorGoal(this, difficulty -> true));
+        goal.add(5, new BreakDoorGoal(this, difficulty -> true));
+        //endregion
     }
 
     @Nullable
@@ -110,7 +112,7 @@ public class SmilerEntity extends HostileEntity {
             // Loops through every state of the block.
             for (BlockState state : block.getStateManager().getStates()){
                 // The luminance level the Smiler will target.
-                int targetedLuminance = 1;
+                int targetedLuminance = 2;
                 // Checks to see if the luminance is greater or equal to the targeted.
                 if (state.getLuminance() >= targetedLuminance){
                     // Adds the block to the set of light blocks.
@@ -170,15 +172,35 @@ public class SmilerEntity extends HostileEntity {
 
         /**
          * Smiler goal to destroy any light source
-         * @param targetBlock The target block to destroy. AKA a light source block.
          * @param mob The smiler mob
          * @param speed The speed at which the smiler entity goes to destroy the light source.
          * @param maxYDifference Distance from block from where smiler entity heads towards the target block.
-         * @param i The range where the smiler entity is able to destroy the block.
+         * @param innerRange The range where the smiler entity is able to destroy the block.
          */
-        public DestroyLightSourceGoal(Block targetBlock, PathAwareEntity mob, double speed, int maxYDifference, int i) {
-            super(targetBlock, mob, speed, maxYDifference);
-            this.innerRange = i;
+        public DestroyLightSourceGoal(PathAwareEntity mob, double speed, int maxYDifference, int innerRange) {
+            super(Blocks.TORCH, mob, speed, maxYDifference);
+            this.innerRange = innerRange;
+        }
+
+        @Override
+        protected boolean isTargetPos(WorldView world, BlockPos pos) {
+            // Gets the block state.
+            BlockState state = world.getBlockState(pos);
+
+            // Checks to see if the target isn't a light block
+            if (!LIGHT_BLOCKS.contains(state.getBlock())){
+                // Marks it so it doesn't attack those blocks. For example, grass blocks, crafting table, etc.
+                return false;
+            }
+
+            // Checks to see if the light block contains the LIT property.
+            if (state.contains(Properties.LIT)){
+                // Sets it as a target depending if it's lit or not.
+                return state.get(Properties.LIT);
+            }
+
+            // Marks all blocks as ready to be destroyed.
+            return true;
         }
 
         @Override
