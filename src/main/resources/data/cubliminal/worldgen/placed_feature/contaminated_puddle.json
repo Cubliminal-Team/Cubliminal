@@ -1,0 +1,53 @@
+{
+  "feature": {
+    "type": "minecraft:random_patch",
+    "config": {
+      "tries": 16,
+      "xz_spread": 5,
+      "y_spread": 0,
+      "feature": {
+        "feature": {
+          "config": {
+            "to_place": {
+              "type": "minecraft:weighted_state_provider",
+              "entries": [
+                {
+                  "weight": 3,
+                  "data": {
+                    "Name": "cubliminal:contaminated_water_fluid"
+                  }
+                },
+                {
+                  "weight": 1,
+                  "data": {
+                    "Name": "minecraft:gravel"
+                  }
+                }
+              ]
+            }
+          },
+          "type": "minecraft:simple_block"
+        },
+        "placement": [
+          {
+            "type": "minecraft:block_predicate_filter",
+            "predicate": {
+              "type": "minecraft:matching_block_tag",
+              "offset": [0, 1, 0],
+              "tag": "minecraft:air"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "placement": [
+    {
+      "type": "minecraft:block_predicate_filter",
+      "predicate": {
+        "type": "minecraft:matching_block_tag",
+        "tag": "cubliminal:floor_palette"
+      }
+    }
+  ]
+}

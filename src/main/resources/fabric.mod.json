@@ -33,6 +33,8 @@
         ],
         "initer": [
             "net.limit.cubliminal.init.CubliminalBiomes",
+            "net.limit.cubliminal.init.CubliminalDataComponents",
+            "net.limit.cubliminal.init.CubliminalFeatures",
             "net.limit.cubliminal.init.CubliminalBlockEntities",
             "net.limit.cubliminal.init.CubliminalBlocks",
             "net.limit.cubliminal.init.CubliminalEffects",
@@ -41,7 +43,8 @@
             "net.limit.cubliminal.init.CubliminalItems",
             "net.limit.cubliminal.init.CubliminalSounds",
             "net.limit.cubliminal.init.CubliminalStructures",
-            "net.limit.cubliminal.networking.s2c.S2CPackets"
+            "net.limit.cubliminal.networking.s2c.S2CPackets",
+            "net.limit.cubliminal.init.CubliminalScreenHandlers"
         ],
         "initerclient": [
             "net.limit.cubliminal.client.render.RenderLayers",

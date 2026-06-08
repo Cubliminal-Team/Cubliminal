@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "cubliminal:almond_water",
+    "cubliminal:flowing_almond_water",
+    "cubliminal:contaminated_water",
+    "cubliminal:flowing_contaminated_water"
+  ]
+}

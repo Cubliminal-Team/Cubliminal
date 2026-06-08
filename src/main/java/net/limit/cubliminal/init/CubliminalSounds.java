@@ -29,12 +29,22 @@ public class CubliminalSounds implements Initer {
     public static final RegistryEntry.Reference<SoundEvent> AMBIENT_LEVEL_O = registerReference("ambient.lvl0");
     public static final RegistryEntry.Reference<SoundEvent> AMBIENT_PILLARS_LEVEL_0 = registerReference("ambient.lvl0.pillars");
     public static final RegistryEntry.Reference<SoundEvent> AMBIENT_REDROOMS = registerReference("ambient.redrooms");
+	public static final RegistryEntry.Reference<SoundEvent> POWER_DOWN = registerReference("ambient.power_down");
+	public static final RegistryEntry.Reference<SoundEvent> POWER_ON = registerReference("ambient.power_on");
 	public static final RegistryEntry.Reference<SoundEvent> HEARTBEAT = registerReference("heartbeat");
 	public static final RegistryEntry.Reference<SoundEvent> NOCLIPPING = registerReference("noclipping");
 	public static final RegistryEntry.Reference<SoundEvent> WALL_CLIPPING = registerReference("wall_clipping");
 	public static final RegistryEntry.Reference<SoundEvent> OPEN_SINK = registerReference("block.sink_open");
 	public static final RegistryEntry.Reference<SoundEvent> SINK_AMBIENT = registerReference("block.sink.ambient");
 	public static final RegistryEntry.Reference<SoundEvent> FLUX_CAPACITOR = registerReference("block.flux_capacitor");
+	public static final RegistryEntry.Reference<SoundEvent> SHORT_CIRCUIT = registerReference("block.short_circuit");
+	public static final RegistryEntry.Reference<SoundEvent> BLUE_HORIZON = registerReference("music.blue_horizon");
+
+	public static final SoundEvent PAPER_BREAK = register("block.paper_break");
+	public static final SoundEvent PAPER_STEP = register("block.paper_step");
+	public static final SoundEvent PAPER_PLACE = register("block.paper_place");
+	public static final SoundEvent PAPER_HIT = register("block.paper_hit");
+	public static final SoundEvent PAPER_FALL = register("block.paper_fall");
 
 
 	public static void clientPlaySoundSingle(ServerPlayerEntity target, RegistryEntry<SoundEvent> sound, SoundCategory category, double x, double y, double z, float volume, float pitch, long seed) {

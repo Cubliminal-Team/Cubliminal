@@ -1,0 +1,22 @@
+{
+	"parent": "block/block",
+	"texture_size": [64, 64],
+	"textures": {
+		"1": "cubliminal:block/plywood_sheet",
+		"particle": "cubliminal:block/plywood_sheet"
+	},
+	"elements": [
+		{
+			"from": [0, 0, 0],
+			"to": [16, 16, 2],
+			"faces": {
+				"north": {"uv": [0, 0, 4, 4], "texture": "#1", "cullface": "north"},
+				"east": {"uv": [4, 0, 4.5, 4], "texture": "#1", "cullface": "east"},
+				"south": {"uv": [0, 4, 4, 8], "texture": "#1"},
+				"west": {"uv": [4, 4, 4.5, 8], "texture": "#1", "cullface": "west"},
+				"up": {"uv": [8.5, 0.5, 4.5, 0], "texture": "#1", "cullface": "up"},
+				"down": {"uv": [8.5, 0.5, 4.5, 1], "texture": "#1", "cullface": "down"}
+			}
+		}
+	]
+}

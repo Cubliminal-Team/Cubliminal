@@ -26,6 +26,80 @@
       }
     ]
   },
+  "ambient.power_down": {
+    "category": "ambient",
+    "sounds": [
+      {
+        "name": "cubliminal:ambience/power_down/power_down_1",
+        "stream": true
+      },
+      {
+        "name": "cubliminal:ambience/power_down/power_down_2",
+        "stream": true
+      },
+      {
+        "name": "cubliminal:ambience/power_down/power_down_3",
+        "stream": true
+      },
+      {
+        "name": "cubliminal:ambience/power_down/power_down_4",
+        "stream": true
+      },
+      {
+        "name": "cubliminal:ambience/power_down/power_down_5",
+        "stream": true
+      },
+      {
+        "name": "cubliminal:ambience/power_down/power_down_6",
+        "stream": true
+      },
+      {
+        "name": "cubliminal:ambience/power_down/power_down_7",
+        "stream": true
+      },
+      {
+        "name": "cubliminal:ambience/power_down/power_down_8",
+        "stream": true
+      },
+      {
+        "name": "cubliminal:ambience/power_down/power_down_9",
+        "stream": true
+      },
+      {
+        "name": "cubliminal:ambience/power_down/power_down_10",
+        "stream": true
+      }
+    ]
+  },
+  "ambient.power_on": {
+    "category": "ambient",
+    "sounds": [
+      {
+        "name": "cubliminal:ambience/power_on/power_on_1",
+        "stream": true
+      },
+      {
+        "name": "cubliminal:ambience/power_on/power_on_2",
+        "stream": true
+      },
+      {
+        "name": "cubliminal:ambience/power_on/power_on_3",
+        "stream": true
+      },
+      {
+        "name": "cubliminal:ambience/power_on/power_on_4",
+        "stream": true
+      },
+      {
+        "name": "cubliminal:ambience/power_on/power_on_5",
+        "stream": true
+      },
+      {
+        "name": "cubliminal:ambience/power_on/power_on_6",
+        "stream": true
+      }
+    ]
+  },
   "heartbeat": {
     "category": "player",
     "sounds": [
@@ -78,5 +152,73 @@
       }
     ],
     "subtitle": "subtitle.block.flux_capacitor"
+  },
+  "block.short_circuit": {
+    "category": "blocks",
+    "sounds": [
+      {
+        "name": "cubliminal:block/short_circuit/short_circuit_1"
+      },
+      {
+        "name": "cubliminal:block/short_circuit/short_circuit_2"
+      },
+      {
+        "name": "cubliminal:block/short_circuit/short_circuit_3"
+      }
+    ],
+    "subtitle": "subtitle.block.short_circuit"
+  },
+  "music.blue_horizon": {
+    "sounds": [
+      {
+        "name": "cubliminal:music/blue_horizon",
+        "stream": true
+      }
+    ]
+  },
+  "block.paper_break": {
+    "category": "blocks",
+    "sounds": [
+      {
+        "name": "cubliminal:block/paper/paper_tear"
+      }
+    ],
+    "subtitle": "subtitle.block.paper_break"
+  },
+  "block.paper_step": {
+    "category": "blocks",
+    "sounds": [
+      {
+        "name": "cubliminal:block/paper/paper_step"
+      }
+    ],
+    "subtitle": "subtitles.block.generic.footsteps"
+  },
+  "block.paper_place": {
+    "category": "blocks",
+    "sounds": [
+      {
+        "name": "cubliminal:block/paper/paper_place"
+      }
+    ],
+    "subtitle": "subtitles.block.generic.place"
+  },
+  "block.paper_hit": {
+    "category": "blocks",
+    "sounds": [
+      {
+        "name": "cubliminal:block/paper/paper_hit"
+      }
+    ],
+    "subtitle": "subtitle.block.paper_hit"
+  },
+  "block.paper_fall": {
+    "category": "blocks",
+    "sounds": [
+      {
+        "name": "cubliminal:block/paper/paper_fall"
+      }
+    ],
+    "subtitle": "subtitle.block.paper_fall"
   }
 }

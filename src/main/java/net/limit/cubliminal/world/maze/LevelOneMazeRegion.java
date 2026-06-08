@@ -99,7 +99,9 @@ public class LevelOneMazeRegion extends MazeRegion<LevelOneMaze> {
     private void placeConnection(int x, int z, int width, int height, ConnectingRoom room, int floors, Random random) {
         int validFloors = 1 + floors - room.getFloors() - room.padding();
         if (validFloors > 0) {
-            int startFloor = room.padding() + random.nextInt(validFloors);
+            int startFloor = room.isPaddingBelow()
+                    ? room.padding() + random.nextInt(validFloors)
+                    : floors - room.padding() - room.getFloors() - random.nextInt(validFloors);
             byte manipulation = (byte) random.nextInt(8);
             for (int dy = 0; dy < room.getFloors(); dy++) {
                 if (room.hasFloor(dy)) {

@@ -1,0 +1,48 @@
+{
+  "entries": [
+    {
+      "id": 0,
+      "affected": [
+        "cubliminal:deep_aquila_sector",
+        "cubliminal:aquila_sector"
+      ],
+      "min_lit": 6000,
+      "max_lit": 20400,
+      "min_off": 1800,
+      "max_off": 7200
+    },
+    {
+      "id": 1,
+      "affected": [
+        "cubliminal:deep_gild_sector",
+        "cubliminal:gild_sector"
+      ],
+      "min_lit": 4800,
+      "max_lit": 18000,
+      "min_off": 2400,
+      "max_off": 7200
+    },
+    {
+      "id": 2,
+      "affected": [
+        "cubliminal:deep_gothic_sector",
+        "cubliminal:gothic_sector"
+      ],
+      "min_lit": 4200,
+      "max_lit": 16800,
+      "min_off": 3600,
+      "max_off": 9600
+    },
+    {
+      "id": 3,
+      "affected": [
+        "cubliminal:deep_ouroboros_sector",
+        "cubliminal:ouroboros_sector"
+      ],
+      "min_lit": 4200,
+      "max_lit": 15600,
+      "min_off": 3600,
+      "max_off": 12000
+    }
+  ]
+}

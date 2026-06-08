@@ -1,105 +1,93 @@
 package net.limit.cubliminal.block.custom;
 
-import net.limit.cubliminal.block.CustomProperties;
+import net.limit.cubliminal.block.custom.template.BlockVariantHolder;
+import net.limit.cubliminal.block.custom.template.RotatableLightBlock;
+import net.limit.cubliminal.block.state.CustomProperties;
 import net.limit.cubliminal.init.CubliminalBiomes;
+import net.limit.cubliminal.init.CubliminalBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.HorizontalFacingBlock;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
-import net.minecraft.state.property.EnumProperty;
-import net.minecraft.state.property.Properties;
-import net.minecraft.util.BlockMirror;
-import net.minecraft.util.BlockRotation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
-import net.minecraft.world.World;
+import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.WorldView;
-import net.minecraft.world.block.WireOrientation;
 import org.jetbrains.annotations.Nullable;
 
+public class FluorescentLightBlock extends RotatableLightBlock implements BlockVariantHolder {
 
-public class FluorescentLightBlock extends Block {
+    public static final BooleanProperty RED = CustomProperties.RED;
+    private static final VoxelShape VOXEL_SHAPE = Block.createCuboidShape(0, 15,0, 16, 16, 16);
 
-	public static final BooleanProperty LIT = Properties.LIT;
-	public static final BooleanProperty RED = CustomProperties.RED;
-	public static final EnumProperty<Direction> FACING = HorizontalFacingBlock.FACING;
-	private static final VoxelShape VOXEL_SHAPE = Block.createCuboidShape(0, 15,0, 16, 16, 16);
+    public FluorescentLightBlock(Settings settings, boolean fused) {
+        super(settings, fused);
+        this.setDefaultState(this.getDefaultState().with(RED, false));
+    }
 
-	@Override
-	public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-		return VOXEL_SHAPE;
-	}
+    @Override
+    public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+        return VOXEL_SHAPE;
+    }
 
-	public FluorescentLightBlock(Settings settings) {
-		super(settings);
-		this.setDefaultState(this.stateManager.getDefaultState().with(LIT, true).with(FACING, Direction.NORTH).with(RED, false));
-	}
+    @Override
+    protected VoxelShape getCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+        return VOXEL_SHAPE;
+    }
 
-	@Override
-	public boolean canPlaceAt(BlockState state, WorldView world, BlockPos pos) {
-		BlockPos blockPos = pos.offset(Direction.DOWN.getOpposite());
-		BlockState blockState = world.getBlockState(blockPos);
-		return blockState.isSideSolidFullSquare(world, blockPos, Direction.DOWN);
-	}
+    @Override
+    protected boolean canPlaceAt(BlockState state, WorldView world, BlockPos pos) {
+        if (!this.needsAttachment) {
+            return true;
+        } else {
+            BlockPos blockPos = pos.offset(Direction.DOWN.getOpposite());
+            BlockState blockState = world.getBlockState(blockPos);
+            return blockState.isSideSolidFullSquare(world, blockPos, Direction.DOWN);
+        }
+    }
 
-	@Override
-	public void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
-		world.setBlockState(pos, state.with(LIT, true));
-	}
+    @Nullable
+    @Override
+    public BlockState getPlacementState(ItemPlacementContext ctx) {
+        BlockState state = super.getPlacementState(ctx);
+        if (state != null) {
+            return state.with(RED, ctx.getWorld().getBiome(ctx.getBlockPos())
+                    .getKey().orElseThrow().equals(CubliminalBiomes.REDROOMS_BIOME));
+        }
+        return state;
+    }
 
-	@Override
-	protected void neighborUpdate(BlockState state, World world, BlockPos pos, Block sourceBlock, @Nullable WireOrientation wireOrientation, boolean notify) {
-		if (!state.canPlaceAt(world, pos)) {
-			world.breakBlock(pos, false);
-		}
-	}
+    @Override
+    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
+        super.appendProperties(builder);
+        builder.add(RED);
+    }
 
-	@Override
-	public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
-		if (!world.isClient) {
-			if (random.nextInt(3) == 0) {
-				world.setBlockState(pos, state.with(LIT, false));
-				world.scheduleBlockTick(pos, state.getBlock(), 2);
-			}
-		}
-	}
+    @Override
+    public void changeToVariant(ChunkRegion region, BlockState prevState, BlockPos pos) {
+        if (prevState.isOf(CubliminalBlocks.FLUORESCENT_LIGHT)) {
+            BlockVariantHolder.super.changeToVariant(region, prevState, pos);
+        }
+    }
 
-	@Override
-	public BlockState rotate(BlockState state, BlockRotation rotation) {
-		return state.with(FACING, rotation.rotate(state.get(FACING)));
-	}
-
-	@Override
-	public BlockState mirror(BlockState state, BlockMirror mirror) {
-		return state.rotate(mirror.getRotation(state.get(FACING)));
-	}
-
-	@Nullable
-	@Override
-	public BlockState getPlacementState(ItemPlacementContext ctx) {
-		BlockState blockState = this.getDefaultState();
-		Direction direction = ctx.getSide();
-		boolean needsToBeRed = ctx.getWorld().getBiome(ctx.getBlockPos()).getKey()
-				.get().equals(CubliminalBiomes.REDROOMS_BIOME);
-		if (!ctx.canReplaceExisting() && direction.getAxis().isHorizontal()) {
-			blockState = blockState.with(FACING, direction);
-		} else {
-			blockState = blockState.with(FACING, ctx.getHorizontalPlayerFacing().getOpposite());
-		}
-
-		return blockState.with(RED, needsToBeRed);
-	}
-
-	@Override
-	protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-		builder.add(LIT, FACING, RED);
-	}
-
+    @Override
+    public void changeToVariant(ChunkRegion region, BlockState state, BlockPos pos, Random random) {
+        if (random.nextFloat() > 0.9 || region.getStatesInBox(new Box(pos).expand(1))
+                .anyMatch(blockState -> blockState.isOf(CubliminalBlocks.FUSED_FLUORESCENT_LIGHT))) {
+            region.setBlockState(pos, CubliminalBlocks.FUSED_FLUORESCENT_LIGHT.getDefaultState()
+                    .with(HorizontalFacingBlock.FACING, state.get(HorizontalFacingBlock.FACING))
+                    .with(CustomProperties.RED, state.get(CustomProperties.RED)), Block.FORCE_STATE);
+        } else if (random.nextFloat() < 0.1) {
+            region.setBlockState(pos, CubliminalBlocks.FLICKERING_FLUORESCENT_LIGHT.getDefaultState()
+                    .with(HorizontalFacingBlock.FACING, state.get(HorizontalFacingBlock.FACING))
+                    .with(CustomProperties.RED, state.get(CustomProperties.RED)), Block.FORCE_STATE);
+        }
+    }
 }

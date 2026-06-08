@@ -20,7 +20,9 @@ import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.biome.source.util.MultiNoiseUtil;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class SimplexBiomeSource extends BiomeSource implements LiminalBiomeSource {
@@ -46,7 +48,9 @@ public class SimplexBiomeSource extends BiomeSource implements LiminalBiomeSourc
     public SimplexBiomeSource(RegistryKey<World> world, Level level, float scale) {
         this.world = world;
         this.noisePreset = RegistryNoisePreset.getPreset(world);
-        this.levelBiomes = this.noisePreset.biomes().keySet();
+        this.levelBiomes = this.noisePreset.biomes().entrySet().stream()
+                .filter(entry -> entry.getValue().generate())
+                .map(Map.Entry::getKey).collect(Collectors.toSet());
         this.level = level;
         this.scale = scale;
         this.rarityScale = this.noisePreset.globalSettings().rarity();

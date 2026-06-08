@@ -1,0 +1,53 @@
+{
+	"texture_size": [32, 32],
+	"textures": {
+		"0": "cubliminal:block/almond_water_can",
+		"particle": "cubliminal:block/almond_water_can"
+	},
+	"elements": [
+		{
+			"from": [5, 0, 5],
+			"to": [10, 11, 10],
+			"rotation": {"angle": 0, "axis": "y", "origin": [7, 0, 7]},
+			"faces": {
+				"north": {"uv": [0, 0, 2.5, 5], "texture": "#0"},
+				"east": {"uv": [2.5, 0, 5, 5], "texture": "#0"},
+				"south": {"uv": [0, 5, 2.5, 10], "texture": "#0"},
+				"west": {"uv": [5, 0, 7.5, 5], "texture": "#0"},
+				"up": {"uv": [5, 7.5, 2.5, 5], "texture": "#0"},
+				"down": {"uv": [7.5, 5, 5, 7.5], "texture": "#0"}
+			}
+		}
+	],
+	"display": {
+		"thirdperson_righthand": {
+			"rotation": [0.46, 10.78, -4.59],
+			"translation": [1, 0.75, -0.5],
+			"scale": [0.7, 0.7, 0.7]
+		},
+		"thirdperson_lefthand": {
+			"rotation": [0.46, 10.78, -4.59],
+			"translation": [1, 0.75, -0.5],
+			"scale": [0.7, 0.7, 0.7]
+		},
+		"firstperson_righthand": {
+			"rotation": [0.46, 83, -4.59],
+			"translation": [1, 3.5, 3.25],
+			"scale": [0.7, 0.7, 0.7]
+		},
+		"firstperson_lefthand": {
+			"rotation": [0.46, 83, -4.59],
+			"translation": [1, 3.5, 3.25],
+			"scale": [0.7, 0.7, 0.7]
+		},
+		"ground": {
+			"translation": [-0.25, 3.75, 0.5],
+			"scale": [0.7, 0.7, 0.7]
+		},
+		"gui": {
+			"rotation": [18, 148, 0],
+			"translation": [0, 2.75, 0],
+			"scale": [1, 1.1, 1]
+		}
+	}
+}

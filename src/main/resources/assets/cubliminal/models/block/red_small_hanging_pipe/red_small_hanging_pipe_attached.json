@@ -1,0 +1,21 @@
+{
+	"textures": {
+		"0": "cubliminal:block/red_small_hanging_pipe",
+		"particle": "cubliminal:block/red_small_hanging_pipe"
+	},
+	"elements": [
+		{
+			"from": [7.5, 9, 7.5],
+			"to": [8.5, 16, 8.5],
+			"rotation": {"angle": 0, "axis": "y", "origin": [7, 9, 7]},
+			"faces": {
+				"north": {"uv": [1, 4, 2, 11], "texture": "#0"},
+				"east": {"uv": [1, 4, 2, 11], "texture": "#0"},
+				"south": {"uv": [1, 4, 2, 11], "texture": "#0"},
+				"west": {"uv": [1, 4, 2, 11], "texture": "#0"},
+				"up": {"uv": [4, 10, 5, 11], "texture": "#0"},
+				"down": {"uv": [4, 10, 5, 11], "texture": "#0"}
+			}
+		}
+	]
+}

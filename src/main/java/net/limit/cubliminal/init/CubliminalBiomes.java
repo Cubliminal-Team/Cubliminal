@@ -18,20 +18,16 @@ import net.minecraft.world.gen.chunk.ChunkGenerator;
 
 public class CubliminalBiomes implements Initer {
     public static final RegistryKey<Biome> THE_LOBBY_BIOME = of(CubliminalRegistrar.THE_LOBBY);
-
 	public static final RegistryKey<Biome> PILLAR_BIOME = of("pillar_biome");
-
 	public static final RegistryKey<Biome> REDROOMS_BIOME = of("redrooms");
 
-	public static final RegistryKey<Biome> HABITABLE_ZONE_BIOME = of(CubliminalRegistrar.HABITABLE_ZONE);
-
-	public static final RegistryKey<Biome> PARKING_ZONE_BIOME = of("parking_zone");
+	public static final RegistryKey<Biome> HABITABLE_CORRIDORS_BIOME = of("habitable_corridors");
 
 	public static final RegistryKey<Biome> AQUILA_SECTOR_BIOME = of("aquila_sector");
 	public static final RegistryKey<Biome> DEEP_AQUILA_SECTOR_BIOME = of("deep_aquila_sector");
 
-	public static final RegistryKey<Biome> GUILD_SECTOR_BIOME = of("guild_sector");
-	public static final RegistryKey<Biome> DEEP_GUILD_SECTOR_BIOME = of("deep_guild_sector");
+	public static final RegistryKey<Biome> GILD_SECTOR_BIOME = of("gild_sector");
+	public static final RegistryKey<Biome> DEEP_GILD_SECTOR_BIOME = of("deep_gild_sector");
 
 	public static final RegistryKey<Biome> GOTHIC_SECTOR_BIOME = of("gothic_sector");
 	public static final RegistryKey<Biome> DEEP_GOTHIC_SECTOR_BIOME = of("deep_gothic_sector");
@@ -40,9 +36,9 @@ public class CubliminalBiomes implements Initer {
 	public static final RegistryKey<Biome> DEEP_OUROBOROS_SECTOR_BIOME = of("deep_ouroboros_sector");
 
 
-
 	public static final TagKey<Biome> CAN_NOCLIP_TO = TagKey.of(RegistryKeys.BIOME, Cubliminal.id("can_noclip_to"));
 	public static final TagKey<Biome> DEEP_LEVEL_ONE = TagKey.of(RegistryKeys.BIOME, Cubliminal.id("deep_level_one"));
+	public static final TagKey<Biome> LEVEL_ONE = TagKey.of(RegistryKeys.BIOME, Cubliminal.id("level_one"));
 
 	@Override
     public void init() {

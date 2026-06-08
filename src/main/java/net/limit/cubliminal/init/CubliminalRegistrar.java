@@ -2,7 +2,6 @@ package net.limit.cubliminal.init;
 
 import com.mojang.datafixers.util.Pair;
 import net.limit.cubliminal.Cubliminal;
-import net.limit.cubliminal.level.LevelWithMaze;
 import net.limit.cubliminal.level.Levels;
 import net.limit.cubliminal.world.biome.*;
 import net.limit.cubliminal.world.biome.noise.RegistryNoisePreset;
@@ -25,6 +24,7 @@ import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.entry.RegistryEntryInfo;
 import net.minecraft.registry.tag.TagKey;
+import net.minecraft.sound.MusicType;
 import net.minecraft.util.math.intprovider.ConstantIntProvider;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionOptions;
@@ -62,7 +62,7 @@ public class CubliminalRegistrar implements LimlibRegistrar {
 
 		getSoundEffects(HABITABLE_ZONE,
 				new SoundEffects(Optional.of(new StaticReverbEffect.Builder().setDecayTime(2f).setDensity(0.05f).build()),
-						Optional.empty(), Optional.empty()));
+						Optional.empty(), Optional.of(MusicType.createIngameMusic(CubliminalSounds.BLUE_HORIZON))));
 
 		// dim effects
 		getDimEffects(THE_LOBBY, new StaticDimensionEffects(Optional.empty(), false, "NONE", false, true, false, 0f));
@@ -132,10 +132,11 @@ public class CubliminalRegistrar implements LimlibRegistrar {
 			registry.add(CubliminalBiomes.PILLAR_BIOME, PillarBiome.create(features, carvers), RegistryEntryInfo.DEFAULT);
 			registry.add(CubliminalBiomes.REDROOMS_BIOME, RedroomsBiome.create(features, carvers), RegistryEntryInfo.DEFAULT);
 
+			registry.add(CubliminalBiomes.HABITABLE_CORRIDORS_BIOME, HabitableCorridorsBiome.create(features, carvers), RegistryEntryInfo.DEFAULT);
 			registry.add(CubliminalBiomes.AQUILA_SECTOR_BIOME, AquilaSectorBiome.create(features, carvers), RegistryEntryInfo.DEFAULT);
 			registry.add(CubliminalBiomes.DEEP_AQUILA_SECTOR_BIOME, DeepAquilaSectorBiome.create(features, carvers), RegistryEntryInfo.DEFAULT);
-			registry.add(CubliminalBiomes.GUILD_SECTOR_BIOME, GuildSectorBiome.create(features, carvers), RegistryEntryInfo.DEFAULT);
-			registry.add(CubliminalBiomes.DEEP_GUILD_SECTOR_BIOME, DeepGuildSectorBiome.create(features, carvers), RegistryEntryInfo.DEFAULT);
+			registry.add(CubliminalBiomes.GILD_SECTOR_BIOME, GildSectorBiome.create(features, carvers), RegistryEntryInfo.DEFAULT);
+			registry.add(CubliminalBiomes.DEEP_GILD_SECTOR_BIOME, DeepGildSectorBiome.create(features, carvers), RegistryEntryInfo.DEFAULT);
 			registry.add(CubliminalBiomes.GOTHIC_SECTOR_BIOME, GothicSectorBiome.create(features, carvers), RegistryEntryInfo.DEFAULT);
 			registry.add(CubliminalBiomes.DEEP_GOTHIC_SECTOR_BIOME, DeepGothicSectorBiome.create(features, carvers), RegistryEntryInfo.DEFAULT);
 			registry.add(CubliminalBiomes.OUROBOROS_SECTOR_BIOME, OuroborosSectorBiome.create(features, carvers), RegistryEntryInfo.DEFAULT);

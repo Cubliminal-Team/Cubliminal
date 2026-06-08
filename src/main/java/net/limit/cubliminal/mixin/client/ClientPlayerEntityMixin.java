@@ -5,7 +5,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.limit.cubliminal.access.PEAccessor;
 import net.limit.cubliminal.block.entity.USBlockBlockEntity;
-import net.limit.cubliminal.client.screen.blockentity.USBlockScreen;
+import net.limit.cubliminal.client.screen.USBlockScreen;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.input.Input;
 import net.minecraft.client.network.AbstractClientPlayerEntity;

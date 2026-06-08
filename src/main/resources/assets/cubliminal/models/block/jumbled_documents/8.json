@@ -1,10 +1,9 @@
 {
-	"parent": "block/cube_all",
 	"ambientocclusion": false,
 	"texture_size": [32, 32],
 	"textures": {
-		"0": "cubliminal:block/jumbled_documents2c",
-		"particle": "cubliminal:block/jumbled_documents2c"
+		"0": "cubliminal:block/jumbled_documents/2c",
+		"particle": "cubliminal:block/jumbled_documents/2c"
 	},
 	"elements": [
 		{

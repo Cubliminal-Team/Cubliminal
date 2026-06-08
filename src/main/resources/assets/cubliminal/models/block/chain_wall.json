@@ -1,5 +1,5 @@
 {
-	"parent": "block/cube_all",
+	"parent": "block/block",
 	"texture_size": [64, 64],
 	"textures": {
 		"0": "cubliminal:block/chain_wall",
@@ -12,11 +12,11 @@
 			"rotation": {"angle": 0, "axis": "y", "origin": [0, 0, 14]},
 			"faces": {
 				"north": {"uv": [0, 0, 4, 4], "texture": "#0"},
-				"east": {"uv": [4, 0, 4.5, 4], "texture": "#0"},
-				"south": {"uv": [0, 4, 4, 8], "texture": "#0"},
-				"west": {"uv": [4, 4, 4.5, 8], "texture": "#0"},
-				"up": {"uv": [8.5, 0.5, 4.5, 0], "texture": "#0"},
-				"down": {"uv": [8.5, 0.5, 4.5, 1], "texture": "#0"}
+				"east": {"uv": [4, 0, 4.5, 4], "texture": "#0", "cullface": "east"},
+				"south": {"uv": [0, 4, 4, 8], "texture": "#0", "cullface": "south"},
+				"west": {"uv": [4, 4, 4.5, 8], "texture": "#0", "cullface": "west"},
+				"up": {"uv": [8.5, 0.5, 4.5, 0], "texture": "#0", "cullface": "up"},
+				"down": {"uv": [8.5, 0.5, 4.5, 1], "texture": "#0", "cullface": "down"}
 			}
 		}
 	]
