@@ -30,6 +30,8 @@ public class VentilationPipeBlock extends Block implements Waterloggable {
     public static final BooleanProperty EAST;
     public static final BooleanProperty SOUTH;
     public static final BooleanProperty WEST;
+    public static final BooleanProperty UP;
+    public static final BooleanProperty DOWN;
     public static final BooleanProperty WATERLOGGED;
     protected static final Map<Direction, BooleanProperty> FACING_PROPERTIES;
 
@@ -56,6 +58,8 @@ public class VentilationPipeBlock extends Block implements Waterloggable {
                 .with(SOUTH, this.connectsTo(world, blockPos, Direction.SOUTH))
                 .with(WEST, this.connectsTo(world, blockPos, Direction.WEST))
                 .with(EAST, this.connectsTo(world, blockPos, Direction.EAST))
+                .with(UP, this.connectsTo(world, blockPos, Direction.UP))
+                .with(DOWN, this.connectsTo(world, blockPos, Direction.DOWN))
                 .with(WATERLOGGED, fluidState.getFluid() == Fluids.WATER)
                 .with(FAN, random.nextDouble() < 0.1f);
     }
@@ -129,14 +133,12 @@ public class VentilationPipeBlock extends Block implements Waterloggable {
             tickView.scheduleFluidTick(pos, Fluids.WATER, Fluids.WATER.getTickRate(world));
         }
 
-        return direction.getAxis().isHorizontal()
-                ? state.with(FACING_PROPERTIES.get(direction), this.connectsTo(neighborState))
-                : super.getStateForNeighborUpdate(state, world, tickView, pos, direction, neighborPos, neighborState, random);
+        return state.with(FACING_PROPERTIES.get(direction), this.connectsTo(neighborState));
     }
 
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        builder.add(NORTH, EAST, WEST, SOUTH, WATERLOGGED, FAN);
+        builder.add(NORTH, EAST, WEST, SOUTH, UP, DOWN, WATERLOGGED, FAN);
     }
 
     static {
@@ -144,7 +146,9 @@ public class VentilationPipeBlock extends Block implements Waterloggable {
         EAST = ConnectingBlock.EAST;
         SOUTH = ConnectingBlock.SOUTH;
         WEST = ConnectingBlock.WEST;
+        UP = ConnectingBlock.UP;
+        DOWN = ConnectingBlock.DOWN;
         WATERLOGGED = Properties.WATERLOGGED;
-        FACING_PROPERTIES = ConnectingBlock.FACING_PROPERTIES.entrySet().stream().filter((entry) -> entry.getKey().getAxis().isHorizontal()).collect(Util.toMap());
+        FACING_PROPERTIES = ConnectingBlock.FACING_PROPERTIES;
     }
 }
