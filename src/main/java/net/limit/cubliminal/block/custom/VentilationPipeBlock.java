@@ -10,12 +10,9 @@ import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.BlockMirror;
 import net.minecraft.util.BlockRotation;
-import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.WorldView;
 import net.minecraft.world.tick.ScheduledTickView;
@@ -34,13 +31,6 @@ public class VentilationPipeBlock extends Block implements Waterloggable {
     public static final BooleanProperty DOWN;
     public static final BooleanProperty WATERLOGGED;
     protected static final Map<Direction, BooleanProperty> FACING_PROPERTIES;
-
-    private static final VoxelShape EMPTY = VoxelShapes.empty();
-    private static final VoxelShape BASE_SHAPE = VoxelShapes.union(Block.createCuboidShape(0, 0, 0, 16, 2, 16), Block.createCuboidShape(0, 14, 0, 16, 16, 16));
-    private static final VoxelShape NORTH_SHAPE = Block.createCuboidShape(0, 0, 0, 16, 16, 2);
-    private static final VoxelShape SOUTH_SHAPE = Block.createCuboidShape(0, 0, 14, 16, 16, 16);
-    private static final VoxelShape EAST_SHAPE = Block.createCuboidShape(14, 0, 0, 16, 16, 16);
-    private static final VoxelShape WEST_SHAPE = Block.createCuboidShape(0, 0, 0, 2, 16, 16);
 
     public VentilationPipeBlock(Settings settings) {
         super(settings);
@@ -75,21 +65,6 @@ public class VentilationPipeBlock extends Block implements Waterloggable {
     @Override
     protected boolean isShapeFullCube(BlockState state, BlockView world, BlockPos pos) {
         return false;
-    }
-
-    @Override
-    protected VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-        boolean north = state.get(NORTH);
-        boolean south = state.get(SOUTH);
-        boolean east = state.get(EAST);
-        boolean west = state.get(WEST);
-        return VoxelShapes.union(
-                BASE_SHAPE,
-                north || (!east && !west) ? EMPTY : NORTH_SHAPE,
-                south || (!east && !west) ? EMPTY : SOUTH_SHAPE,
-                east || (west && !north && !south) ? EMPTY : EAST_SHAPE,
-                west || (east && !north && !south) ? EMPTY : WEST_SHAPE
-        );
     }
 
     protected FluidState getFluidState(BlockState state) {
