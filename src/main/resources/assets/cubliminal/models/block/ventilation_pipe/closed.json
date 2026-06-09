@@ -1,0 +1,16 @@
+{
+	"format_version": "1.21.11",
+	"credit": "Made by Miffen Kop!",
+	"textures": {
+		"edge": "cubliminal:block/ventilation_pipe/ventilation_pipe_end"
+	},
+	"elements": [
+		{
+			"from": [-0.01, -0.01, -0.01],
+			"to": [16.01, 16.01, 16.01],
+			"faces": {
+				"south": {"uv": [0, 0, 16, 16], "rotation": 270, "texture": "#edge", "cullface": "south"}
+			}
+		}
+	]
+}

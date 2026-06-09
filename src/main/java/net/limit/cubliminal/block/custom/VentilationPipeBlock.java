@@ -29,7 +29,6 @@ public class VentilationPipeBlock extends Block implements Waterloggable {
     public static final BooleanProperty WEST;
     public static final BooleanProperty UP;
     public static final BooleanProperty DOWN;
-    public static final BooleanProperty WATERLOGGED;
     protected static final Map<Direction, BooleanProperty> FACING_PROPERTIES;
 
     public VentilationPipeBlock(Settings settings) {
@@ -50,7 +49,6 @@ public class VentilationPipeBlock extends Block implements Waterloggable {
                 .with(EAST, this.connectsTo(world, blockPos, Direction.EAST))
                 .with(UP, this.connectsTo(world, blockPos, Direction.UP))
                 .with(DOWN, this.connectsTo(world, blockPos, Direction.DOWN))
-                .with(WATERLOGGED, fluidState.getFluid() == Fluids.WATER)
                 .with(FAN, random.nextDouble() < 0.1f);
     }
 
@@ -65,10 +63,6 @@ public class VentilationPipeBlock extends Block implements Waterloggable {
     @Override
     protected boolean isShapeFullCube(BlockState state, BlockView world, BlockPos pos) {
         return false;
-    }
-
-    protected FluidState getFluidState(BlockState state) {
-        return state.get(WATERLOGGED) ? Fluids.WATER.getStill(false) : super.getFluidState(state);
     }
 
     protected BlockState rotate(BlockState state, BlockRotation rotation) {
@@ -104,16 +98,12 @@ public class VentilationPipeBlock extends Block implements Waterloggable {
 
     @Override
     protected BlockState getStateForNeighborUpdate(BlockState state, WorldView world, ScheduledTickView tickView, BlockPos pos, Direction direction, BlockPos neighborPos, BlockState neighborState, Random random) {
-        if (state.get(WATERLOGGED)) {
-            tickView.scheduleFluidTick(pos, Fluids.WATER, Fluids.WATER.getTickRate(world));
-        }
-
         return state.with(FACING_PROPERTIES.get(direction), this.connectsTo(neighborState));
     }
 
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        builder.add(NORTH, EAST, WEST, SOUTH, UP, DOWN, WATERLOGGED, FAN);
+        builder.add(NORTH, EAST, WEST, SOUTH, UP, DOWN, FAN);
     }
 
     static {
@@ -123,7 +113,6 @@ public class VentilationPipeBlock extends Block implements Waterloggable {
         WEST = ConnectingBlock.WEST;
         UP = ConnectingBlock.UP;
         DOWN = ConnectingBlock.DOWN;
-        WATERLOGGED = Properties.WATERLOGGED;
         FACING_PROPERTIES = ConnectingBlock.FACING_PROPERTIES;
     }
 }

@@ -46,6 +46,7 @@ public class CubliminalClient implements ClientModInitializer {
 				CubliminalBlocks.FUSED_WALL_LIGHT_BULB,
 				CubliminalBlocks.SMOKE_DETECTOR,
 				CubliminalBlocks.VENTILATION_DUCT,
+				CubliminalBlocks.VENTILATION_PIPE,
 				CubliminalBlocks.CHAIN_WALL,
 				CubliminalBlocks.CHAIN_BLOCK,
 				CubliminalBlocks.CHAIN_SLAB,
