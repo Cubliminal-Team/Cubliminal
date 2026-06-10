@@ -25,8 +25,10 @@ import org.jetbrains.annotations.Nullable;
 public abstract class PipeBlock extends HorizontalFacingBlock implements Waterloggable, BlockVariantHolder {
     public static final BooleanProperty WATERLOGGED = Properties.WATERLOGGED;
     public static final BooleanProperty LEAKING = BooleanProperty.of("leaking");
-    public static final IdentifierProperty FLUID_CONTAINER = IdentifierProperty.of("fluid_container",
-            () -> Registries.FLUID.getIds().stream().filter(id -> !id.getPath().contains("flowing")).toList());
+    public static IdentifierProperty FLUID_CONTAINER = IdentifierProperty.of("fluid_container",
+            () -> Registries.FLUID.getIds().stream()
+                    .filter(id -> !id.getPath().contains("flowing"))
+                    .toList());
 
     public PipeBlock(Settings settings) {
         super(settings);

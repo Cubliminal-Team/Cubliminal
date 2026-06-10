@@ -8,13 +8,16 @@ import net.limit.cubliminal.access.PEAccessor;
 import net.limit.cubliminal.client.sound.NoclipSoundInstance;
 import net.limit.cubliminal.config.CubliminalConfig;
 import net.limit.cubliminal.init.CubliminalEffects;
-import net.ludocrypt.limlib.impl.shader.PostProcesser;
-import net.ludocrypt.limlib.impl.shader.PostProcesserManager;
+import net.ludocrypt.limlib.api.effects.LookupGrabber;
+import net.ludocrypt.limlib.api.effects.post.PostEffect;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.render.DefaultFramebufferSet;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.client.util.Pool;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -22,6 +25,8 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import java.util.Optional;
 
 
 @Environment(EnvType.CLIENT)
@@ -57,21 +62,53 @@ public abstract class GameRendererMixin implements GameRendererAccessor {
         if (client.player != null && client.world != null && !CubliminalConfig.get().disableAggressiveGraphics) {
             ClientPlayerEntity player = client.player;
             if (((PEAccessor) player).getNoclipEngine().isClipping()) {
-                PostProcesser shader = PostProcesserManager.INSTANCE.find(Cubliminal.id("noclip"));
-                shader.setUniform("NoclipTicks", (float) Math.abs(((PEAccessor) player).getNoclipEngine().getTicksToNc()));
-                shader.render(client.getFramebuffer(), this.pool);
+                Optional<PostEffect> optional = snatch(Cubliminal.id("noclip"));
+                if (optional.isPresent()) {
+                    PostEffect effect = optional.get();
+                    if (effect.shouldRender()) {
+                        effect.beforeRender();
+                        effect.render(
+                                this.client.getShaderLoader().loadPostEffect(effect.getShaderLocation(), DefaultFramebufferSet.MAIN_ONLY),
+                                this.client.getFramebuffer(),
+                                this.pool,
+                                tickCounter,
+                                true
+                        );
+                    }
+                }
             } else if (this.shouldRenderNoClip()) {
-                for (int i = 0; i < 2; i++) {
-                    if ((player.getWorld().getTime() + i) % 6 == 0) {
-                        PostProcesserManager.INSTANCE.find(Cubliminal.id("noclip")).render(client.getFramebuffer(), this.pool);
+                Optional<PostEffect> optional = snatch(Cubliminal.id("noclip"));
+                if (optional.isPresent()) {
+                    PostEffect effect = optional.get();
+                    if (effect.shouldRender() && (player.getWorld().getTime()) % 3 == 0) {
+                        effect.beforeRender();
+                        effect.render(
+                                this.client.getShaderLoader().loadPostEffect(effect.getShaderLocation(), DefaultFramebufferSet.MAIN_ONLY),
+                                this.client.getFramebuffer(),
+                                this.pool,
+                                tickCounter,
+                                false
+                        );
                         if (!client.getSoundManager().isPlaying(NoclipSoundInstance.WALL_CLIPPING)) {
                             client.getSoundManager().play(NoclipSoundInstance.WALL_CLIPPING);
                         }
-                        break;
                     }
                 }
             } else if (player.hasStatusEffect(CubliminalEffects.PARANOIA)) {
-                PostProcesserManager.INSTANCE.find(Cubliminal.id("paranoia")).render(client.getFramebuffer(), this.pool);
+                Optional<PostEffect> optional = snatch(Cubliminal.id("paranoia"));
+                if (optional.isPresent()) {
+                    PostEffect effect = optional.get();
+                    if (effect.shouldRender()) {
+                        effect.beforeRender();
+                        effect.render(
+                                this.client.getShaderLoader().loadPostEffect(effect.getShaderLocation(), DefaultFramebufferSet.MAIN_ONLY),
+                                this.client.getFramebuffer(),
+                                this.pool,
+                                tickCounter,
+                                tick
+                        );
+                    }
+                }
             }
         }
     }
@@ -79,5 +116,13 @@ public abstract class GameRendererMixin implements GameRendererAccessor {
     @Unique
     private boolean shouldRenderNoClip() {
         return clippingIntoWall || triggeredNoclip;
+    }
+
+    @Unique
+    private Optional<PostEffect> snatch(Identifier shaderId) {
+        return LookupGrabber.snatch(
+                client.world.getRegistryManager().getOptional(PostEffect.POST_EFFECT_KEY).get(),
+                RegistryKey.of(PostEffect.POST_EFFECT_KEY, shaderId)
+        );
     }
 }
