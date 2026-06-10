@@ -8,3 +8,29 @@ pluginManagement {
 		gradlePluginPortal()
 	}
 }
+dependencyResolutionManagement {
+	repositories {
+		maven {
+			url = "https://maven2.fabricmc.net"
+		}
+		maven {
+			url = "https://jitpack.io"
+		}
+		maven {
+			url "https://maven.shedaniel.me/"
+		}
+		maven {
+			url "https://maven.nucleoid.xyz/"
+		}
+		maven {
+			url "https://maven.terraformersmc.com/releases/"
+		}
+		maven {
+			url 'https://api.modrinth.com/maven'
+			content {
+				includeGroup "maven.modrinth"
+			}
+		}
+		mavenCentral()
+	}
+}

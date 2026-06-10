@@ -5,6 +5,7 @@ import net.limit.cubliminal.Cubliminal;
 import net.limit.cubliminal.Initer;
 import net.limit.cubliminal.entity.SeatEntity;
 import net.limit.cubliminal.entity.hostile.HoundEntity;
+import net.limit.cubliminal.entity.hostile.SkinStealerEntity;
 import net.limit.cubliminal.entity.hostile.SmilerEntity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
@@ -14,15 +15,18 @@ import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 
 public class CubliminalEntities implements Initer {
+
+    public static final RegistryKey<EntityType<?>> SEAT_KEY = keyOf("seat_entity");
     public static final RegistryKey<EntityType<?>> SMILER_KEY = keyOf("smiler");
     public static final RegistryKey<EntityType<?>> HOUND_KEY = keyOf("hound");
+    public static final RegistryKey<EntityType<?>> SKIN_STEALER_KEY = keyOf("skin_stealer");
 
     public static final EntityType<SeatEntity> SEAT_ENTITY = Registry.register(
             Registries.ENTITY_TYPE,
-            Cubliminal.id("seat_entity"),
+            SEAT_KEY,
             EntityType.Builder.create(SeatEntity::new, SpawnGroup.MISC)
                     .dimensions(0f, 0f)
-                    .build(RegistryKey.of(RegistryKeys.ENTITY_TYPE, Cubliminal.id("seat_entity"))));
+                    .build(SEAT_KEY));
 
     public static EntityType<SmilerEntity> SMILER = Registry.register(
             Registries.ENTITY_TYPE,
@@ -40,6 +44,16 @@ public class CubliminalEntities implements Initer {
                     .build(HOUND_KEY)
     );
 
+    public static EntityType<SkinStealerEntity> SKIN_STEALER = Registry.register(
+            Registries.ENTITY_TYPE,
+            SKIN_STEALER_KEY,
+            EntityType.Builder.create(SkinStealerEntity::new, SpawnGroup.MONSTER)
+                    .dimensions(0.8f, 2.7f)
+                    .eyeHeight(2.4f)
+                    .maxTrackingRange(8)
+                    .build(SKIN_STEALER_KEY)
+    );
+
     private static RegistryKey<EntityType<?>> keyOf(String name){
         return RegistryKey.of(RegistryKeys.ENTITY_TYPE, Cubliminal.id(name));
     }
@@ -48,6 +62,7 @@ public class CubliminalEntities implements Initer {
     public void init() {
         FabricDefaultAttributeRegistry.register(SMILER, SmilerEntity.createAttributes());
         FabricDefaultAttributeRegistry.register(HOUND, HoundEntity.createAttributes());
+        FabricDefaultAttributeRegistry.register(SKIN_STEALER, SkinStealerEntity.createAttributes());
     }
 }
 

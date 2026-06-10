@@ -12,6 +12,9 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.text.Text;
 
+/**
+ * This class is used to add items to the backrooms item group. Note that the order is preserved.
+ */
 public class CubliminalItemGroups implements Initer {
     public static final ItemGroup BACKROOMS_GROUP = Registry.register(Registries.ITEM_GROUP, Cubliminal.id("backrooms"),
             FabricItemGroup.builder().displayName(Text.translatable("itemgroup.Backrooms"))

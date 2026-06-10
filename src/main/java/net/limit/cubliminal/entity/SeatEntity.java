@@ -1,6 +1,5 @@
 package net.limit.cubliminal.entity;
 
-import com.google.common.base.Predicates;
 import net.limit.cubliminal.block.custom.template.SeatBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.*;
@@ -12,8 +11,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-
-import java.util.function.Predicate;
 
 public class SeatEntity extends Entity {
 
@@ -34,8 +31,7 @@ public class SeatEntity extends Entity {
     public void tick() {
         if (this.getWorld().isClient()) return;
         if (!(this.getBlockStateAtPos().getBlock() instanceof SeatBlock)
-                || !this.getWorld().getEntitiesByClass(SeatEntity.class, new Box(this.getBlockPos()),
-                Predicate.not(Predicates.alwaysTrue())).isEmpty()
+                || !this.getWorld().getEntitiesByClass(SeatEntity.class, new Box(this.getBlockPos()), e -> true).isEmpty()
                 || this.getPassengerList().isEmpty()) this.discard();
         if (this.isSubmergedInWater()) this.removeAllPassengers();
     }

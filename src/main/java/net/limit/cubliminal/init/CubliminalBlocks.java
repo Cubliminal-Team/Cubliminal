@@ -48,9 +48,22 @@ import static net.minecraft.block.Blocks.createLightLevelFromLitBlockState;
 import static net.minecraft.item.Item.BASE_ATTACK_DAMAGE_MODIFIER_ID;
 import static net.minecraft.item.Item.BASE_ATTACK_SPEED_MODIFIER_ID;
 
+/**
+ * This class holds block related registry utilities and all the custom block and block tag registries. Fuel registry is at the bottom.
+ */
+
 @SuppressWarnings("deprecation")
 public class CubliminalBlocks implements Initer {
 
+	/**
+	 * Registers a block with a custom block item constructor and/or custom block item settings.
+	 * @param id The name of the block.
+	 * @param blockFactory The block constructor.
+	 * @param blockSettings The settings used to create the block.
+	 * @param itemFactory The block item constructor.
+	 * @param itemSettings The settings used to create the block item.
+	 * @return a new block.
+	 */
 	private static Block register(String id, Function<AbstractBlock.Settings, Block> blockFactory, AbstractBlock.Settings blockSettings, BiFunction<Block, Item.Settings, BlockItem> itemFactory, Item.Settings itemSettings) {
 		RegistryKey<Item> itemKey = RegistryKey.of(RegistryKeys.ITEM, Cubliminal.id(id));
 		RegistryKey<Block> blockKey = key(id);
@@ -61,10 +74,27 @@ public class CubliminalBlocks implements Initer {
 		return Registry.register(Registries.BLOCK, blockKey, block);
 	}
 
-	private static Block register(String id, Function<AbstractBlock.Settings, Block> blockFactory, AbstractBlock.Settings blockSettings){
+	/**
+	 * Registers a block with the default block item constructor and block item settings. This is the default registration function.
+	 * @param id The name of the block.
+	 * @param blockFactory The block constructor.
+	 * @param blockSettings The settings used to create the block.
+	 * @return a new block.
+	 */
+	private static Block register(String id, Function<AbstractBlock.Settings, Block> blockFactory, AbstractBlock.Settings blockSettings) {
 		return register(id, blockFactory, blockSettings, BlockItem::new, new Item.Settings());
 	}
 
+	/**
+	 * Registers a block that requires additional data in its block constructor (e.g. stair blocks) with a custom block item constructor and/or custom block item settings.
+	 * @param id The name of the block.
+	 * @param blockFactory The block constructor.
+	 * @param blockSettings The settings used to create the block.
+	 * @param constructorData The additional data imputed to the block constructor.
+	 * @param itemFactory The block item constructor.
+	 * @param itemSettings The settings used to create the block item.
+	 * @return a new block.
+	 */
 	private static <T> Block register(String id, BiFunction<T, AbstractBlock.Settings, Block> blockFactory, AbstractBlock.Settings blockSettings, T constructorData, BiFunction<Block, Item.Settings, BlockItem> itemFactory, Item.Settings itemSettings) {
 		RegistryKey<Item> itemKey = RegistryKey.of(RegistryKeys.ITEM, Cubliminal.id(id));
 		RegistryKey<Block> blockKey = key(id);
@@ -75,10 +105,26 @@ public class CubliminalBlocks implements Initer {
 		return Registry.register(Registries.BLOCK, blockKey, block);
 	}
 
+	/**
+	 * Registers a block that requires additional data in its block constructor (e.g. stair blocks) with the default block item constructor and block item settings.
+	 * @param id The name of the block.
+	 * @param blockFactory The block constructor.
+	 * @param blockSettings The settings used to create the block.
+	 * @param constructorData The additional data imputed to the block constructor.
+	 * @return a new block.
+	 */
 	private static <T> Block register(String id, BiFunction<T, AbstractBlock.Settings, Block> blockFactory, AbstractBlock.Settings blockSettings, T constructorData) {
 		return register(id, blockFactory, blockSettings, constructorData, BlockItem::new, new Item.Settings());
 	}
 
+	/**
+	 * Registers a block with a custom block item constructor and/or custom block item settings, yet using an already created block object. Often used when custom block functions want to be used <p>(e.g. voxel shapes).<p><b>Warning! you need to add the registry key to block settings manually with {@link Block.Settings#registryKey(RegistryKey)}</b>
+	 * @param id The name of the block.
+	 * @param block The new block object to be registered.
+	 * @param itemFactory The block item constructor.
+	 * @param itemSettings The settings used to create the block item.
+	 * @return a new block.
+	 */
 	private static Block registerBlock(String id, Block block, BiFunction<Block, Item.Settings, BlockItem> itemFactory, Item.Settings itemSettings) {
 		RegistryKey<Block> blockKey = key(id);
 		RegistryKey<Item> itemKey = RegistryKey.of(RegistryKeys.ITEM, Cubliminal.id(id));
@@ -87,10 +133,24 @@ public class CubliminalBlocks implements Initer {
 		return Registry.register(Registries.BLOCK, blockKey, block);
 	}
 
+	/**
+	 * Registers a block with the default block item constructor and block item settings, yet using an already created block object. Often used when custom block functions want to be used <p>(e.g. voxel shapes).
+	 * <p><b>Warning! you need to add the registry key to block settings manually with {@link Block.Settings#registryKey(RegistryKey)}</b>
+	 * @param id The name of the block.
+	 * @param block The new block object to be registered.
+	 * @return a new block.
+	 */
 	private static Block registerBlock(String id, Block block) {
 		return registerBlock(id, block, BlockItem::new, new Item.Settings());
 	}
 
+	/**
+	 * Registers a block without block item. Mostly used for fluids.
+	 * @param id The name of the block.
+	 * @param blockFactory The block constructor.
+	 * @param blockSettings The settings used to create the block.
+	 * @return a new block.
+	 */
 	private static Block registerWithoutItem(String id, Function<AbstractBlock.Settings, Block> blockFactory, AbstractBlock.Settings blockSettings) {
 		RegistryKey<Block> blockKey = key(id);
 		Block block = blockFactory.apply(blockSettings.registryKey(blockKey));
@@ -98,12 +158,12 @@ public class CubliminalBlocks implements Initer {
 	}
 
 	/**
-	 * registers a fluid block.
+	 * Registers a fluid block.
 	 * @param name The name of the fluid.
 	 * @param flowableFluid The flowable fluid.
 	 * @param factory The fluid block factory
 	 * @param settings The fluid settings.
-	 * @return Returns a block of the custom fluid.
+	 * @return a block of the custom fluid.
 	 */
 	private static Block registerFluidBlock(String name, FlowableFluid flowableFluid, FluidBlockFactory factory, CustomFluidBlock.Settings settings){
 		return registerWithoutItem(
