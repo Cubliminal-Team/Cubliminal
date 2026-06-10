@@ -1,7 +1,9 @@
 package net.limit.cubliminal.init;
 
 import net.limit.cubliminal.Cubliminal;
+import net.limit.cubliminal.InitOrder;
 import net.limit.cubliminal.Initer;
+import net.limit.cubliminal.block.custom.pipe.PipeBlock;
 import net.limit.cubliminal.fluid.AlmondWaterFluid;
 import net.limit.cubliminal.fluid.BlackSludgeFluid;
 import net.limit.cubliminal.fluid.ContaminatedWaterFluid;
@@ -12,6 +14,7 @@ import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.TagKey;
 
+@InitOrder(-10)
 public class CubliminalFluids implements Initer {
 
     public static FlowableFluid ALMOND_WATER = registerStill("almond_water", new AlmondWaterFluid.Still());
@@ -30,6 +33,7 @@ public class CubliminalFluids implements Initer {
     }
 
     private static <T extends Fluid> T registerStill(String id, T value) {
+        Cubliminal.LOGGER.info("Registering Fluid: " + id);
         return Registry.register(Registries.FLUID, Cubliminal.id(id), value);
     }
 
@@ -38,8 +42,9 @@ public class CubliminalFluids implements Initer {
     }
 
     @Override
-    public int order() {
-        return -1;
+    public void init()
+    {
+        Cubliminal.LOGGER.info("Registering Fluids");
     }
 
 }

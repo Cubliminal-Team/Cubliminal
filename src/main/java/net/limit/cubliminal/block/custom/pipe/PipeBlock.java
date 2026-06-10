@@ -1,5 +1,6 @@
 package net.limit.cubliminal.block.custom.pipe;
 
+import net.limit.cubliminal.Cubliminal;
 import net.limit.cubliminal.block.custom.template.BlockVariantHolder;
 import net.limit.cubliminal.block.state.IdentifierProperty;
 import net.limit.cubliminal.init.CubliminalFluids;
@@ -22,11 +23,15 @@ import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
+import static java.util.stream.Collectors.toList;
+
 public abstract class PipeBlock extends HorizontalFacingBlock implements Waterloggable, BlockVariantHolder {
     public static final BooleanProperty WATERLOGGED = Properties.WATERLOGGED;
     public static final BooleanProperty LEAKING = BooleanProperty.of("leaking");
-    public static final IdentifierProperty FLUID_CONTAINER = IdentifierProperty.of("fluid_container",
-            () -> Registries.FLUID.getIds().stream().filter(id -> !id.getPath().contains("flowing")).toList());
+    public static IdentifierProperty FLUID_CONTAINER = IdentifierProperty.of("fluid_container",
+            () -> Registries.FLUID.getIds().stream()
+                    .filter(id -> !id.getPath().contains("flowing"))
+                    .toList());
 
     public PipeBlock(Settings settings) {
         super(settings);
