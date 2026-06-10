@@ -163,6 +163,13 @@ public class CubliminalBlocks implements Initer {
 					.strength(5, 7)
 					.requiresTool());
 
+	public static final Block TOP_YELLOW_WALLPAPERS = register("top_yellow_wallpapers", Block::new,
+			AbstractBlock.Settings.create()
+					.mapColor(MapColor.TERRACOTTA_YELLOW)
+					.sounds(BlockSoundGroup.BASALT)
+					.strength(5, 7)
+					.requiresTool());
+
     public static final Block FALSE_CEILING = register("false_ceiling", Block::new,
             AbstractBlock.Settings.create()
 					.mapColor(MapColor.LIGHT_GRAY)

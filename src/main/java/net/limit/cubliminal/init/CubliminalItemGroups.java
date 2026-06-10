@@ -23,6 +23,7 @@ public class CubliminalItemGroups implements Initer {
                         entries.add(CubliminalBlocks.YELLOW_WALLPAPERS_WALL);
 						entries.add(CubliminalBlocks.YELLOW_WALLPAPERS_VERTICAL_SLAB);
                         entries.add(CubliminalBlocks.BOTTOM_YELLOW_WALLPAPERS);
+                        entries.add(CubliminalBlocks.TOP_YELLOW_WALLPAPERS);
                         entries.add(CubliminalBlocks.DAMAGED_YELLOW_WALLPAPERS);
                         entries.add(CubliminalBlocks.FALSE_CEILING);
                         entries.add(CubliminalBlocks.DAMP_CARPET);

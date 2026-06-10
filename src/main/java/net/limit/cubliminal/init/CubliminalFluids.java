@@ -32,7 +32,6 @@ public class CubliminalFluids implements Initer {
     }
 
     private static <T extends Fluid> T registerStill(String id, T value) {
-        Cubliminal.LOGGER.info("Registering Fluid: " + id);
         return Registry.register(Registries.FLUID, Cubliminal.id(id), value);
     }
 
@@ -41,9 +40,6 @@ public class CubliminalFluids implements Initer {
     }
 
     @Override
-    public void init()
-    {
-        Cubliminal.LOGGER.info("Registering Fluids");
-    }
+    public void init() {}
 
 }
