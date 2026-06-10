@@ -59,9 +59,6 @@ public class Cubliminal implements ModInitializer {
 		ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(new ConnectionRegistry());
 		ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(new BlackoutParams());
 
-		// Needed to register fluids before blocks
-		CubliminalFluids.init();
-
 		// Init Initers
 		Initer.initialise();
 
