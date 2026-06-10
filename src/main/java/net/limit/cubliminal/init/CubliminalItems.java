@@ -3,7 +3,6 @@ package net.limit.cubliminal.init;
 import net.fabricmc.fabric.api.registry.FuelRegistryEvents;
 import net.limit.cubliminal.Cubliminal;
 import net.limit.cubliminal.Initer;
-import net.limit.cubliminal.block.custom.pipe.PipeBlock;
 import net.minecraft.item.*;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;

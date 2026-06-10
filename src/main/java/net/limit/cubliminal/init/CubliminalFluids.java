@@ -3,7 +3,6 @@ package net.limit.cubliminal.init;
 import net.limit.cubliminal.Cubliminal;
 import net.limit.cubliminal.InitOrder;
 import net.limit.cubliminal.Initer;
-import net.limit.cubliminal.block.custom.pipe.PipeBlock;
 import net.limit.cubliminal.fluid.AlmondWaterFluid;
 import net.limit.cubliminal.fluid.BlackSludgeFluid;
 import net.limit.cubliminal.fluid.ContaminatedWaterFluid;

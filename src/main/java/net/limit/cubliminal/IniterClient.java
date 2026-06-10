@@ -2,8 +2,6 @@ package net.limit.cubliminal;
 
 import net.fabricmc.loader.api.FabricLoader;
 
-import java.util.Comparator;
-
 public interface IniterClient {
 	default void init() {}
 
