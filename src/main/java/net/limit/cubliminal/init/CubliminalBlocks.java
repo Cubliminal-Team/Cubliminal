@@ -51,7 +51,8 @@ import static net.minecraft.item.Item.BASE_ATTACK_SPEED_MODIFIER_ID;
 @SuppressWarnings("deprecation")
 public class CubliminalBlocks implements Initer {
 
-	private static Block register(String id, Function<AbstractBlock.Settings, Block> blockFactory, AbstractBlock.Settings blockSettings, BiFunction<Block, Item.Settings, BlockItem> itemFactory, Item.Settings itemSettings) {
+    //region Registration Methods
+    private static Block register(String id, Function<AbstractBlock.Settings, Block> blockFactory, AbstractBlock.Settings blockSettings, BiFunction<Block, Item.Settings, BlockItem> itemFactory, Item.Settings itemSettings) {
 		RegistryKey<Item> itemKey = RegistryKey.of(RegistryKeys.ITEM, Cubliminal.id(id));
 		RegistryKey<Block> blockKey = key(id);
 
@@ -112,14 +113,17 @@ public class CubliminalBlocks implements Initer {
 				AbstractBlock.Settings.copyShallow(Blocks.WATER)
 		);
 	}
+    //endregion
 
-	public static RegistryKey<Block> key(String id) {
+    //region Utilities
+    public static RegistryKey<Block> key(String id) {
 		return RegistryKey.of(RegistryKeys.BLOCK, Cubliminal.id(id));
 	}
 
 	public static TagKey<Block> of(String id) {
 		return TagKey.of(RegistryKeys.BLOCK, Cubliminal.id(id));
 	}
+    //endregion
 
 	public static final TagKey<Block> FLOOR_PALETTE = of("floor_palette");
 
@@ -128,7 +132,8 @@ public class CubliminalBlocks implements Initer {
 	public static final Block UNLIMITED_STRUCTURE_BLOCK = register("unlimited_structure_block", UnlimitedStructureBlock::new,
 			AbstractBlock.Settings.copy(Blocks.STRUCTURE_BLOCK), OperatorOnlyBlockItem::new, new Item.Settings().rarity(Rarity.EPIC));
 
-	public static final Block YELLOW_WALLPAPERS = register("yellow_wallpapers", Block::new,
+    //region Level 0 Blocks
+    public static final Block YELLOW_WALLPAPERS = register("yellow_wallpapers", Block::new,
 			AbstractBlock.Settings.create()
 					.mapColor(MapColor.TERRACOTTA_YELLOW)
 					.sounds(BlockSoundGroup.BASALT)
@@ -186,6 +191,7 @@ public class CubliminalBlocks implements Initer {
 					.mapColor(MapColor.OAK_TAN)
 					.sounds(BlockSoundGroup.WOOL)
 					.strength(1, 3));
+    //endregion
 
 	public static final Block RED_WALLPAPERS = register("red_wallpapers", Block::new,
 			AbstractBlock.Settings.create()
@@ -261,7 +267,8 @@ public class CubliminalBlocks implements Initer {
 			.needsAttachment()
 			.voxelShapes(4.5, 4, 0, 11.5, 12.5, 0.5));
 
-	public static final Block ALMOND_WATER_CAN = register("almond_water_can", CanBlock::new,
+    //region Props
+    public static final Block ALMOND_WATER_CAN = register("almond_water_can", CanBlock::new,
 			AbstractBlock.Settings.create()
 					.mapColor(MapColor.PALE_YELLOW)
 					.breakInstantly()
@@ -313,6 +320,7 @@ public class CubliminalBlocks implements Initer {
 
 	public static final Block SPRUCE_CHAIR = register("spruce_chair", ChairBlock::new,
 			AbstractBlock.Settings.copy(Blocks.SPRUCE_PLANKS).requiresTool());
+    //endregion
 
 	public static final Block MANILA_WALLPAPERS = register("manila_wallpapers", Block::new,
 			AbstractBlock.Settings.create()
@@ -761,7 +769,8 @@ public class CubliminalBlocks implements Initer {
 
 	public static final Block CRATE_AIR = registerWithoutItem("crate_air", CrateAirBlock::new, AbstractBlock.Settings.copy(Blocks.AIR));
 
-	public static final Block ALMOND_WATER_BLOCK = registerFluidBlock("almond_water", CubliminalFluids.ALMOND_WATER, AlmondWaterFluidBlock::new,
+    //region Fluid Blocks
+    public static final Block ALMOND_WATER_BLOCK = registerFluidBlock("almond_water", CubliminalFluids.ALMOND_WATER, AlmondWaterFluidBlock::new,
 			CustomFluidBlock.Settings.create()
 					.setColor(0xFFECB3)
 					.setSplashParticles(CustomFluidBlock.FluidSplashParticleManager.create()
@@ -789,6 +798,7 @@ public class CubliminalBlocks implements Initer {
 					.setFogEnd(1.0F)
 					.setFogAlpha(1.0F)
 	);
+    //endregion
 
 	public static ToIntFunction<BlockState> shouldBeRed(int defaultLevel, int redLevel) {
 		return (state) -> {

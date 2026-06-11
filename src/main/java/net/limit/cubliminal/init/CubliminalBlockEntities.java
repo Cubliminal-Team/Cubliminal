@@ -32,4 +32,7 @@ public class CubliminalBlockEntities implements Initer {
 	public static final BlockEntityType<WrittenDocumentBlockEntity> WRITTEN_DOCUMENT_BLOCK_ENTITY =
 			register("written_document", FabricBlockEntityTypeBuilder.create(WrittenDocumentBlockEntity::new, CubliminalBlocks.WRITTEN_DOCUMENT).build());
 
+	public static final BlockEntityType<WoodenCrateBlockEntity> WOODEN_CRATE_BLOCK_ENTITY =
+			register("wooden_crate", FabricBlockEntityTypeBuilder.create(WoodenCrateBlockEntity::new, CubliminalBlocks.WOODEN_CRATE).build());
+
 }
