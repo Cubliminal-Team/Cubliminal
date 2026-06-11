@@ -3,6 +3,11 @@ package net.limit.cubliminal.level;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+/**
+ * A {@code Level} object saves valuable information about a dimension's generation in a way that it can be easily accessed,
+ * much like a record. However, records can't extend from other classes so a class was the best option to avoid repetition.
+ */
+
 public class Level {
     public static Codec<Level> LEVEL_CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.INT.optionalFieldOf("world_height", 256).forGetter(level -> level.world_height),
@@ -20,6 +25,15 @@ public class Level {
     public final int spacing_x;
     public final int spacing_z;
 
+    /**
+     * Most {@code Level's} are broken into smaller cells that make generation much easier to manage. Their size is a parameter in the constructor as well.
+     * @param world_height World height in blocks. Must be a multiple of 16.
+     * @param min_y Minimum height in blocks. Must be a multiple of 16.
+     * @param max_layer_count Maximum number of floors within the top and bottom boundaries of the world. Note that there won't be more layers than those that fit.
+     * @param layer_height Per layer height in blocks. One layer refers to a sheet of tiled cells.
+     * @param spacing_x How many blocks a cell occupies in the X axis.
+     * @param spacing_z How many blocks a cell occupies in the Z axis.
+     */
     public Level(int world_height, int min_y, int max_layer_count, int layer_height, int spacing_x, int spacing_z) {
         if (world_height % 16 == 0) {
             this.world_height = world_height;

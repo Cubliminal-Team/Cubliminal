@@ -24,7 +24,28 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 
-public record NoclipDestination (RegistryKey<World> destination, Function<ServerPlayerEntity, Pair<BlockPos, Vec3d>> pos) {
+/**
+ * A record used to define how no-clip is performed across backrooms levels. They are stored in a {@code Map}
+ * where you input the {@code RegistryKey} of the world where the player comes from and get a {@code NoclipDestination},
+ * and provided by {@link #from(RegistryKey)}. You can also get the {@code NoclipDestination} that corresponds to a
+ * specific destination world via {@link #fromDestination(RegistryKey)}.
+ * <p>
+ *     Most no-clip destination positions will be calculated using the following steps:
+ *     <li>Search for a biome where players can no-clip to according to the {@code CAN_NOCLIP_TO} biome tag.</li>
+ *     <li>If the last step is successful, search for a valid spawn point position in a 32 x world height x 32 block range
+ *     from the previously found position. Otherwise, return a somewhat random position within world bounds.</li>
+ *     <li>If the last step is successful, search for a valid no-clip position, usually a block below the ceiling of a
+ *     structure.</li>
+ *     <li>If any of the two previous steps fail, return the found biome's position. Otherwise, with all steps completed properly,
+ *     a {@code Pair} of two positions will be returned.</li>
+ * </p>
+ *
+ * @param destination The {@code RegistryKey} of the destination world that this {@code NoclipDestination} sends players to.
+ * @param pos A function that takes a {@code ServerPlayerEntity} and returns a {@code Pair} of a first and a second element,
+ *            respectively a valid spawn point position and the exact position where the player no-clips.
+ */
+
+public record NoclipDestination(RegistryKey<World> destination, Function<ServerPlayerEntity, Pair<BlockPos, Vec3d>> pos) {
     private static final Map<RegistryKey<World>, NoclipDestination> DESTINATIONS = new HashMap<>();
 
     private static final NoclipDestination DEFAULT = new NoclipDestination(CubliminalRegistrar.THE_LOBBY_KEY, player -> {

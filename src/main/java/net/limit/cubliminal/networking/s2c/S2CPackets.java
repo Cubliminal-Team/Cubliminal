@@ -1,32 +1,20 @@
 package net.limit.cubliminal.networking.s2c;
 
-import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.limit.cubliminal.Initer;
-import net.limit.cubliminal.networking.c2s.DocUpdateC2SPayload;
-import net.limit.cubliminal.networking.c2s.NoClipC2SPayload;
-import net.limit.cubliminal.networking.c2s.USBlockC2SPayload;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.limit.cubliminal.IniterClient;
 
-public class S2CPackets implements Initer {
-
-    public static void registerPayloads() {
-        PayloadTypeRegistry.playC2S().register(NoClipC2SPayload.ID, NoClipC2SPayload.CODEC);
-        PayloadTypeRegistry.playS2C().register(NoClipSyncPayload.ID, NoClipSyncPayload.CODEC);
-        PayloadTypeRegistry.playS2C().register(SanitySyncPayload.ID, SanitySyncPayload.CODEC);
-        PayloadTypeRegistry.playC2S().register(USBlockC2SPayload.ID, USBlockC2SPayload.PAYLOAD_CODEC);
-        PayloadTypeRegistry.playS2C().register(WrittenDocScreenPayload.ID, WrittenDocScreenPayload.CODEC);
-        PayloadTypeRegistry.playC2S().register(DocUpdateC2SPayload.ID, DocUpdateC2SPayload.PACKET_CODEC);
-    }
-
-    public static void registerGlobalReceivers() {
-        ServerPlayNetworking.registerGlobalReceiver(NoClipC2SPayload.ID, NoClipC2SPayload::receive);
-        ServerPlayNetworking.registerGlobalReceiver(USBlockC2SPayload.ID, USBlockC2SPayload::receive);
-        ServerPlayNetworking.registerGlobalReceiver(DocUpdateC2SPayload.ID, DocUpdateC2SPayload::receive);
-    }
+/**
+ * This class registers client side actions performed when a server-to-client packet is received.
+ */
+@Environment(EnvType.CLIENT)
+public class S2CPackets implements IniterClient {
 
     @Override
     public void init() {
-        registerPayloads();
-        registerGlobalReceivers();
+        ClientPlayNetworking.registerGlobalReceiver(NoClipSyncPayload.ID, NoClipSyncPayload::receive);
+        ClientPlayNetworking.registerGlobalReceiver(SanitySyncPayload.ID, SanitySyncPayload::receive);
+        ClientPlayNetworking.registerGlobalReceiver(WrittenDocScreenPayload.ID, WrittenDocScreenPayload::receive);
     }
 }

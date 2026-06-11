@@ -18,6 +18,17 @@ import net.minecraft.world.World;
 
 import java.util.function.Predicate;
 
+/**
+ * The block entity in charge of breaking reality and causing players to no-clip. As soon as it detects it's being powered
+ * by a lightning rod being struck, reality ticks start ticking down to zero causing players' vision to get glitchy.
+ * When there are no reality ticks remaining, nearby players noclip.
+ * <p>
+ *     The class carefully manages client side objects and classes like {@link net.limit.cubliminal.client.sound.ConditionedSoundInstance}
+ *     because sound attenuation is performed on the client. Shaders need to be toggled on as well, so instead of sending a packet
+ *     to nearby clients it relies on the client side instance of the block entity's logic. Please do not modify anything unless
+ *     you know what you're doing, server side compatibility is anti-intuitive.
+ * </p>
+ */
 public class FluxCapacitorBlockEntity extends BlockEntity {
 
 	public FluxCapacitorBlockEntity(BlockPos pos, BlockState state) {

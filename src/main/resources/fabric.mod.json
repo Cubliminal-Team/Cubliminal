@@ -32,24 +32,24 @@
             "net.limit.cubliminal.CubliminalDataGenerator"
         ],
         "initer": [
-            "net.limit.cubliminal.init.CubliminalFluids",
             "net.limit.cubliminal.init.CubliminalBiomes",
+            "net.limit.cubliminal.init.CubliminalDataComponents",
+            "net.limit.cubliminal.init.CubliminalFeatures",
             "net.limit.cubliminal.init.CubliminalBlockEntities",
             "net.limit.cubliminal.init.CubliminalBlocks",
-            "net.limit.cubliminal.init.CubliminalDataComponents",
             "net.limit.cubliminal.init.CubliminalEffects",
             "net.limit.cubliminal.init.CubliminalEntities",
-            "net.limit.cubliminal.init.CubliminalFeatures",
             "net.limit.cubliminal.init.CubliminalItemGroups",
             "net.limit.cubliminal.init.CubliminalItems",
-            "net.limit.cubliminal.init.CubliminalScreenHandlers",
             "net.limit.cubliminal.init.CubliminalSounds",
             "net.limit.cubliminal.init.CubliminalStructures",
-            "net.limit.cubliminal.networking.s2c.S2CPackets"
+            "net.limit.cubliminal.networking.c2s.C2SPackets",
+            "net.limit.cubliminal.init.CubliminalScreenHandlers"
         ],
         "initerclient": [
             "net.limit.cubliminal.client.render.RenderLayers",
-            "net.limit.cubliminal.networking.c2s.C2SPackets"
+            "net.limit.cubliminal.init.CubliminalModelLayers",
+            "net.limit.cubliminal.networking.s2c.S2CPackets"
         ]
     },
     "mixins": [

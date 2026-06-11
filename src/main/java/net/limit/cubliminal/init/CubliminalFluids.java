@@ -42,4 +42,6 @@ public class CubliminalFluids implements Initer {
     @Override
     public void init() {}
 
+    public static void registerAll() {}
+
 }

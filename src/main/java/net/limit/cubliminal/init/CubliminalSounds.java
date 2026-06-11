@@ -17,7 +17,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 
-
+/**
+ * This class holds sound event related registry utilities and all the custom server side sound event registries.
+ */
 public class CubliminalSounds implements Initer {
 	private static SoundEvent register(String id) {
 		return Registry.register(Registries.SOUND_EVENT, Cubliminal.id(id), SoundEvent.of(Cubliminal.id(id)));
@@ -47,11 +49,35 @@ public class CubliminalSounds implements Initer {
 	public static final SoundEvent PAPER_FALL = register("block.paper_fall");
 
 
+	/**
+	 * Sends a packet to a specific client for a positional sound event to be played.
+	 * @param target The player that will be sent the packet.
+	 * @param sound The sound event to be played.
+	 * @param category Sound category.
+	 * @param x X pos.
+	 * @param y Y pos.
+	 * @param z Z pos.
+	 * @param volume Volume.
+	 * @param pitch Pitch.
+	 * @param seed A random seed used for variation, not important.
+	 */
 	public static void clientPlaySoundSingle(ServerPlayerEntity target, RegistryEntry<SoundEvent> sound, SoundCategory category, double x, double y, double z, float volume, float pitch, long seed) {
 		PlaySoundS2CPacket playSoundS2CPacket = new PlaySoundS2CPacket(sound, category, x, y, z, volume, pitch, seed);
 		target.networkHandler.sendPacket(playSoundS2CPacket);
 	}
 
+	/**
+	 * Sends a packet to multiple clients for a positional sound event to be played.
+	 * @param targets All the players that will be sent the packet.
+	 * @param sound The sound event to be played.
+	 * @param category Sound category.
+	 * @param x X pos.
+	 * @param y Y pos.
+	 * @param z Z pos.
+	 * @param volume Volume.
+	 * @param pitch Pitch.
+	 * @param seed A random seed used for variation, not important.
+	 */
 	public static void clientPlaySoundCollection(Collection<ServerPlayerEntity> targets, RegistryEntry<SoundEvent> sound, SoundCategory category, double x, double y, double z, float volume, float pitch, long seed) {
 		PlaySoundS2CPacket playSoundS2CPacket = new PlaySoundS2CPacket(sound, category, x, y, z, volume, pitch, seed);
 		for (ServerPlayerEntity serverPlayerEntity : targets) {
@@ -59,6 +85,12 @@ public class CubliminalSounds implements Initer {
 		}
 	}
 
+	/**
+	 * Sends a packet to multiple clients to stop a sound event that is being played.
+	 * @param targets All the players that will be sent the packet.
+	 * @param category Sound category.
+	 * @param sound The identifier of the desired sound.
+	 */
 	public static void clientStopSoundCollection(Collection<ServerPlayerEntity> targets, @Nullable SoundCategory category, @Nullable Identifier sound) {
 		StopSoundS2CPacket stopSoundS2CPacket = new StopSoundS2CPacket(sound, category);
 		for (ServerPlayerEntity serverPlayerEntity : targets) {
