@@ -20,6 +20,7 @@ public class ContaminatedWaterBlock extends CustomFluidBlock implements BlockVar
 
     @Override
     protected StatusEffectInstance[] applyEffectsToEntities() {
+        // This gives an entity the poison and nausea effects when they interact with the fluid.
         return new StatusEffectInstance[]{
                 new StatusEffectInstance(StatusEffects.NAUSEA, 600, 1),
                 new StatusEffectInstance(StatusEffects.POISON, 300, 1)

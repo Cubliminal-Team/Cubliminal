@@ -114,11 +114,12 @@ tasks.register('updateIniters') {
 		// Where compiled .class files live
 		def classesDirs = sourceSets.main.output.classesDirs.files
 
-		List<String> foundIniters = []
-		List<String> foundClientIniters = []
+		List<Map> foundIniters = []
+		List<Map> foundClientIniters = []
 		List<String> badConstructors = []   // <- keep track of offenders
 
 		classesDirs.each { dir ->
+			int classOrder = 0
 			dir.eachFileRecurse { f ->
 				if (!f.name.endsWith('.class')) return
 
@@ -134,17 +135,31 @@ tasks.register('updateIniters') {
 						boolean isIniter = false
 						boolean isClientIniter = false
 						boolean hasPublicNoArgCtor = false
+						int orderValue = 0    // ← add this
 
 						@Override
 						void visit(int version, int access, String name,
-								   String signature, String superName, String[] interfaces) {
-							isIniter = interfaces.any { it.replace('/', '.') == initerClass }
+						           String signature, String superName, String[] interfaces) {
+							isIniter       = interfaces.any { it.replace('/', '.') == initerClass }
 							isClientIniter = interfaces.any { it.replace('/', '.') == initerClientClass }
 						}
 
 						@Override
+						AnnotationVisitor visitAnnotation(String descriptor, boolean visible) {    // ← add this
+							if (descriptor == 'Lnet/limit/cubliminal/InitOrder;') {
+								return new AnnotationVisitor(Opcodes.ASM9) {
+									@Override
+									void visit(String name, Object value) {
+										if (name == 'value') orderValue = value as int
+									}
+								}
+							}
+							return super.visitAnnotation(descriptor, visible)
+						}
+
+						@Override
 						MethodVisitor visitMethod(int access, String name, String desc,
-												  String sig, String[] exc) {
+						                          String sig, String[] exc) {
 							if (name == "<init>" && desc == "()V"
 									&& (access & Opcodes.ACC_PUBLIC) != 0) {
 								hasPublicNoArgCtor = true
@@ -155,16 +170,12 @@ tasks.register('updateIniters') {
 						@Override
 						void visitEnd() {
 							if (isIniter) {
-								foundIniters << className
-								if (!hasPublicNoArgCtor) {
-									badConstructors << className
-								}
+								foundIniters << [name: className, order: orderValue]
+								if (!hasPublicNoArgCtor) badConstructors << className
 							}
 							if (isClientIniter) {
-								foundClientIniters << className
-								if (!hasPublicNoArgCtor) {
-									badConstructors << className
-								}
+								foundClientIniters << [name: className, order: orderValue]
+								if (!hasPublicNoArgCtor) badConstructors << className
 							}
 						}
 					}, ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES)
@@ -187,8 +198,8 @@ tasks.register('updateIniters') {
 		def modJson = new JsonSlurper().parseText(modJsonFile.text)
 
 		modJson.entrypoints = modJson.entrypoints ?: [:]
-		modJson.entrypoints.initer = foundIniters.sort()
-		modJson.entrypoints.initerclient = foundClientIniters.sort()
+		modJson.entrypoints.initer       = foundIniters      .sort { it.order }.collect { it.name }
+		modJson.entrypoints.initerclient = foundClientIniters.sort { it.order }.collect { it.name }
 
 		modJsonFile.text = JsonOutput.prettyPrint(
                 JsonOutput.toJson(modJson))

@@ -2,16 +2,15 @@
 // Exported for Minecraft version 1.17+ for Yarn
 // Paste this class into your mod and generate all required imports
 
-package net.limit.cubliminal.client.render.entity.model;
+package net.limit.cubliminal.client.entity.model;
 
-import net.limit.cubliminal.util.DebugLogger;
+import net.limit.cubliminal.client.entity.state.CustomEntityRenderState;
 import net.minecraft.client.model.*;
 import net.minecraft.client.render.entity.model.EntityModel;
-import net.minecraft.client.render.entity.state.LivingEntityRenderState;
 import net.minecraft.util.math.MathHelper;
 
 @SuppressWarnings({"unused"})
-public class SmilerModel extends EntityModel<LivingEntityRenderState> {
+public class SmilerModel extends EntityModel<CustomEntityRenderState> {
 	private final ModelPart face;
 
 	public SmilerModel(ModelPart root) {
@@ -33,7 +32,7 @@ public class SmilerModel extends EntityModel<LivingEntityRenderState> {
 	}
 
 	@Override
-	public void setAngles(LivingEntityRenderState state) {
+	public void setAngles(CustomEntityRenderState state) {
 		super.setAngles(state);
 		// TODO: Implement animations.
 	}

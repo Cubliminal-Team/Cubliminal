@@ -19,6 +19,7 @@ public class VerticalPipeBlock extends PipeBlock implements TypedPipeSupport {
     public static MapCodec<VerticalPipeBlock> CODEC = VerticalPipeBlock.createCodec(VerticalPipeBlock::new);
 
     public static final BooleanProperty CONNECTOR = BooleanProperty.of("connector");
+    // Gets the voxel shape of the vertical pipe since the vertical pipe is smaller.
     public static final VoxelShape SHAPE_WEST = Block.createCuboidShape(9.0, 0.0, 4.0, 16.0, 16.0, 12.0);
     public static final VoxelShape SHAPE_NORTH = Block.createCuboidShape(4.0, 0.0, 9.0, 12.0, 16.0, 16.0);
     public static final VoxelShape SHAPE_EAST = Block.createCuboidShape(0.0, 0.0, 4.0, 7.0, 16.0, 12.0);
@@ -55,6 +56,7 @@ public class VerticalPipeBlock extends PipeBlock implements TypedPipeSupport {
 
     @Override
     public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+        // Sets up the outline shape based on facing.
         return switch (state.get(FACING)){
             case WEST -> SHAPE_WEST;
             case EAST -> SHAPE_EAST;

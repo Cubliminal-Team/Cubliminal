@@ -74,15 +74,15 @@ public class LevelOneChunkGenerator extends AbstractNbtChunkGenerator implements
 		return NbtGroup.Builder
 				.create(Cubliminal.id(CubliminalRegistrar.HABITABLE_ZONE))
 				.with("corridor_dark", "corridor_dark_i", "corridor_dark_l", "corridor_dark_f", "corridor_dark_t", "corridor_dark_n")
-				.with("corridor_i_normal", 1, 6)
+				.with("corridor_i_normal", 1, 5)
 				.with("corridor_i_variated", "fire_alarm", "open_1", "open_2", "pipes", "room_1", "room_2", "wall_1", "wall_2",
-						"remains_1", "remains_2", "remains_3", "remains_4", "remains_5", "remains_6", "remains_7", "smoke_detector_1", "smoke_detector_2",
-						"tent_1", "tent_2", "tent_3", "tent_4", "window_1", "window_2")
-				.with("corridor_l_normal", 1, 6)
-				.with("corridor_l_variated", "remains_1", "remains_2", "remains_3", "remains_4", "remains_5", "remains_6", "remains_7")
-				.with("corridor_f_normal", 1, 6)
+						"remains_1", "remains_2", "remains_3", "remains_4", "remains_5", "remains_6", "remains_7",
+						"smoke_detector_1", "smoke_detector_2", "tent_1", "tent_2", "tent_3", "tent_4", "window_1", "window_2")
+				.with("corridor_l_normal", 1, 5)
+				.with("corridor_l_variated", "remains_1", "remains_2", "remains_3", "remains_4", "remains_5", "remains_6", "remains_7", "remains_8", "remains_9", "remains_10", "remains_11", "remains_12", "remains_13", "remains_14", "remains_15")
+				.with("corridor_f_normal", 1, 5)
 				.with("corridor_f_variated", "remains_1", "remains_2", "remains_3", "remains_4", "remains_5", "remains_6", "remains_7")
-				.with("corridor_t_normal", 1, 6)
+				.with("corridor_t_normal", 1, 5)
 				.with("corridor_t_variated", "remains_1", "remains_2", "remains_3", "remains_4", "remains_5", "remains_6", "remains_7")
 				.with("corridor_n_normal", 1, 5)
 				.with("corridor_n_variated", "remains_1", "remains_2", "remains_3", "remains_4", "remains_5", "remains_6", "remains_7")
@@ -165,7 +165,7 @@ public class LevelOneChunkGenerator extends AbstractNbtChunkGenerator implements
 				mutable.setX(startX + dx);
 				for (int dz = 0; dz < 16; dz++) {
 					mutable.setZ(startZ + dz);
-					region.setBlockState(mutable, chunkRandom.nextFloat() < 0.3 ? Blocks.BLACKSTONE.getDefaultState() : Blocks.DEEPSLATE.getDefaultState(), Block.FORCE_STATE, 0);
+					region.setBlockState(mutable, chunkRandom.nextFloat() < 0.3 ? Blocks.SMOOTH_BASALT.getDefaultState() : Blocks.DEEPSLATE.getDefaultState(), Block.FORCE_STATE, 0);
 				}
 			}
 		}

@@ -2,18 +2,15 @@
 // Exported for Minecraft version 1.17+ for Yarn
 // Paste this class into your mod and generate all required imports
 
-package net.limit.cubliminal.client.render.entity.model;
+package net.limit.cubliminal.client.entity.model;
 
-import net.limit.cubliminal.util.DebugLogger;
+import net.limit.cubliminal.client.entity.state.CustomEntityRenderState;
 import net.minecraft.client.model.*;
 import net.minecraft.client.render.entity.model.EntityModel;
-import net.minecraft.client.render.entity.state.LivingEntityRenderState;
 import net.minecraft.util.math.MathHelper;
 
-import java.util.Map;
-
 @SuppressWarnings({"unused"})
-public class HoundModel extends EntityModel<LivingEntityRenderState> {
+public class HoundModel extends EntityModel<CustomEntityRenderState> {
 	private final ModelPart body;
 	private final ModelPart head;
 	private final ModelPart backLegRight;
@@ -73,7 +70,7 @@ public class HoundModel extends EntityModel<LivingEntityRenderState> {
 	}
 
 	@Override
-	public void setAngles(LivingEntityRenderState state) {
+	public void setAngles(CustomEntityRenderState state) {
 		super.setAngles(state);
 		// TODO: Implement animations.
 	}

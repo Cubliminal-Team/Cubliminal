@@ -15,6 +15,16 @@ import org.jetbrains.annotations.Nullable;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
+/**
+ * Minecraft sound instances don't perform attenuation by default as you move away, which really breaks immersiveness
+ * in some cases. We made our own sound instance class to fix this.
+ * <p>
+ *     Each tick it checks whether it should play according to a {@code BooleanSupplier}, incredibly useful for cases
+ *     where the sound source is suddenly removed. Linear attenuation is then calculated from the distance between
+ *     the source and the client, updating the volume in real time.
+ * </p>
+ */
+
 @Environment(EnvType.CLIENT)
 public class ConditionedSoundInstance extends MovingSoundInstance {
 

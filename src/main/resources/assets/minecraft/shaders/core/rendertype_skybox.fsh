@@ -9,22 +9,14 @@ uniform sampler2D Sampler3;
 uniform sampler2D Sampler4;
 uniform sampler2D Sampler5;
 
-uniform vec4 ColorModulator;
 uniform float FogStart;
 uniform float FogEnd;
 uniform vec4 FogColor;
 
 uniform mat4 ProjMat;
-uniform mat4 ModelViewMat;
-
 uniform mat4 RotMat;
 
 in float vertexDistance;
-in vec4 vertexColor;
-in vec2 texCoord0;
-in vec4 normal;
-
-in vec4 texProj0;
 in vec4 glPos;
 
 out vec4 fragColor;

@@ -17,7 +17,7 @@ public class HoundEntity extends HostileEntity {
         super(entityType, world);
     }
 
-    public static DefaultAttributeContainer.Builder createAttributes(){
+    public static DefaultAttributeContainer.Builder createAttributes() {
         return MobEntity.createMobAttributes()
                 .add(EntityAttributes.MAX_HEALTH, 40)
                 .add(EntityAttributes.MOVEMENT_SPEED, 1.0f)
@@ -29,26 +29,32 @@ public class HoundEntity extends HostileEntity {
     protected void initGoals() {
         super.initGoals();
 
+        // Receives the target and goal selector.
         GoalSelector target = this.targetSelector;
         GoalSelector goal = this.goalSelector;
 
+        // Allow Hounds to attack players.
         target.add(1, new ActiveTargetGoal<>(this, PlayerEntity.class, true));
+        // Allow Hounds to attack villagers.
         target.add(2, new ActiveTargetGoal<>(this, VillagerEntity.class, true));
 
-        goal.add(0, new getIntimidated(this, PlayerEntity.class, 1.0f, 0f, 1.0f));
+        goal.add(0, new GetIntimidatedGoal<>(this, PlayerEntity.class, 1.0f, 0f, 1.0f));
+        // Allows the Hound to attack players.
         goal.add(2, new MeleeAttackGoal(this, 1.0f, true));
+        // Allows the Hound to wander far distances.
         goal.add(4, new WanderAroundFarGoal(this, 1.0f));
+        // Allows the Hound to wander at short distances.
         goal.add(5, new WanderAroundGoal(this, 0.5f));
     }
 
     boolean isPlayerStaring(PlayerEntity entity){
-        return this.isEntityLookingAtMe(entity, 0.025, true, false, null, this::getEyeY);
+        return this.isEntityLookingAtMe(entity, 0.025, true, false, e -> true, this::getEyeY);
     }
 
-    static class getIntimidated extends FleeEntityGoal {
+    static class GetIntimidatedGoal<T extends LivingEntity> extends FleeEntityGoal<T> {
         private final HoundEntity hound;
 
-        public getIntimidated(HoundEntity mob, Class fleeFromType, float distance, double slowSpeed, double fastSpeed) {
+        public GetIntimidatedGoal(HoundEntity mob, Class<T> fleeFromType, float distance, double slowSpeed, double fastSpeed) {
             super(mob, fleeFromType, distance, slowSpeed, fastSpeed);
             this.hound = mob;
         }
