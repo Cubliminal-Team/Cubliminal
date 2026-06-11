@@ -4,7 +4,6 @@ import com.mojang.serialization.MapCodec;
 import net.limit.cubliminal.block.custom.template.BlackoutListener;
 import net.limit.cubliminal.block.entity.WoodenCrateBlockEntity;
 import net.limit.cubliminal.init.CubliminalBlocks;
-import net.limit.cubliminal.init.CubliminalSounds;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -18,6 +17,7 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -85,6 +85,12 @@ public class WoodenCrateBlock extends BlockWithEntity implements BlackoutListene
     }
 
     @Override
+    protected void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
+        ItemScatterer.onStateReplaced(state, newState, world, pos);
+        super.onStateReplaced(state, world, pos, newState, moved);
+    }
+
+    @Override
     public void blackoutUpdate(BlockState state, ServerWorld world, BlockPos pos, boolean lightsOff, Random random) {
         if (lightsOff && random.nextFloat() < 0.5) {
             world.scheduleBlockTick(pos, state.getBlock(), 1);
@@ -96,8 +102,9 @@ public class WoodenCrateBlock extends BlockWithEntity implements BlackoutListene
         return BlockRenderType.MODEL;
     }
 
+    @Nullable
     @Override
-    public @Nullable BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+    public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
         return new WoodenCrateBlockEntity(pos, state);
     }
 

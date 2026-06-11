@@ -8,7 +8,6 @@ import net.limit.cubliminal.IniterClient;
 /**
  * This class registers client side actions performed when a server-to-client packet is received.
  */
-
 @Environment(EnvType.CLIENT)
 public class S2CPackets implements IniterClient {
 

@@ -141,5 +141,6 @@
   "text.autoconfig.cubliminal.option.disableAggressiveGraphics": "Desactivar cambios abruptos en los gráficos",
   "text.autoconfig.cubliminal.option.enableSuperDenseFog": "Abilitar niebla densa",
   "gui.cubliminal.flip": "Dar la vuelta",
-  "gui.cubliminal.use": "Usar"
+  "gui.cubliminal.use": "Usar",
+  "container.wooden_crate": "Caja de madera"
 }

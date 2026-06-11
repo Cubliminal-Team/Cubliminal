@@ -11,7 +11,6 @@ import net.limit.cubliminal.networking.s2c.WrittenDocScreenPayload;
  * This class registers server side actions performed when a client-to-server packet is received. It's also used
  * for payload registration, because it's done in common.
  */
-
 public class C2SPackets implements Initer {
 
     public static void registerPayloads() {
