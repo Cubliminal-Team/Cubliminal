@@ -2,12 +2,7 @@
 	"vertex": "minecraft:core/rendertype_skybox",
 	"fragment": "minecraft:core/rendertype_skybox",
 	"attributes": [
-		"Position",
-		"Color",
-		"UV0",
-		"UV1",
-		"UV2",
-		"Normal"
+		"Position"
 	],
 	"samplers": [
 		{ "name": "Sampler0" },

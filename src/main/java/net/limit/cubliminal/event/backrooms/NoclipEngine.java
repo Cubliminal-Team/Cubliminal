@@ -22,6 +22,14 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.TeleportTarget;
 import net.minecraft.world.World;
 
+/**
+ * Manages the whole no-clip mechanics and actions of a single player: there is a single {@code NoclipEngine} per player.
+ * This mechanic is highly experimental and needs to be balanced.
+ * <p>
+ *     {@code ticksToNc} tick down inside the Backrooms
+ * </p>
+ */
+
 public class NoclipEngine {
 
     private int ticksToNc = 0;

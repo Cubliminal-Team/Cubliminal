@@ -9,6 +9,7 @@
   "item.cubliminal.yellow_wallpapers_wall": "Muro de tapices amarillos",
   "item.cubliminal.yellow_wallpapers_vertical_slab": "Losa vertical de tapices amarillos",
   "item.cubliminal.bottom_yellow_wallpapers": "Tapices amarillos con rodapiés",
+  "item.cubliminal.top_yellow_wallpapers": "Tapices amarillos superiores",
   "item.cubliminal.damaged_yellow_wallpapers": "Tapices amarillos dañados",
   "item.cubliminal.false_ceiling": "Techo falso",
   "item.cubliminal.damp_carpet": "Moqueta húmeda",
@@ -125,6 +126,9 @@
   "advancements.backrooms.enter_manila_room.title": "Un oasis artificial",
   "advancements.backrooms.enter_manila_room.description": "Hazte camino hacia la habitación manila y sálvate de la locura",
   "effect.cubliminal.paranoia": "Paranoia",
+  "entity.cubliminal.smiler": "Smiler",
+  "entity.cubliminal.hound": "Hound",
+  "entity.cubliminal.skin_stealer": "Skin Stealer",
   "subtitle.noclipping": "Null",
   "subtitle.block.sink_open": "Chirrido",
   "subtitle.block.sink_ambient": "Grifo abierto",
@@ -137,5 +141,6 @@
   "text.autoconfig.cubliminal.option.disableAggressiveGraphics": "Desactivar cambios abruptos en los gráficos",
   "text.autoconfig.cubliminal.option.enableSuperDenseFog": "Abilitar niebla densa",
   "gui.cubliminal.flip": "Dar la vuelta",
-  "gui.cubliminal.use": "Usar"
+  "gui.cubliminal.use": "Usar",
+  "container.wooden_crate": "Caja de madera"
 }

@@ -46,7 +46,7 @@ public class LevelOneBiomeSource extends BiomeSource implements LiminalBiomeSour
 
     private final RegistryEntry<Biome> corridorsBiome;
 
-    // Note that tags won't have been initialized yet by the time we create a biome source
+    // Note that tags won't have been initialized by the time we create a biome source
     public LevelOneBiomeSource(float scale) {
         this.level = Levels.LEVEL_1;
         this.scale = scale;

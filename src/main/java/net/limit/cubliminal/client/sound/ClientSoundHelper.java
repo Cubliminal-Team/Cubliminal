@@ -10,6 +10,10 @@ import net.minecraft.client.sound.SoundInstance;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.math.Vec3d;
 
+/**
+ * This class holds all the custom client side sound utility functions.
+ */
+
 @Environment(EnvType.CLIENT)
 public class ClientSoundHelper {
 
@@ -17,6 +21,13 @@ public class ClientSoundHelper {
         playSoundAt(soundInstance, soundInstance.getX(), soundInstance.getY(), soundInstance.getZ());
     }
 
+    /**
+     * Plays a sound instance if the client is close enough.
+     * @param soundInstance The desired sound instance.
+     * @param x X pos.
+     * @param y Y pos.
+     * @param z Z pos.
+     */
     public static void playSoundAt(ConditionedSoundInstance soundInstance, double x, double y, double z) {
         ClientPlayerEntity player = MinecraftClient.getInstance().player;
         if (player != null) {
@@ -30,10 +41,19 @@ public class ClientSoundHelper {
         }
     }
 
+    /**
+     * Plays a sound instance centered on a block.
+     * @param soundInstance The desired sound instance.
+     */
     public static void playSoundAtBlock(ConditionedSoundInstance soundInstance) {
         playSoundAt(soundInstance, soundInstance.getX() + 0.5, soundInstance.getY() + 0.5, soundInstance.getZ() + 0.5);
     }
 
+    /**
+     * Stops a specific sound instance that is being played. You would need to save it as a variable after being played
+     * to stop it later. If you're on a common side class, you can save it as an {@code Object} and then cast it.
+     * @param soundInstance The sound instance to be stopped.
+     */
     public static void stopSound(SoundInstance soundInstance) {
         MinecraftClient.getInstance().getSoundManager().stop(soundInstance);
     }
