@@ -77,9 +77,6 @@ public class AlmondWaterFluid extends BackroomsFlowableFluid {
             return state.get(LEVEL);
         }
 
-        public boolean isStill(FluidState state) {
-            return false;
-        }
     }
 
     public static class Still extends AlmondWaterFluid {
