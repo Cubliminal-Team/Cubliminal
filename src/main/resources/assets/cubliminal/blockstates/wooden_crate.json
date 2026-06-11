@@ -1,7 +1,10 @@
 {
   "variants": {
-    "": {
-      "model": "cubliminal:block/wooden_crate"
+    "opened=false": {
+      "model": "cubliminal:block/wooden_crate_closed"
+    },
+    "opened=true": {
+      "model": "cubliminal:block/wooden_crate_open"
     }
   }
 }

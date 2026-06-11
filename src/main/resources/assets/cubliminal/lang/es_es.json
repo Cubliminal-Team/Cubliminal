@@ -126,6 +126,9 @@
   "advancements.backrooms.enter_manila_room.title": "Un oasis artificial",
   "advancements.backrooms.enter_manila_room.description": "Hazte camino hacia la habitación manila y sálvate de la locura",
   "effect.cubliminal.paranoia": "Paranoia",
+  "entity.cubliminal.smiler": "Smiler",
+  "entity.cubliminal.hound": "Hound",
+  "entity.cubliminal.skin_stealer": "Skin Stealer",
   "subtitle.noclipping": "Null",
   "subtitle.block.sink_open": "Chirrido",
   "subtitle.block.sink_ambient": "Grifo abierto",
@@ -138,5 +141,6 @@
   "text.autoconfig.cubliminal.option.disableAggressiveGraphics": "Desactivar cambios abruptos en los gráficos",
   "text.autoconfig.cubliminal.option.enableSuperDenseFog": "Abilitar niebla densa",
   "gui.cubliminal.flip": "Dar la vuelta",
-  "gui.cubliminal.use": "Usar"
+  "gui.cubliminal.use": "Usar",
+  "container.wooden_crate": "Caja de madera"
 }

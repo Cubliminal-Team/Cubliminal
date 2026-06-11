@@ -48,9 +48,23 @@ import static net.minecraft.block.Blocks.createLightLevelFromLitBlockState;
 import static net.minecraft.item.Item.BASE_ATTACK_DAMAGE_MODIFIER_ID;
 import static net.minecraft.item.Item.BASE_ATTACK_SPEED_MODIFIER_ID;
 
+/**
+ * This class holds block related registry utilities and all the custom block and block tag registries. Fuel registry is at the bottom.
+ */
+
 @SuppressWarnings("deprecation")
 public class CubliminalBlocks implements Initer {
 
+	//region Registration Methods
+	/**
+	 * Registers a block with a custom block item constructor and/or custom block item settings.
+	 * @param id The name of the block.
+	 * @param blockFactory The block constructor.
+	 * @param blockSettings The settings used to create the block.
+	 * @param itemFactory The block item constructor.
+	 * @param itemSettings The settings used to create the block item.
+	 * @return a new block.
+	 */
 	private static Block register(String id, Function<AbstractBlock.Settings, Block> blockFactory, AbstractBlock.Settings blockSettings, BiFunction<Block, Item.Settings, BlockItem> itemFactory, Item.Settings itemSettings) {
 		RegistryKey<Item> itemKey = RegistryKey.of(RegistryKeys.ITEM, Cubliminal.id(id));
 		RegistryKey<Block> blockKey = key(id);
@@ -61,10 +75,27 @@ public class CubliminalBlocks implements Initer {
 		return Registry.register(Registries.BLOCK, blockKey, block);
 	}
 
-	private static Block register(String id, Function<AbstractBlock.Settings, Block> blockFactory, AbstractBlock.Settings blockSettings){
+	/**
+	 * Registers a block with the default block item constructor and block item settings. This is the default registration function.
+	 * @param id The name of the block.
+	 * @param blockFactory The block constructor.
+	 * @param blockSettings The settings used to create the block.
+	 * @return a new block.
+	 */
+	private static Block register(String id, Function<AbstractBlock.Settings, Block> blockFactory, AbstractBlock.Settings blockSettings) {
 		return register(id, blockFactory, blockSettings, BlockItem::new, new Item.Settings());
 	}
 
+	/**
+	 * Registers a block that requires additional data in its block constructor (e.g. stair blocks) with a custom block item constructor and/or custom block item settings.
+	 * @param id The name of the block.
+	 * @param blockFactory The block constructor.
+	 * @param blockSettings The settings used to create the block.
+	 * @param constructorData The additional data imputed to the block constructor.
+	 * @param itemFactory The block item constructor.
+	 * @param itemSettings The settings used to create the block item.
+	 * @return a new block.
+	 */
 	private static <T> Block register(String id, BiFunction<T, AbstractBlock.Settings, Block> blockFactory, AbstractBlock.Settings blockSettings, T constructorData, BiFunction<Block, Item.Settings, BlockItem> itemFactory, Item.Settings itemSettings) {
 		RegistryKey<Item> itemKey = RegistryKey.of(RegistryKeys.ITEM, Cubliminal.id(id));
 		RegistryKey<Block> blockKey = key(id);
@@ -75,10 +106,26 @@ public class CubliminalBlocks implements Initer {
 		return Registry.register(Registries.BLOCK, blockKey, block);
 	}
 
+	/**
+	 * Registers a block that requires additional data in its block constructor (e.g. stair blocks) with the default block item constructor and block item settings.
+	 * @param id The name of the block.
+	 * @param blockFactory The block constructor.
+	 * @param blockSettings The settings used to create the block.
+	 * @param constructorData The additional data imputed to the block constructor.
+	 * @return a new block.
+	 */
 	private static <T> Block register(String id, BiFunction<T, AbstractBlock.Settings, Block> blockFactory, AbstractBlock.Settings blockSettings, T constructorData) {
 		return register(id, blockFactory, blockSettings, constructorData, BlockItem::new, new Item.Settings());
 	}
 
+	/**
+	 * Registers a block with a custom block item constructor and/or custom block item settings, yet using an already created block object. Often used when custom block functions want to be used <p>(e.g. voxel shapes).<p><b>Warning! you need to add the registry key to block settings manually with {@link Block.Settings#registryKey(RegistryKey)}</b>
+	 * @param id The name of the block.
+	 * @param block The new block object to be registered.
+	 * @param itemFactory The block item constructor.
+	 * @param itemSettings The settings used to create the block item.
+	 * @return a new block.
+	 */
 	private static Block registerBlock(String id, Block block, BiFunction<Block, Item.Settings, BlockItem> itemFactory, Item.Settings itemSettings) {
 		RegistryKey<Block> blockKey = key(id);
 		RegistryKey<Item> itemKey = RegistryKey.of(RegistryKeys.ITEM, Cubliminal.id(id));
@@ -87,10 +134,24 @@ public class CubliminalBlocks implements Initer {
 		return Registry.register(Registries.BLOCK, blockKey, block);
 	}
 
+	/**
+	 * Registers a block with the default block item constructor and block item settings, yet using an already created block object. Often used when custom block functions want to be used <p>(e.g. voxel shapes).
+	 * <p><b>Warning! you need to add the registry key to block settings manually with {@link Block.Settings#registryKey(RegistryKey)}</b>
+	 * @param id The name of the block.
+	 * @param block The new block object to be registered.
+	 * @return a new block.
+	 */
 	private static Block registerBlock(String id, Block block) {
 		return registerBlock(id, block, BlockItem::new, new Item.Settings());
 	}
 
+	/**
+	 * Registers a block without block item. Mostly used for fluids.
+	 * @param id The name of the block.
+	 * @param blockFactory The block constructor.
+	 * @param blockSettings The settings used to create the block.
+	 * @return a new block.
+	 */
 	private static Block registerWithoutItem(String id, Function<AbstractBlock.Settings, Block> blockFactory, AbstractBlock.Settings blockSettings) {
 		RegistryKey<Block> blockKey = key(id);
 		Block block = blockFactory.apply(blockSettings.registryKey(blockKey));
@@ -98,12 +159,12 @@ public class CubliminalBlocks implements Initer {
 	}
 
 	/**
-	 * registers a fluid block.
+	 * Registers a fluid block.
 	 * @param name The name of the fluid.
 	 * @param flowableFluid The flowable fluid.
 	 * @param factory The fluid block factory
 	 * @param settings The fluid settings.
-	 * @return Returns a block of the custom fluid.
+	 * @return a block of the custom fluid.
 	 */
 	private static Block registerFluidBlock(String name, FlowableFluid flowableFluid, FluidBlockFactory factory, CustomFluidBlock.Settings settings){
 		return registerWithoutItem(
@@ -112,6 +173,7 @@ public class CubliminalBlocks implements Initer {
 				AbstractBlock.Settings.copyShallow(Blocks.WATER)
 		);
 	}
+	//endregion
 
 	public static RegistryKey<Block> key(String id) {
 		return RegistryKey.of(RegistryKeys.BLOCK, Cubliminal.id(id));
@@ -125,6 +187,7 @@ public class CubliminalBlocks implements Initer {
 
 	public static final BlockSoundGroup PAPER = new BlockSoundGroup(1.0f, 1.0f, CubliminalSounds.PAPER_BREAK, CubliminalSounds.PAPER_STEP, CubliminalSounds.PAPER_PLACE, CubliminalSounds.PAPER_HIT, CubliminalSounds.PAPER_FALL);
 
+	//region Blocks
 	public static final Block UNLIMITED_STRUCTURE_BLOCK = register("unlimited_structure_block", UnlimitedStructureBlock::new,
 			AbstractBlock.Settings.copy(Blocks.STRUCTURE_BLOCK), OperatorOnlyBlockItem::new, new Item.Settings().rarity(Rarity.EPIC));
 
@@ -767,7 +830,13 @@ public class CubliminalBlocks implements Initer {
 	public static final Block POOL_TILE_WALL = register("pool_tile_wall", WallBlock::new, AbstractBlock.Settings.copy(Blocks.REINFORCED_DEEPSLATE).solid());
 
 	public static final Block CRATE_AIR = registerWithoutItem("crate_air", CrateAirBlock::new, AbstractBlock.Settings.copy(Blocks.AIR));
+	//endregion
 
+	//region Liquids
+	/**
+	 * The almond water fluid block will primarily be used in levels that contains oceans of almond water.
+	 * This fluid block is currently just for decoration.
+	 */
 	public static final Block ALMOND_WATER_BLOCK = registerFluidBlock("almond_water", CubliminalFluids.ALMOND_WATER, AlmondWaterFluidBlock::new,
 			CustomFluidBlock.Settings.create()
 					.setColor(0xFFECB3)
@@ -776,6 +845,10 @@ public class CubliminalBlocks implements Initer {
 					)
 	);
 
+	/**
+	 * Contaminated water will primarily be used in level 2, also known as pipe dreams.
+	 * This fluid gives negative effects to entities.
+	 */
 	public static final Block CONTAMINATED_WATER_BLOCK = registerFluidBlock("contaminated_water", CubliminalFluids.CONTAMINATED_WATER, ContaminatedWaterBlock::new,
 			CustomFluidBlock.Settings.create()
 					.setColor(0x556B2F)
@@ -787,6 +860,10 @@ public class CubliminalBlocks implements Initer {
 					)
 	);
 
+	/**
+	 * This fluid block will be on levels such as level 2, as well as any other levels that contains black sludge.
+	 * Black sludge is a thick fluid that is very harmful to an entity sanity.
+ 	 */
 	public static final Block BLACK_SLUDGE_BLOCK = registerFluidBlock("black_sludge", CubliminalFluids.BLACK_SLUDGE, BlackSludgeFluidBlock::new,
 			CustomFluidBlock.Settings.create()
 					.setColor(0x1C1F1C)
@@ -796,6 +873,7 @@ public class CubliminalBlocks implements Initer {
 					.setFogEnd(1.0F)
 					.setFogAlpha(1.0F)
 	);
+	//endregion
 
 	public static ToIntFunction<BlockState> shouldBeRed(int defaultLevel, int redLevel) {
 		return (state) -> {

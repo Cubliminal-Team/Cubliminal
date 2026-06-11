@@ -10,6 +10,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+/**
+ * Used to encode a finite list of identifiers as a block state property because for some reason colons are not supported.
+ */
+
 public final class IdentifierProperty extends Property<String> {
 
     private static final String splitter = "__";

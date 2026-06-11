@@ -13,6 +13,10 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Direction;
 import org.joml.Matrix4f;
 
+/**
+ * Uhh we seriously need to rewrite this using rotation matrices.
+ */
+
 @Environment(EnvType.CLIENT)
 public class FluxCapacitorRenderer implements BlockEntityRenderer<FluxCapacitorBlockEntity> {
 

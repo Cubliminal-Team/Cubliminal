@@ -1,22 +1,6 @@
 {
-	"parent": "block/cube_all",
-	"texture_size": [32, 32],
-	"textures": {
-		"2": "cubliminal:block/bottom_yellow_wallpapers",
-		"particle": "cubliminal:block/bottom_yellow_wallpapers"
-	},
-	"elements": [
-		{
-			"from": [0, 0, 0],
-			"to": [16, 16, 16],
-			"faces": {
-				"north": {"uv": [0, 0, 8, 8], "texture": "#2", "cullface": "north"},
-				"east": {"uv": [0, 0, 8, 8], "texture": "#2", "cullface": "east"},
-				"south": {"uv": [0, 0, 8, 8], "texture": "#2", "cullface": "south"},
-				"west": {"uv": [0, 0, 8, 8], "texture": "#2", "cullface": "west"},
-				"up": {"uv": [8, 16, 0, 8], "texture": "#2", "cullface": "up"},
-				"down": {"uv": [16, 0, 8, 8], "texture": "#2", "cullface": "down"}
-			}
-		}
-	]
+  "parent": "block/cube_all",
+  "textures": {
+    "all": "cubliminal:block/bottom_yellow_wallpapers"
+  }
 }

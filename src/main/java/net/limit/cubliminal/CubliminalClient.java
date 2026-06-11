@@ -13,7 +13,7 @@ import net.limit.cubliminal.access.GameRendererAccessor;
 import net.limit.cubliminal.block.fluid.CustomFluidBlock;
 import net.limit.cubliminal.client.block.WrittenDocumentRenderer;
 import net.limit.cubliminal.client.hud.SanityBarHudOverlay;
-import net.limit.cubliminal.client.particle.CustomParticleManager;
+import net.limit.cubliminal.client.particle.CubliminalParticleManager;
 import net.limit.cubliminal.client.block.FluxCapacitorRenderer;
 import net.limit.cubliminal.client.block.ManilaGatewayRenderer;
 import net.limit.cubliminal.client.block.UnlimitedStructureBlockRenderer;
@@ -32,7 +32,7 @@ public class CubliminalClient implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
-		CustomParticleManager.init();
+		CubliminalParticleManager.init();
 
 		BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getCutout(),
 				CubliminalBlocks.THE_LOBBY_GATEWAY_BLOCK,
