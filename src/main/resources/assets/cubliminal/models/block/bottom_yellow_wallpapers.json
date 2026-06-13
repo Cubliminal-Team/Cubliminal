@@ -1,6 +1,8 @@
 {
-  "parent": "block/cube_all",
-  "textures": {
-    "all": "cubliminal:block/bottom_yellow_wallpapers"
-  }
+	"parent": "block/cube_all",
+	"textures": {
+		"all": "cubliminal:block/bottom_yellow_wallpapers",
+		"down": "cubliminal:block/yellow_wallpapers",
+		"up": "cubliminal:block/yellow_wallpapers"
+	}
 }

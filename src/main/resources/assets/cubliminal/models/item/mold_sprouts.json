@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "cubliminal:block/mold_sprouts/mold_sprouts_1"
+  }
+}

@@ -219,7 +219,7 @@ public class CubliminalBlocks implements Initer {
 					.sounds(BlockSoundGroup.BASALT)
 					.strength(2, 6));
 
-    public static final Block BOTTOM_YELLOW_WALLPAPERS = register("bottom_yellow_wallpapers", Block::new,
+    public static final Block BOTTOM_YELLOW_WALLPAPERS = register("bottom_yellow_wallpapers", BlockWithSocket::new,
             AbstractBlock.Settings.create()
 					.mapColor(MapColor.TERRACOTTA_YELLOW)
 					.sounds(BlockSoundGroup.BASALT)
@@ -270,6 +270,13 @@ public class CubliminalBlocks implements Initer {
 					.sounds(BlockSoundGroup.WOOL)
 					.strength(1, 3)
 					.slipperiness(0.7f));
+
+	public static final Block RED_DROP_CEILING = register("red_drop_ceiling", Block::new,
+			AbstractBlock.Settings.create()
+					.mapColor(MapColor.TERRACOTTA_RED)
+					.sounds(BlockSoundGroup.CALCITE)
+					.strength(2, 6)
+					.requiresTool());
 
 	public static final Block FLICKERING_FLUORESCENT_LIGHT = registerBlock("fluorescent_light", new FluorescentLightBlock(
 			AbstractBlock.Settings.create()
@@ -392,6 +399,13 @@ public class CubliminalBlocks implements Initer {
 					.requiresTool());
 
 	public static final Block TOP_MANILA_WALLPAPERS = register("top_manila_wallpapers", Block::new,
+			AbstractBlock.Settings.create()
+					.mapColor(MapColor.IRON_GRAY)
+					.sounds(BlockSoundGroup.BASALT)
+					.strength(5, 7)
+					.requiresTool());
+
+	public static final Block BOTTOM_MANILA_WALLPAPERS = register("bottom_manila_wallpapers", Block::new,
 			AbstractBlock.Settings.create()
 					.mapColor(MapColor.IRON_GRAY)
 					.sounds(BlockSoundGroup.BASALT)
@@ -815,6 +829,18 @@ public class CubliminalBlocks implements Initer {
 					.replaceable()
 					.noCollision()
 					.strength(0.2f)
+					.sounds(BlockSoundGroup.GLOW_LICHEN)
+					.burnable()
+					.pistonBehavior(PistonBehavior.DESTROY));
+
+	public static final Block MOLD_SPROUTS = register("mold_sprouts", MoldSproutsBlock::new,
+			AbstractBlock.Settings.create()
+					.mapColor(MapColor.LICHEN_GREEN)
+					.replaceable()
+					.noCollision()
+					.breakInstantly()
+					.ticksRandomly()
+					.offset(AbstractBlock.OffsetType.XYZ)
 					.sounds(BlockSoundGroup.GLOW_LICHEN)
 					.burnable()
 					.pistonBehavior(PistonBehavior.DESTROY));

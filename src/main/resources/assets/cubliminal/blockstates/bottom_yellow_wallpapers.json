@@ -1,7 +1,10 @@
 {
   "variants": {
-    "": {
+    "socket=false": {
       "model": "cubliminal:block/bottom_yellow_wallpapers"
+    },
+    "socket=true": {
+      "model": "cubliminal:block/bottom_yellow_wallpapers_socket"
     }
   }
 }

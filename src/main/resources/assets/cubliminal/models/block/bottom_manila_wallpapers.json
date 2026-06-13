@@ -1,0 +1,8 @@
+{
+	"parent": "block/cube_all",
+	"textures": {
+		"all": "cubliminal:block/bottom_manila_wallpapers",
+		"down": "cubliminal:block/manila_wallpapers",
+		"up": "cubliminal:block/manila_wallpapers"
+	}
+}
