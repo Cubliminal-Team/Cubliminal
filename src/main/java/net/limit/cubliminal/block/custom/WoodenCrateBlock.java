@@ -80,12 +80,6 @@ public class WoodenCrateBlock extends AbstractLootableContainerBlock implements 
     }
 
     @Override
-    protected void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
-        ItemScatterer.onStateReplaced(state, newState, world, pos);
-        super.onStateReplaced(state, world, pos, newState, moved);
-    }
-
-    @Override
     public void blackoutUpdate(BlockState state, ServerWorld world, BlockPos pos, boolean lightsOff, Random random) {
         if (lightsOff && random.nextFloat() < 0.5) {
             world.scheduleBlockTick(pos, state.getBlock(), 1);
