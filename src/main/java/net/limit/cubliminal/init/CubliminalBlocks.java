@@ -18,6 +18,7 @@ import net.limit.cubliminal.block.fluid.FluidBlockFactory;
 import net.limit.cubliminal.item.AlmondWaterItem;
 import net.limit.cubliminal.item.CanItem;
 import net.limit.cubliminal.item.WrittenDocumentItem;
+import net.limit.cubliminal.util.DebugLogger;
 import net.minecraft.block.*;
 import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.component.DataComponentTypes;
@@ -905,6 +906,7 @@ public class CubliminalBlocks implements Initer {
 			builder.add(RED_DAMP_CARPET.asItem(), 100);
 			builder.add(RED_WALLPAPERS.asItem(), 300);
 			builder.add(WOODEN_CRATE.asItem(), 300);
+			builder.add(BOX.asItem(), 600);
 			builder.add(WOODEN_PLANK.asItem(), 100);
 		});
     }
