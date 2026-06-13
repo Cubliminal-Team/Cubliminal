@@ -1,0 +1,26 @@
+{
+  "variants": {
+    "dry=false": [
+      {
+        "model": "cubliminal:block/mold_sprouts/mold_sprouts_0"
+      },
+      {
+        "model": "cubliminal:block/mold_sprouts/mold_sprouts_1"
+      },
+      {
+        "model": "cubliminal:block/mold_sprouts/mold_sprouts_2"
+      }
+    ],
+    "dry=true": [
+      {
+        "model": "cubliminal:block/mold_sprouts/mold_sprouts_dry_0"
+      },
+      {
+        "model": "cubliminal:block/mold_sprouts/mold_sprouts_dry_1"
+      },
+      {
+        "model": "cubliminal:block/mold_sprouts/mold_sprouts_dry_2"
+      }
+    ]
+  }
+}

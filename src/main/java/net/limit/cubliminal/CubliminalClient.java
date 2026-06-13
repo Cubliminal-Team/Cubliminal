@@ -38,6 +38,7 @@ public class CubliminalClient implements ClientModInitializer {
 				CubliminalBlocks.THE_LOBBY_GATEWAY_BLOCK,
 				CubliminalBlocks.EMERGENCY_EXIT_DOOR_0,
 				CubliminalBlocks.MOLD,
+				CubliminalBlocks.MOLD_SPROUTS,
 				CubliminalBlocks.JUMBLED_DOCUMENTS,
 				CubliminalBlocks.WRITTEN_DOCUMENT,
 				CubliminalBlocks.LETTER_F,
