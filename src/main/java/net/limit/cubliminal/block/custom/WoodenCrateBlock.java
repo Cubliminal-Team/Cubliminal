@@ -25,7 +25,7 @@ import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
-public class WoodenCrateBlock extends BlockWithEntity implements BlackoutListener {
+public class WoodenCrateBlock extends AbstractLootableContainerBlock implements BlackoutListener {
     public static final MapCodec<WoodenCrateBlock> CODEC = createCodec(WoodenCrateBlock::new);
     public static final BooleanProperty OPENED = BooleanProperty.of("opened");
 
@@ -58,13 +58,8 @@ public class WoodenCrateBlock extends BlockWithEntity implements BlackoutListene
             // Checks to see if it's opened or if player is in creative.
             // Otherwise, player will need to use specific tools to open the crate.
             if (opened || player.isCreative()) {
-                // Gets the block entity.
-                BlockEntity blockEntity = world.getBlockEntity(pos);
-                // Checks to see if the block entity is an instance of the wooden crate block entity.
-                if (blockEntity instanceof WoodenCrateBlockEntity woodenCrateBlockEntity) {
-                    // Opens 3x3 inventory.
-                    player.openHandledScreen(woodenCrateBlockEntity);
-                }
+                // Opens up the GUI for the inventory slots.
+                super.onUse(state, world, pos, player, hit);
             } else {
                 // Gets the player's inventory.
                 PlayerInventory playerInventory = player.getInventory();
@@ -95,11 +90,6 @@ public class WoodenCrateBlock extends BlockWithEntity implements BlackoutListene
         if (lightsOff && random.nextFloat() < 0.5) {
             world.scheduleBlockTick(pos, state.getBlock(), 1);
         }
-    }
-
-    @Override
-    protected BlockRenderType getRenderType(BlockState state) {
-        return BlockRenderType.MODEL;
     }
 
     @Nullable

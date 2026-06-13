@@ -1,7 +1,7 @@
 package net.limit.cubliminal.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import net.limit.cubliminal.block.custom.pipe.PipeBlock;
+import net.limit.cubliminal.block.custom.pipe.AbstractPipeBlock;
 import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -49,8 +49,8 @@ public abstract class BucketItemMixin {
     private void onUseBucket(World world, PlayerEntity user, Hand hand, CallbackInfoReturnable<ActionResult> cir,
                                  @Local ItemStack itemStack, @Local(ordinal = 0) BlockPos pos,
                                  @Local(ordinal = 1) BlockPos face, @Local BlockState state) {
-        if (state.getBlock() instanceof PipeBlock && state.get(PipeBlock.LEAKING)) {
-            if (world.setBlockState(pos, state.with(PipeBlock.FLUID_CONTAINER, PipeBlock
+        if (state.getBlock() instanceof AbstractPipeBlock && state.get(AbstractPipeBlock.LEAKING)) {
+            if (world.setBlockState(pos, state.with(AbstractPipeBlock.FLUID_CONTAINER, AbstractPipeBlock
                     .toFluidContainer(this.fluid)), Block.NOTIFY_ALL_AND_REDRAW)) {
                 BlockPos blockPos3 = this.fluid == Fluids.WATER ? pos : face;
                 this.playEmptyingSound(user, world, pos);
@@ -75,10 +75,10 @@ public abstract class BucketItemMixin {
     private void onUseEmptyBucket(World world, PlayerEntity user, Hand hand, CallbackInfoReturnable<ActionResult> cir,
                                   @Local ItemStack itemStack, @Local(ordinal = 0) BlockPos pos) {
         BlockState targetState = world.getBlockState(pos);
-        if (targetState.getBlock() instanceof PipeBlock && targetState.get(PipeBlock.LEAKING)) {
-            Fluid pipeFluid = PipeBlock.toFluid(targetState);
-            world.setBlockState(pos, targetState.with(PipeBlock.FLUID_CONTAINER,
-                    PipeBlock.toFluidContainer(Fluids.EMPTY)), Block.NOTIFY_ALL_AND_REDRAW);
+        if (targetState.getBlock() instanceof AbstractPipeBlock && targetState.get(AbstractPipeBlock.LEAKING)) {
+            Fluid pipeFluid = AbstractPipeBlock.toFluid(targetState);
+            world.setBlockState(pos, targetState.with(AbstractPipeBlock.FLUID_CONTAINER,
+                    AbstractPipeBlock.toFluidContainer(Fluids.EMPTY)), Block.NOTIFY_ALL_AND_REDRAW);
             ItemStack newStack = new ItemStack(pipeFluid.getBucketItem());
             if (!newStack.isEmpty()) {
                 user.incrementStat(Stats.USED.getOrCreateStat((BucketItem) (Object) this));

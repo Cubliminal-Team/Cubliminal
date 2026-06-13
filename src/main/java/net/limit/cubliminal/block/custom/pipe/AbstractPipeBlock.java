@@ -26,7 +26,7 @@ import org.jetbrains.annotations.Nullable;
  * The base class of all pipe blocks. The held fluid is stored as a block state property to avoid unnecessary block entities.
  * Note that only leaking pipes can have fluids in them.
  */
-public abstract class PipeBlock extends HorizontalFacingBlock implements Waterloggable, BlockVariantHolder {
+public abstract class AbstractPipeBlock extends HorizontalFacingBlock implements Waterloggable, BlockVariantHolder {
     public static final BooleanProperty WATERLOGGED = Properties.WATERLOGGED;
     public static final BooleanProperty LEAKING = BooleanProperty.of("leaking");
     public static IdentifierProperty FLUID_CONTAINER = IdentifierProperty.of("fluid_container", () -> {
@@ -36,7 +36,7 @@ public abstract class PipeBlock extends HorizontalFacingBlock implements Waterlo
                 .toList();
     });
 
-    public PipeBlock(Settings settings) {
+    public AbstractPipeBlock(Settings settings) {
         super(settings);
         this.setDefaultState(this.getDefaultState()
                 .with(WATERLOGGED, false)

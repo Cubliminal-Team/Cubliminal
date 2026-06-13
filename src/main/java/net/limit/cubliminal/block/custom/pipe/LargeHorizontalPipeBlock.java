@@ -15,7 +15,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.world.WorldView;
 import org.jetbrains.annotations.Nullable;
 
-public class LargeHorizontalPipeBlock extends PipeBlock implements TypedPipeSupport {
+public class LargeHorizontalPipeBlock extends AbstractPipeBlock implements TypedPipeSupport {
     public static MapCodec<LargeHorizontalPipeBlock> CODEC = LargeHorizontalPipeBlock.createCodec(LargeHorizontalPipeBlock::new);
 
     public static final BooleanProperty CONNECTOR = BooleanProperty.of("connector");

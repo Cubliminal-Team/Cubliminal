@@ -21,7 +21,7 @@ import net.minecraft.world.WorldView;
 import net.minecraft.world.tick.ScheduledTickView;
 import org.jetbrains.annotations.Nullable;
 
-public class CeilingPipeBlock extends PipeBlock implements TypedPipeSupport {
+public class CeilingPipeBlock extends AbstractPipeBlock implements TypedPipeSupport {
     public static MapCodec<CeilingPipeBlock> CODEC = CeilingPipeBlock.createCodec(CeilingPipeBlock::new);
 
     public static final VoxelShape ONE_LAYER = Block.createCuboidShape(0, 0, 0, 16, 5, 16);

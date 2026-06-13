@@ -15,7 +15,7 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 import org.jetbrains.annotations.Nullable;
 
-public class VerticalPipeBlock extends PipeBlock implements TypedPipeSupport {
+public class VerticalPipeBlock extends AbstractPipeBlock implements TypedPipeSupport {
     public static MapCodec<VerticalPipeBlock> CODEC = VerticalPipeBlock.createCodec(VerticalPipeBlock::new);
 
     public static final BooleanProperty CONNECTOR = BooleanProperty.of("connector");

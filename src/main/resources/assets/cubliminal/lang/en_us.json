@@ -45,6 +45,7 @@
   "item.cubliminal.chain_wall": "Chain Wall",
   "item.cubliminal.red_chain_wall": "Red Chain Wall",
   "item.cubliminal.wooden_crate": "Wooden Crate",
+  "item.cubliminal.box": "Box",
   "item.cubliminal.gabbro": "Gabbro",
   "item.cubliminal.mold": "Mold",
   "item.cubliminal.smoke_detector": "Smoke Detector",
@@ -142,5 +143,6 @@
   "text.autoconfig.cubliminal.option.enableSuperDenseFog": "Enable dynamic thick fog",
   "gui.cubliminal.flip": "Flip",
   "gui.cubliminal.use": "Use",
-  "container.wooden_crate": "Wooden Crate"
+  "container.wooden_crate": "Wooden Crate",
+  "container.box": "Box"
 }
