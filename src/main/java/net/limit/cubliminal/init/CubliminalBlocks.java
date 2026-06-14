@@ -655,7 +655,7 @@ public class CubliminalBlocks implements Initer {
 
 	public static final Block WOODEN_CRATE = register("wooden_crate", WoodenCrateBlock::new, AbstractBlock.Settings.copy(Blocks.BARREL));
 
-	public static final Block BOX = register("box", BoxBlock::new, AbstractBlock.Settings.copy(Blocks.BARREL));
+	public static final Block BOX = register("box", BoxBlock::new, AbstractBlock.Settings.copy(Blocks.BARREL).hardness(1.5f));
 
 	public static final Block CONTROL_BOX = registerBlock("control_box", new ControlBoxBlock(
 			AbstractBlock.Settings.create()

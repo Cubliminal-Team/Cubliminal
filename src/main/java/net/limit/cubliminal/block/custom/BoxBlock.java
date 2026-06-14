@@ -7,13 +7,11 @@ import net.minecraft.block.BlockWithEntity;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
-// TODO : Needs textures and blockstates created.
 public class BoxBlock extends AbstractLootableContainerBlock {
     public static final MapCodec<BoxBlock> CODEC = createCodec(BoxBlock::new);
 
