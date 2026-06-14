@@ -322,7 +322,7 @@ public class SkinStealerEntity extends HostileEntity implements Angerable {
             UUID targetUUID = this.skinStealer.getAngryAt();
             if (targetUUID == null) return false;
             this.target = this.skinStealer.getWorld().getPlayerByUuid(targetUUID);
-            return this.skinStealer.isInDisguised() && this.target != null;
+            return this.skinStealer.isInDisguised() && this.skinStealer.isAngry() && this.target != null;
         }
 
         @Override
