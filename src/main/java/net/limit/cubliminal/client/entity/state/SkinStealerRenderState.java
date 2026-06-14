@@ -7,6 +7,7 @@ import net.minecraft.client.util.DefaultSkinHelper;
 import net.minecraft.client.util.SkinTextures;
 
 @Environment(EnvType.CLIENT)
+// This have to extends PlayerEntityRenderState
 public class SkinStealerRenderState extends PlayerEntityRenderState {
     public boolean angry = false;
     public boolean disguised = false;

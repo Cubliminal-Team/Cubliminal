@@ -24,6 +24,7 @@ public class SkinStealerRenderer extends MobEntityRenderer<SkinStealerEntity, Sk
 
     public static final Identifier TEXTURE = Cubliminal.id("textures/entity/skin_stealer.png");
 
+    // All the models for different states
     private final PlayerEntityModel playerEntityModel;
     private final PlayerEntityModel playerSlimEntityModel;
     private final SkinStealerModel skinStealerModel;
@@ -48,6 +49,7 @@ public class SkinStealerRenderer extends MobEntityRenderer<SkinStealerEntity, Sk
         if (livingEntityRenderState.disguised) {
             // scale the player model correctly
             matrixStack.scale(0.9375F, 0.9375F, 0.9375F);
+            // This cast cannot be checked, but it works because `SkinStealerRenderState` extends `PlayerEntityRenderState`
             this.model = (EntityModel<SkinStealerRenderState>) (EntityModel<?>) (livingEntityRenderState.disguiseTexture.model() == SkinTextures.Model.WIDE ? this.playerEntityModel : this.playerSlimEntityModel);
         } else {
             this.model = this.skinStealerModel;
@@ -72,6 +74,7 @@ public class SkinStealerRenderer extends MobEntityRenderer<SkinStealerEntity, Sk
 
         Optional<UUID> disguise = entity.getDisguisedAs();
         if (disguise.isPresent()) {
+            // Fetch the player skin
             PlayerListEntry playerListEntry = MinecraftClient.getInstance().getNetworkHandler().getPlayerListEntry(disguise.get());
             renderState.disguiseTexture = playerListEntry == null ? DefaultSkinHelper.getSkinTextures(disguise.get()) : playerListEntry.getSkinTextures();
         }

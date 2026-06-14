@@ -37,6 +37,7 @@ public class SkinStealerEntity extends HostileEntity implements Angerable {
     private static final TrackedData<Optional<UUID>> DISGUISED_AS = DataTracker.registerData(SkinStealerEntity.class, TrackedDataHandlerRegistry.OPTIONAL_UUID);
     private static final UniformIntProvider DISGUISED_TIME_RANGE = TimeHelper.betweenSeconds(40, 60);
 
+    // The dimensions for the disguised state
     public static final EntityDimensions PLAYER_DIMENSIONS = EntityDimensions.changing(0.6F, 1.8F)
             .withEyeHeight(1.62F)
             .withAttachments(EntityAttachments.builder().add(EntityAttachmentType.VEHICLE, PlayerEntity.VEHICLE_ATTACHMENT_POS));
@@ -45,8 +46,8 @@ public class SkinStealerEntity extends HostileEntity implements Angerable {
     @Nullable
     private UUID angryAt;
 
+    // Time left in disguise
     private int disguisedTime;
-    private UUID disguisedAs;
 
     public SkinStealerEntity(EntityType<? extends HostileEntity> entityType, World world) {
         super(entityType, world);
@@ -65,14 +66,14 @@ public class SkinStealerEntity extends HostileEntity implements Angerable {
     @Override
     protected void initGoals() {
         this.goalSelector.add(0, new SwimGoal(this));
-        this.goalSelector.add(1, new SkinStealerEntity.FleeAndRecoverGoal(this, 15, 25, 40, 1f));
-        this.goalSelector.add(2, new SkinStealerEntity.AttackGoal(this, 1.0, false));
-        this.goalSelector.add(3, new SkinStealerEntity.FollowVictimGoal(this, 1.0, 4f));
-        this.goalSelector.add(4, new SkinStealerEntity.RevealSelfGoal(this, 28));
+        this.goalSelector.add(1, new SkinStealerEntity.FleeAndRecoverGoal(this, 15, 25, 40, 1f)); // Make the mob flee and recover health faster then normal
+        this.goalSelector.add(2, new SkinStealerEntity.AttackGoal(this, 1.0, false)); // Make the mob attack if not disguised
+        this.goalSelector.add(3, new SkinStealerEntity.FollowVictimGoal(this, 1.0, 4f)); // Follow the victim when in disguise
+        this.goalSelector.add(4, new SkinStealerEntity.RevealSelfGoal(this, 28)); // Reveal its true form when he wants to attack
         this.goalSelector.add(7, new WanderAroundFarGoal(this, 1.0, 0.0f));
         this.goalSelector.add(8, new LookAtEntityGoal(this, PlayerEntity.class, 8.0f));
         this.goalSelector.add(8, new LookAroundGoal(this));
-        this.targetSelector.add(1, new ActiveTargetGoal<>(this, PlayerEntity.class, 10, false, false, null));
+        this.targetSelector.add(1, new ActiveTargetGoal<>(this, PlayerEntity.class, 10, false, false, null)); // Search for victim in the area
         this.targetSelector.add(2, new RevengeGoal(this));
         this.targetSelector.add(4, new UniversalAngerGoal<>(this, false));
     }
@@ -95,6 +96,7 @@ public class SkinStealerEntity extends HostileEntity implements Angerable {
 
     @Override
     public boolean onKilledOther(ServerWorld world, LivingEntity other) {
+        // Take the skin of the last player killed
         if (other instanceof PlayerEntity player) {
             this.setDisguise(player);
         }
@@ -103,9 +105,14 @@ public class SkinStealerEntity extends HostileEntity implements Angerable {
 
     @Override
     protected EntityDimensions getBaseDimensions(EntityPose pose) {
+        // Change the disguise mob dimensions
         return this.isInDisguised() ? PLAYER_DIMENSIONS : super.getBaseDimensions(pose);
     }
 
+    /**
+     * Sets the skin stealer disguise
+     * @param player target
+     */
     public void setDisguise(PlayerEntity player) {
         this.setDisguisedTime(DISGUISED_TIME_RANGE.get(this.random));
         this.setInDisguised(true);
@@ -116,11 +123,15 @@ public class SkinStealerEntity extends HostileEntity implements Angerable {
     public void onTrackedDataSet(TrackedData<?> data) {
         super.onTrackedDataSet(data);
 
+        // Update the mob dimensions when the disguise state change
         if (IN_DISGUISED.equals(data)) {
             this.calculateDimensions();
         }
     }
 
+    /**
+     * Remove the skin stealer disguise
+     */
     public void revealSelf() {
         this.setInDisguised(false);
         this.setDisguisedAs(null);
@@ -157,6 +168,7 @@ public class SkinStealerEntity extends HostileEntity implements Angerable {
     protected void mobTick(ServerWorld world) {
         super.mobTick(world);
 
+        // Make the mob regen 1 hp every 2 seconds
         if (this.age % 40 == 0 && this.timeUntilRegen <= 0) {
             this.heal(1);
         }
@@ -208,7 +220,7 @@ public class SkinStealerEntity extends HostileEntity implements Angerable {
         return this.dataTracker.get(IN_DISGUISED);
     }
 
-    public void setInDisguised(boolean value) {
+    private void setInDisguised(boolean value) {
         this.dataTracker.set(IN_DISGUISED, value);
     }
 
@@ -216,7 +228,7 @@ public class SkinStealerEntity extends HostileEntity implements Angerable {
         return this.dataTracker.get(DISGUISED_AS);
     }
 
-    public void setDisguisedAs(UUID disguisedAs) {
+    private void setDisguisedAs(UUID disguisedAs) {
         this.dataTracker.set(DISGUISED_AS, disguisedAs == null ? Optional.empty() : Optional.of(disguisedAs));
     }
 
@@ -224,7 +236,7 @@ public class SkinStealerEntity extends HostileEntity implements Angerable {
         return disguisedTime;
     }
 
-    public void setDisguisedTime(int disguisedTime) {
+    private void setDisguisedTime(int disguisedTime) {
         this.disguisedTime = disguisedTime;
     }
 
@@ -238,6 +250,13 @@ public class SkinStealerEntity extends HostileEntity implements Angerable {
         private float oldWaterPathFindingPenalty;
         private int updateCountdownTicks;
 
+        /**
+         * Follow the victim
+         *
+         * @param skinStealer skin stealer
+         * @param speed follow speed
+         * @param minDistance the min distance between the victim and the skin stealer
+         */
         public FollowVictimGoal(SkinStealerEntity skinStealer, double speed, float minDistance) {
             this.skinStealer = skinStealer;
             this.speed = speed;
@@ -296,6 +315,13 @@ public class SkinStealerEntity extends HostileEntity implements Angerable {
     private static class AttackGoal extends MeleeAttackGoal {
         private final SkinStealerEntity skinStealer;
 
+        /**
+         * Same as {@link MeleeAttackGoal} but the skin stealer only attack when is in disguise
+         *
+         * @param mob skin stealer
+         * @param speed skin stealer move speed
+         * @param pauseWhenMobIdle pause when idle
+         */
         public AttackGoal(SkinStealerEntity mob, double speed, boolean pauseWhenMobIdle) {
             super(mob, speed, pauseWhenMobIdle);
             this.skinStealer = mob;
@@ -312,6 +338,16 @@ public class SkinStealerEntity extends HostileEntity implements Angerable {
         private final float maxDistance;
         private PlayerEntity target;
 
+        /**
+         * This triggers when the skin stealer is in disguise and if one of the 2 is happening.
+         * <br>
+         * 1. the skin stealer is enough time in disguise.
+         * <br>
+         * 2. the player is far from the skin stealer.
+         *
+         * @param skinStealer mob
+         * @param maxDistance max distance between the mob and the player
+         */
         private RevealSelfGoal(SkinStealerEntity skinStealer, float maxDistance) {
             this.skinStealer = skinStealer;
             this.maxDistance = maxDistance;
@@ -348,6 +384,14 @@ public class SkinStealerEntity extends HostileEntity implements Angerable {
         private final float maxHealthToTrigger;
         private final float maxHealthToHeal;
 
+        /**
+         *
+         * @param skinStealer mob
+         * @param maxHealthToTrigger The maximum health for the mob to trigger this action
+         * @param maxHealthToHeal The maximum health to heal
+         * @param fleeDistance Distance to flee
+         * @param fleeSpeed mob move speed
+         */
         private FleeAndRecoverGoal(SkinStealerEntity skinStealer, float maxHealthToTrigger, float maxHealthToHeal, float fleeDistance, double fleeSpeed) {
             super(skinStealer, PlayerEntity.class, fleeDistance, fleeSpeed, fleeSpeed);
             this.skinStealer = skinStealer;
