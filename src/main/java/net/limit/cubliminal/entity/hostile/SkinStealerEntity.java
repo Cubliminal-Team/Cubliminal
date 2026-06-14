@@ -1,7 +1,6 @@
 package net.limit.cubliminal.entity.hostile;
 
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.*;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.ai.pathing.EntityNavigation;
 import net.minecraft.entity.ai.pathing.PathNodeType;
@@ -23,6 +22,7 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumSet;
+import java.util.Optional;
 import java.util.UUID;
 
 public class SkinStealerEntity extends HostileEntity implements Angerable {
@@ -34,14 +34,19 @@ public class SkinStealerEntity extends HostileEntity implements Angerable {
     private static final TrackedData<Boolean> ANGRY = DataTracker.registerData(SkinStealerEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
     private static final UniformIntProvider ANGER_TIME_RANGE = TimeHelper.betweenSeconds(70, 80);
     private static final TrackedData<Boolean> IN_DISGUISED = DataTracker.registerData(SkinStealerEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
+    private static final TrackedData<Optional<UUID>> DISGUISED_AS = DataTracker.registerData(SkinStealerEntity.class, TrackedDataHandlerRegistry.OPTIONAL_UUID);
     private static final UniformIntProvider DISGUISED_TIME_RANGE = TimeHelper.betweenSeconds(40, 60);
 
+    public static final EntityDimensions PLAYER_DIMENSIONS = EntityDimensions.changing(0.6F, 1.8F)
+            .withEyeHeight(1.62F)
+            .withAttachments(EntityAttachments.builder().add(EntityAttachmentType.VEHICLE, PlayerEntity.VEHICLE_ATTACHMENT_POS));
 
     private int angerTime;
     @Nullable
     private UUID angryAt;
 
     private int disguisedTime;
+    private UUID disguisedAs;
 
     public SkinStealerEntity(EntityType<? extends HostileEntity> entityType, World world) {
         super(entityType, world);
@@ -62,12 +67,12 @@ public class SkinStealerEntity extends HostileEntity implements Angerable {
         this.goalSelector.add(0, new SwimGoal(this));
         this.goalSelector.add(1, new SkinStealerEntity.FleeAndRecoverGoal(this, 15, 25, 40, 1f));
         this.goalSelector.add(2, new SkinStealerEntity.AttackGoal(this, 1.0, false));
-        this.goalSelector.add(3, new SkinStealerEntity.FollowVictimGoal(this, 1.0, 1.0f));
+        this.goalSelector.add(3, new SkinStealerEntity.FollowVictimGoal(this, 1.0, 4f));
         this.goalSelector.add(4, new SkinStealerEntity.RevealSelfGoal(this, 28));
         this.goalSelector.add(7, new WanderAroundFarGoal(this, 1.0, 0.0f));
         this.goalSelector.add(8, new LookAtEntityGoal(this, PlayerEntity.class, 8.0f));
         this.goalSelector.add(8, new LookAroundGoal(this));
-        this.targetSelector.add(1, new ActiveTargetGoal<>(this, PlayerEntity.class, 0, false, false, null));
+        this.targetSelector.add(1, new ActiveTargetGoal<>(this, PlayerEntity.class, 10, false, false, null));
         this.targetSelector.add(2, new RevengeGoal(this));
         this.targetSelector.add(4, new UniversalAngerGoal<>(this, false));
     }
@@ -91,18 +96,34 @@ public class SkinStealerEntity extends HostileEntity implements Angerable {
     @Override
     public boolean onKilledOther(ServerWorld world, LivingEntity other) {
         if (other instanceof PlayerEntity player) {
-            this.disguiseAs(player);
+            this.setDisguise(player);
         }
         return super.onKilledOther(world, other);
     }
 
-    public void disguiseAs(PlayerEntity player) {
+    @Override
+    protected EntityDimensions getBaseDimensions(EntityPose pose) {
+        return this.isInDisguised() ? PLAYER_DIMENSIONS : super.getBaseDimensions(pose);
+    }
+
+    public void setDisguise(PlayerEntity player) {
         this.setDisguisedTime(DISGUISED_TIME_RANGE.get(this.random));
         this.setInDisguised(true);
+        this.setDisguisedAs(player.getUuid());
+    }
+
+    @Override
+    public void onTrackedDataSet(TrackedData<?> data) {
+        super.onTrackedDataSet(data);
+
+        if (IN_DISGUISED.equals(data)) {
+            this.calculateDimensions();
+        }
     }
 
     public void revealSelf() {
         this.setInDisguised(false);
+        this.setDisguisedAs(null);
     }
 
     @Override
@@ -110,6 +131,7 @@ public class SkinStealerEntity extends HostileEntity implements Angerable {
         super.initDataTracker(builder);
         builder.add(ANGRY, false);
         builder.add(IN_DISGUISED, false);
+        builder.add(DISGUISED_AS, Optional.empty());
     }
 
     @Override
@@ -118,6 +140,8 @@ public class SkinStealerEntity extends HostileEntity implements Angerable {
         this.writeAngerToNbt(nbt);
         nbt.putBoolean("InDisguised", this.isInDisguised());
         nbt.putInt("DisguisedTime", this.getDisguisedTime());
+
+        this.getDisguisedAs().ifPresent(value -> nbt.putUuid("DisguisedAs", value));
     }
 
     @Override
@@ -126,6 +150,7 @@ public class SkinStealerEntity extends HostileEntity implements Angerable {
         this.readAngerFromNbt(this.getWorld(), nbt);
         this.setInDisguised(nbt.getBoolean("InDisguised"));
         this.setDisguisedTime(nbt.getInt("DisguisedTime"));
+        this.setDisguisedAs(nbt.containsUuid("DisguisedAs") ? nbt.getUuid("DisguisedAs") : null);
     }
 
     @Override
@@ -185,6 +210,14 @@ public class SkinStealerEntity extends HostileEntity implements Angerable {
 
     public void setInDisguised(boolean value) {
         this.dataTracker.set(IN_DISGUISED, value);
+    }
+
+    public Optional<UUID> getDisguisedAs() {
+        return this.dataTracker.get(DISGUISED_AS);
+    }
+
+    public void setDisguisedAs(UUID disguisedAs) {
+        this.dataTracker.set(DISGUISED_AS, disguisedAs == null ? Optional.empty() : Optional.of(disguisedAs));
     }
 
     public int getDisguisedTime() {
