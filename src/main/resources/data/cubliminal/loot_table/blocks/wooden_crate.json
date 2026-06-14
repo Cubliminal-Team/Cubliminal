@@ -1,28 +1,23 @@
 {
-  "type": "minecraft:block",
   "pools": [
     {
-      "rolls": 0.5,
+      "rolls": 2,
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "cubliminal:nailed_bat",
-          "functions": [],
-          "conditions": [
+          "name": "minecraft:stick",
+          "conditions": [],
+          "functions": [
             {
-              "condition": "minecraft:random_chance",
-              "chance": 0.1
+              "function": "minecraft:set_count",
+              "count": {
+                "min": 1,
+                "max": 4
+              },
+              "add": false
             }
           ]
-        }
-      ]
-    },
-    {
-      "rolls": {
-        "min": 0,
-        "max": 2
-      },
-      "entries": [
+        },
         {
           "type": "minecraft:item",
           "name": "cubliminal:wooden_plank",
@@ -30,12 +25,20 @@
             {
               "function": "minecraft:set_count",
               "count": {
-                "min": 0,
+                "min": 1,
                 "max": 2
               },
               "add": false
             }
           ]
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:match_tool",
+          "predicate": {
+            "items": "#minecraft:pickaxes"
+          }
         }
       ]
     },
@@ -44,101 +47,61 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "minecraft:dark_oak_planks",
+          "name": "cubliminal:wooden_crate"
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:match_tool",
+          "predicate": {
+            "items": "#minecraft:axes"
+          }
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:stick",
+          "quality": 0,
+          "conditions": [],
           "functions": [
             {
               "function": "minecraft:set_count",
               "count": {
                 "min": 0,
-                "max": 1
+                "max": 3
               },
               "add": false
             }
           ]
         }
-      ]
-    },
-    {
-      "rolls": 0.5,
-      "entries": [
+      ],
+      "conditions": [
         {
-          "type": "minecraft:item",
-          "name": "minecraft:string",
-          "functions": [
-            {
-              "function": "minecraft:set_count",
-              "count": {
-                "min": 0,
-                "max": 1
+          "condition": "minecraft:inverted",
+          "term": {
+            "condition": "minecraft:any_of",
+            "terms": [
+              {
+                "condition": "minecraft:match_tool",
+                "predicate": {
+                  "items": "#minecraft:axes"
+                }
               },
-              "add": false
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "rolls": 0.5,
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "name": "cubliminal:almond_water_can",
-          "functions": [
-            {
-              "function": "minecraft:set_count",
-              "count": {
-                "min": 1,
-                "max": 2
+              {
+                "condition": "minecraft:match_tool",
+                "predicate": {
+                  "items": "#minecraft:pickaxes"
+                }
               }
-            }
-          ],
-          "conditions": [
-            {
-              "condition": "minecraft:random_chance",
-              "chance": 0.5
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "rolls": {
-        "min": 0,
-        "max": 1
-      },
-      "entries": [
+            ]
+          }
+        },
         {
-          "type": "minecraft:item",
-          "name": "minecraft:rotten_flesh",
-          "functions": [
-            {
-              "function": "minecraft:set_count",
-              "count": {
-                "min": 1,
-                "max": 2
-              },
-              "add": false
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "rolls": {
-        "min": 0,
-        "max": 1
-      },
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:bundle",
-          "functions": [],
-          "conditions": [
-            {
-              "condition": "minecraft:random_chance",
-              "chance": 0.3
-            }
-          ]
+          "condition": "minecraft:survives_explosion"
         }
       ]
     }
