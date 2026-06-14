@@ -60,6 +60,7 @@ public class SkinStealerEntity extends HostileEntity implements Angerable {
     @Override
     protected void initGoals() {
         this.goalSelector.add(0, new SwimGoal(this));
+        this.goalSelector.add(1, new SkinStealerEntity.FleeAndRecoverGoal(this, 15, 25, 40, 1f));
         this.goalSelector.add(2, new SkinStealerEntity.AttackGoal(this, 1.0, false));
         this.goalSelector.add(3, new SkinStealerEntity.FollowVictimGoal(this, 1.0, 1.0f));
         this.goalSelector.add(4, new SkinStealerEntity.RevealSelfGoal(this, 28));
@@ -125,6 +126,15 @@ public class SkinStealerEntity extends HostileEntity implements Angerable {
         this.readAngerFromNbt(this.getWorld(), nbt);
         this.setInDisguised(nbt.getBoolean("InDisguised"));
         this.setDisguisedTime(nbt.getInt("DisguisedTime"));
+    }
+
+    @Override
+    protected void mobTick(ServerWorld world) {
+        super.mobTick(world);
+
+        if (this.age % 40 == 0 && this.timeUntilRegen <= 0) {
+            this.heal(1);
+        }
     }
 
     @Override
@@ -296,6 +306,44 @@ public class SkinStealerEntity extends HostileEntity implements Angerable {
         public void tick() {
             if (this.skinStealer.distanceTo(this.target) >= this.maxDistance || this.skinStealer.getDisguisedTime() <= 0) {
                 this.skinStealer.revealSelf();
+            }
+        }
+    }
+
+    private static class FleeAndRecoverGoal extends FleeEntityGoal<PlayerEntity> {
+        private final SkinStealerEntity skinStealer;
+        private final float maxHealthToTrigger;
+        private final float maxHealthToHeal;
+
+        private FleeAndRecoverGoal(SkinStealerEntity skinStealer, float maxHealthToTrigger, float maxHealthToHeal, float fleeDistance, double fleeSpeed) {
+            super(skinStealer, PlayerEntity.class, fleeDistance, fleeSpeed, fleeSpeed);
+            this.skinStealer = skinStealer;
+            this.maxHealthToTrigger = maxHealthToTrigger;
+            this.maxHealthToHeal = maxHealthToHeal;
+        }
+
+        @Override
+        public boolean canStart() {
+            return super.canStart() && this.skinStealer.getHealth() <= this.maxHealthToTrigger;
+        }
+
+        @Override
+        public boolean shouldContinue() {
+            return super.shouldContinue() || this.skinStealer.getHealth() <= this.maxHealthToHeal;
+        }
+
+        @Override
+        public void start() {
+            super.start();
+            this.skinStealer.setTarget(null);
+        }
+
+        @Override
+        public void tick() {
+            super.tick();
+
+            if (skinStealer.age % 10 == 0) {
+                this.skinStealer.heal(2);
             }
         }
     }
