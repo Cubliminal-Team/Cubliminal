@@ -56,7 +56,7 @@ public class SkinStealerEntity extends HostileEntity implements Angerable {
     public static DefaultAttributeContainer.Builder createAttributes() {
         return MobEntity.createMobAttributes()
                 .add(EntityAttributes.MAX_HEALTH, 60)
-                .add(EntityAttributes.KNOCKBACK_RESISTANCE, 1.0)
+                .add(EntityAttributes.KNOCKBACK_RESISTANCE, 0.7)
                 .add(EntityAttributes.MOVEMENT_SPEED, 0.15)
                 .add(EntityAttributes.ATTACK_DAMAGE, 6.0)
                 .add(EntityAttributes.FOLLOW_RANGE, 24.0)
@@ -117,6 +117,18 @@ public class SkinStealerEntity extends HostileEntity implements Angerable {
         this.setDisguisedTime(DISGUISED_TIME_RANGE.get(this.random));
         this.setInDisguised(true);
         this.setDisguisedAs(player.getUuid());
+        this.setCustomNameVisible(true);
+        this.setCustomName(player.getDisplayName());
+    }
+
+    /**
+     * Remove the skin stealer disguise
+     */
+    public void revealSelf() {
+        this.setInDisguised(false);
+        this.setDisguisedAs(null);
+        this.setCustomNameVisible(false);
+        this.setCustomName(null);
     }
 
     @Override
@@ -127,14 +139,6 @@ public class SkinStealerEntity extends HostileEntity implements Angerable {
         if (IN_DISGUISED.equals(data)) {
             this.calculateDimensions();
         }
-    }
-
-    /**
-     * Remove the skin stealer disguise
-     */
-    public void revealSelf() {
-        this.setInDisguised(false);
-        this.setDisguisedAs(null);
     }
 
     @Override
