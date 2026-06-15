@@ -370,13 +370,16 @@ public class SkinStealerEntity extends HostileEntity implements Angerable {
         private final SkinStealerEntity skinStealer;
         private final float maxDistance;
         private PlayerEntity target;
+        private double maxHealth;
 
         /**
-         * This triggers when the skin stealer is in disguise and if one of the 2 is happening.
+         * This triggers when the skin stealer is in disguise and if one of the 3 is happening.
          * <br>
          * 1. the skin stealer is enough time in disguise.
          * <br>
          * 2. the player is far from the skin stealer.
+         * <br>
+         * 3. the skin stealer has taken damage
          *
          * @param skinStealer mob
          * @param maxDistance max distance between the mob and the player
@@ -406,7 +409,9 @@ public class SkinStealerEntity extends HostileEntity implements Angerable {
 
         @Override
         public void tick() {
-            if (this.skinStealer.distanceTo(this.target) >= this.maxDistance || this.skinStealer.getDisguisedTime() <= 0) {
+            this.maxHealth = Math.max(maxHealth, this.skinStealer.getHealth());
+
+            if (this.skinStealer.distanceTo(this.target) >= this.maxDistance || this.skinStealer.getDisguisedTime() <= 0 || this.skinStealer.getHealth() < this.maxHealth) {
                 this.skinStealer.revealSelf();
             }
         }
