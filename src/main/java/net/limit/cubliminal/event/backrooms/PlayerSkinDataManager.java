@@ -14,6 +14,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextCodecs;
 import net.minecraft.util.Uuids;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.PersistentState;
 
 import java.util.ArrayList;
@@ -25,10 +26,19 @@ import java.util.function.Consumer;
 public class PlayerSkinDataManager {
     private Data data;
 
-    public void updatePlayerData(UUID uuid, Consumer<PlayerSkinData> consumer) {
+    /**
+     * Update player data entry
+     *
+     * @param uuid player uuid
+     * @param consumer updater
+     * @return new the player data
+     */
+    public PlayerSkinData updatePlayerData(UUID uuid, Consumer<PlayerSkinData> consumer) {
         PlayerSkinData playerSkinData = this.getPlayerData(uuid).orElseThrow();
         consumer.accept(playerSkinData);
         this.data.markDirty();
+
+        return playerSkinData;
     }
 
     /**
@@ -58,11 +68,26 @@ public class PlayerSkinDataManager {
 
     /**
      * Get the player data from the database
+     *
      * @param uuid player uuid
      * @return Optional of the player data
      */
     public Optional<PlayerSkinData> getPlayerData(UUID uuid) {
         return this.data.getPlayerSkinData().stream().filter(playerSkinData -> playerSkinData.uuid.equals(uuid)).findFirst();
+    }
+
+    /**
+     * Get random entry from the database
+     *
+     * @param random random
+     * @return player data entry
+     */
+    public PlayerSkinData getRandomPlayer(Random random) {
+        int entryCount = this.getEntryCount();
+        if (entryCount <= 0) return null;
+        if (entryCount == 1) return this.data.getPlayerSkinData().getFirst();
+
+        return this.data.getPlayerSkinData().get(random.nextBetween(0, entryCount - 1));
     }
 
     /**
@@ -129,7 +154,7 @@ public class PlayerSkinDataManager {
         private final List<PlayerSkinData> playerSkinData;
 
         private Data(List<PlayerSkinData> playerSkinData) {
-            this.playerSkinData = playerSkinData;
+            this.playerSkinData = new ArrayList<>(playerSkinData);
         }
 
         public Data() {

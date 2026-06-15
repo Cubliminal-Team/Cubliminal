@@ -20,6 +20,8 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.TimeHelper;
 import net.minecraft.util.math.intprovider.UniformIntProvider;
+import net.minecraft.world.LocalDifficulty;
+import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
@@ -53,6 +55,16 @@ public class SkinStealerEntity extends HostileEntity implements Angerable {
 
     public SkinStealerEntity(EntityType<? extends HostileEntity> entityType, World world) {
         super(entityType, world);
+    }
+
+    @Override
+    public @Nullable EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData) {
+        if (this.random.nextBetween(0, 5) == 0) {
+            PlayerSkinDataManager.PlayerSkinData playerSkinData = PlayerSkinDataManager.getInstance(((ServerWorld) world).getServer()).getRandomPlayer(this.getRandom());
+            this.setDisguise(playerSkinData);
+        }
+
+        return super.initialize(world, difficulty, spawnReason, entityData);
     }
 
     public static DefaultAttributeContainer.Builder createAttributes() {
@@ -100,18 +112,21 @@ public class SkinStealerEntity extends HostileEntity implements Angerable {
     public boolean onKilledOther(ServerWorld world, LivingEntity other) {
         // Take the skin of the last player killed
         if (other instanceof ServerPlayerEntity player) {
-            this.setDisguise(player);
-
             PlayerSkinDataManager playerSkinDataManager = PlayerSkinDataManager.getInstance(world.getServer());
+
+            PlayerSkinDataManager.PlayerSkinData playerSkinData;
 
             // Update / store the player in the database
             if (playerSkinDataManager.hasPlayerData(player.getUuid())) {
-                playerSkinDataManager.updatePlayerData(player.getUuid(), playerSkinData -> {
-                    playerSkinData.setDisplayName(player.getDisplayName());
+                playerSkinData = playerSkinDataManager.updatePlayerData(player.getUuid(), data -> {
+                    data.setDisplayName(player.getDisplayName());
                 });
             } else {
-                playerSkinDataManager.storePlayerData(PlayerSkinDataManager.createFromPlayer(player));
+                playerSkinData = PlayerSkinDataManager.createFromPlayer(player);
+                playerSkinDataManager.storePlayerData(playerSkinData);
             }
+
+            this.setDisguise(playerSkinData);
         }
         return super.onKilledOther(world, other);
     }
@@ -124,14 +139,15 @@ public class SkinStealerEntity extends HostileEntity implements Angerable {
 
     /**
      * Sets the skin stealer disguise
-     * @param player target
+     *
+     * @param playerSkinData player skin data
      */
-    public void setDisguise(PlayerEntity player) {
+    public void setDisguise(PlayerSkinDataManager.PlayerSkinData playerSkinData) {
         this.setDisguisedTime(DISGUISED_TIME_RANGE.get(this.random));
         this.setInDisguised(true);
-        this.setDisguisedAs(player.getUuid());
+        this.setDisguisedAs(playerSkinData.getUuid());
         this.setCustomNameVisible(true);
-        this.setCustomName(player.getDisplayName());
+        this.setCustomName(playerSkinData.getDisplayName());
     }
 
     /**
