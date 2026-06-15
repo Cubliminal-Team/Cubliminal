@@ -1,30 +1,31 @@
 {
-  "required": true,
-  "package": "net.limit.cubliminal.mixin",
-  "compatibilityLevel": "JAVA_21",
-  "mixins": [
-    "BucketItemMixin",
-    "ChunkMixin",
-    "ChunkSectionMixin",
-    "ClearAllEffectsConsumeEffectMixin",
-    "EntityMixin",
-    "FluidAccessor",
-    "FluidSplashMixin",
-    "LivingEntityMixin",
-    "PlayerEntityMixin",
-    "ServerChunkManagerMixin",
-    "ServerWorldMixin"
-  ],
-  "client": [
-    "client.BackgroundRendererMixin",
-    "client.CameraMixin",
-    "client.ClientPlayerEntityMixin",
-    "client.DrawContextAccessor",
-    "client.GameRendererMixin",
-    "client.ItemRendererMixin",
-    "client.ParticleAccessor"
-  ],
-  "injectors": {
-    "defaultRequire": 1
+    "required": true,
+    "package": "net.limit.cubliminal.mixin",
+    "compatibilityLevel": "JAVA_21",
+    "mixins": [
+        "BucketItemMixin",
+        "ChunkMixin",
+        "ChunkSectionMixin",
+        "ClearAllEffectsConsumeEffectMixin",
+        "EntityMixin",
+        "FluidAccessor",
+        "FluidSplashMixin",
+        "LivingEntityMixin",
+        "MinecraftServerMixin",
+        "PlayerEntityMixin",
+        "ServerChunkManagerMixin",
+        "ServerWorldMixin"
+    ],
+    "client": [
+        "client.BackgroundRendererMixin",
+        "client.CameraMixin",
+        "client.ClientPlayerEntityMixin",
+        "client.DrawContextAccessor",
+        "client.GameRendererMixin",
+        "client.ItemRendererMixin",
+        "client.ParticleAccessor"
+    ],
+    "injectors": {
+        "defaultRequire": 1
 	}
 }

@@ -14,6 +14,7 @@ import net.limit.cubliminal.config.CubliminalConfig;
 import net.limit.cubliminal.event.backrooms.BlackoutParams;
 import net.limit.cubliminal.event.command.BlackoutCommand;
 import net.limit.cubliminal.event.command.NoclipCommand;
+import net.limit.cubliminal.event.command.PlayerSkinDataCommand;
 import net.limit.cubliminal.event.command.SanityCommand;
 import net.limit.cubliminal.init.*;
 import net.limit.cubliminal.event.backrooms.NoclipDestination;
@@ -71,6 +72,7 @@ public class Cubliminal implements ModInitializer {
 		CommandRegistrationCallback.EVENT.register(NoclipCommand::register);
 		CommandRegistrationCallback.EVENT.register(SanityCommand::register);
 		CommandRegistrationCallback.EVENT.register(BlackoutCommand::register);
+		CommandRegistrationCallback.EVENT.register(PlayerSkinDataCommand::register);
 
 		LootTableEvents.MODIFY.register(((key, tableBuilder, source, registries) -> {
 			if (source.isBuiltin() && key.getValue().equals(BURIED_TREASURE_ID)) {
