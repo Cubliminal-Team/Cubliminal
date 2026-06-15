@@ -39,7 +39,7 @@ public class SkinStealerEntity extends HostileEntity implements Angerable {
     private static final UniformIntProvider ANGER_TIME_RANGE = TimeHelper.betweenSeconds(70, 80);
     private static final TrackedData<Boolean> IN_DISGUISED = DataTracker.registerData(SkinStealerEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
     private static final TrackedData<Optional<UUID>> DISGUISED_AS = DataTracker.registerData(SkinStealerEntity.class, TrackedDataHandlerRegistry.OPTIONAL_UUID);
-    private static final UniformIntProvider DISGUISED_TIME_RANGE = TimeHelper.betweenSeconds(40, 60);
+    private static final UniformIntProvider DISGUISED_TIME_RANGE = TimeHelper.betweenSeconds(25, 40);
 
     // The dimensions for the disguised state
     public static final EntityDimensions PLAYER_DIMENSIONS = EntityDimensions.changing(0.6F, 1.8F)
@@ -59,7 +59,8 @@ public class SkinStealerEntity extends HostileEntity implements Angerable {
 
     @Override
     public @Nullable EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData) {
-        if (this.random.nextBetween(0, 5) == 0) {
+        // 1/3 chance to spawn in disguise
+        if (this.random.nextBetween(0, 2) == 0) {
             PlayerSkinDataManager.PlayerSkinData playerSkinData = PlayerSkinDataManager.getInstance(((ServerWorld) world).getServer()).getRandomPlayer(this.getRandom());
             this.setDisguise(playerSkinData);
         }
@@ -212,7 +213,7 @@ public class SkinStealerEntity extends HostileEntity implements Angerable {
         if (!this.getWorld().isClient) {
             this.tickAngerLogic((ServerWorld)this.getWorld(), true);
 
-            if (this.disguisedTime > 0) {
+            if (this.disguisedTime > 0 && this.isAngry()) {
                 this.disguisedTime -= 1;
             }
         }
