@@ -36,6 +36,7 @@ import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.sound.BlockSoundGroup;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Rarity;
@@ -220,7 +221,7 @@ public class CubliminalBlocks implements Initer {
 					.sounds(BlockSoundGroup.BASALT)
 					.strength(2, 6));
 
-    public static final Block BOTTOM_YELLOW_WALLPAPERS = register("bottom_yellow_wallpapers", Block::new,
+    public static final Block BOTTOM_YELLOW_WALLPAPERS = register("bottom_yellow_wallpapers", BlockWithSocket::new,
             AbstractBlock.Settings.create()
 					.mapColor(MapColor.TERRACOTTA_YELLOW)
 					.sounds(BlockSoundGroup.BASALT)
@@ -240,6 +241,19 @@ public class CubliminalBlocks implements Initer {
 					.sounds(BlockSoundGroup.CALCITE)
 					.strength(2, 6)
 					.requiresTool());
+
+	public static final Block CARPETED_YELLOW_WALLPAPERS = register("carpeted_yellow_wallpapers", Block::new,
+			AbstractBlock.Settings.create()
+					.mapColor(MapColor.OAK_TAN)
+					.sounds(new BlockSoundGroup(
+							1.0f, 1.0f,
+							SoundEvents.BLOCK_BASALT_BREAK,
+							SoundEvents.BLOCK_WOOL_STEP,
+							SoundEvents.BLOCK_BASALT_PLACE,
+							SoundEvents.BLOCK_BASALT_HIT,
+							SoundEvents.BLOCK_WOOL_FALL
+					))
+					.strength(5, 7));
 
     public static final Block DAMP_CARPET = register("damp_carpet", Block::new,
             AbstractBlock.Settings.create()
@@ -271,6 +285,13 @@ public class CubliminalBlocks implements Initer {
 					.sounds(BlockSoundGroup.WOOL)
 					.strength(1, 3)
 					.slipperiness(0.7f));
+
+	public static final Block RED_DROP_CEILING = register("red_drop_ceiling", Block::new,
+			AbstractBlock.Settings.create()
+					.mapColor(MapColor.TERRACOTTA_RED)
+					.sounds(BlockSoundGroup.CALCITE)
+					.strength(2, 6)
+					.requiresTool());
 
 	public static final Block FLICKERING_FLUORESCENT_LIGHT = registerBlock("fluorescent_light", new FluorescentLightBlock(
 			AbstractBlock.Settings.create()
@@ -385,6 +406,9 @@ public class CubliminalBlocks implements Initer {
 	public static final Block SPRUCE_CHAIR = register("spruce_chair", ChairBlock::new,
 			AbstractBlock.Settings.copy(Blocks.SPRUCE_PLANKS).requiresTool());
 
+	public static final Block DARK_OAK_RAILING = register("dark_oak_railing", RailingBlock::new,
+			AbstractBlock.Settings.copy(Blocks.DARK_OAK_PLANKS));
+
 	public static final Block MANILA_WALLPAPERS = register("manila_wallpapers", Block::new,
 			AbstractBlock.Settings.create()
 					.mapColor(MapColor.IRON_GRAY)
@@ -393,6 +417,13 @@ public class CubliminalBlocks implements Initer {
 					.requiresTool());
 
 	public static final Block TOP_MANILA_WALLPAPERS = register("top_manila_wallpapers", Block::new,
+			AbstractBlock.Settings.create()
+					.mapColor(MapColor.IRON_GRAY)
+					.sounds(BlockSoundGroup.BASALT)
+					.strength(5, 7)
+					.requiresTool());
+
+	public static final Block BOTTOM_MANILA_WALLPAPERS = register("bottom_manila_wallpapers", Block::new,
 			AbstractBlock.Settings.create()
 					.mapColor(MapColor.IRON_GRAY)
 					.sounds(BlockSoundGroup.BASALT)
@@ -818,6 +849,18 @@ public class CubliminalBlocks implements Initer {
 					.replaceable()
 					.noCollision()
 					.strength(0.2f)
+					.sounds(BlockSoundGroup.GLOW_LICHEN)
+					.burnable()
+					.pistonBehavior(PistonBehavior.DESTROY));
+
+	public static final Block MOLD_SPROUTS = register("mold_sprouts", MoldSproutsBlock::new,
+			AbstractBlock.Settings.create()
+					.mapColor(MapColor.LICHEN_GREEN)
+					.replaceable()
+					.noCollision()
+					.breakInstantly()
+					.ticksRandomly()
+					.offset(AbstractBlock.OffsetType.XYZ)
 					.sounds(BlockSoundGroup.GLOW_LICHEN)
 					.burnable()
 					.pistonBehavior(PistonBehavior.DESTROY));

@@ -1,0 +1,22 @@
+{
+	"texture_size": [32, 32],
+	"textures": {
+		"0": "cubliminal:block/left",
+		"particle": "cubliminal:block/left"
+	},
+	"elements": [
+		{
+			"from": [-5.3, 14, 0],
+			"to": [8, 16, 2],
+			"rotation": {"angle": 45, "axis": "z", "origin": [8, 16, 0]},
+			"faces": {
+				"north": {"uv": [0, 0, 6.65, 1], "texture": "#0"},
+				"east": {"uv": [0, 0, 1, 1], "texture": "#0"},
+				"south": {"uv": [0, 0, 6.65, 1], "texture": "#0"},
+				"west": {"uv": [0, 0, 1, 1], "texture": "#0"},
+				"up": {"uv": [0, 0, 6.65, 1], "texture": "#0"},
+				"down": {"uv": [0, 0, 6.65, 1], "texture": "#missing"}
+			}
+		}
+	]
+}

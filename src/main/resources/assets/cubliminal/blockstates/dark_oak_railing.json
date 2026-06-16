@@ -1,0 +1,403 @@
+{
+  "multipart": [
+    {
+      "when": {
+        "OR": [
+          { "facing": "north", "shape": "inner_right" },
+          { "facing": "east", "shape": "inner_left" }
+        ]
+      },
+      "apply": { "model": "cubliminal:block/middle_flat" }
+    },
+    {
+      "when": {
+        "OR": [
+          { "facing": "east", "shape": "inner_right" },
+          { "facing": "south", "shape": "inner_left" }
+        ]
+      },
+      "apply": { "model": "cubliminal:block/middle_flat", "y": 90 }
+    },
+    {
+      "when": {
+        "OR": [
+          { "facing": "south", "shape": "inner_right" },
+          { "facing": "west", "shape": "inner_left" }
+        ]
+      },
+      "apply": { "model": "cubliminal:block/middle_flat", "y": 180 }
+    },
+    {
+      "when": {
+        "OR": [
+          { "facing": "west", "shape": "inner_right" },
+          { "facing": "north", "shape": "inner_left" }
+        ]
+      },
+      "apply": { "model": "cubliminal:block/middle_flat", "y": 270 }
+    },
+    {
+      "when": {
+        "AND": [
+          { "left": "flat" },
+          {
+            "OR": [
+              { "facing": "north", "shape": "straight" },
+              { "facing": "north", "shape": "inner_right" },
+              { "facing": "east", "shape": "inner_left" }
+            ]
+          }
+        ]
+      },
+      "apply": { "model": "cubliminal:block/left_flat" }
+    },
+    {
+      "when": {
+        "AND": [
+          { "left": "flat" },
+          {
+            "OR": [
+              { "facing": "east", "shape": "straight" },
+              { "facing": "east", "shape": "inner_right" },
+              { "facing": "south", "shape": "inner_left" }
+            ]
+          }
+        ]
+      },
+      "apply": { "model": "cubliminal:block/left_flat", "y": 90 }
+    },
+    {
+      "when": {
+        "AND": [
+          { "left": "flat" },
+          {
+            "OR": [
+              { "facing": "south", "shape": "straight" },
+              { "facing": "south", "shape": "inner_right" },
+              { "facing": "west", "shape": "inner_left" }
+            ]
+          }
+        ]
+      },
+      "apply": { "model": "cubliminal:block/left_flat", "y": 180 }
+    },
+    {
+      "when": {
+        "AND": [
+          { "left": "flat" },
+          {
+            "OR": [
+              { "facing": "west", "shape": "straight" },
+              { "facing": "west", "shape": "inner_right" },
+              { "facing": "north", "shape": "inner_left" }
+            ]
+          }
+        ]
+      },
+      "apply": { "model": "cubliminal:block/left_flat", "y": 270 }
+    },
+    {
+      "when": {
+        "AND": [
+          { "right": "flat" },
+          {
+            "OR": [
+              { "facing": "north", "shape": "straight" },
+
+              { "facing": "north", "shape": "inner_left" },
+              { "facing": "west", "shape": "inner_right" }
+            ]
+          }
+        ]
+      },
+      "apply": { "model": "cubliminal:block/right_flat" }
+    },
+    {
+      "when": {
+        "AND": [
+          { "right": "flat" },
+          {
+            "OR": [
+              { "facing": "east", "shape": "straight" },
+              { "facing": "east", "shape": "inner_left" },
+              { "facing": "north", "shape": "inner_right" }
+            ]
+          }
+        ]
+      },
+      "apply": { "model": "cubliminal:block/right_flat", "y": 90 }
+    },
+    {
+      "when": {
+        "AND": [
+          { "right": "flat" },
+          {
+            "OR": [
+              { "facing": "south", "shape": "straight" },
+              { "facing": "south", "shape": "inner_left" },
+              { "facing": "east", "shape": "inner_right" }
+            ]
+          }
+        ]
+      },
+      "apply": { "model": "cubliminal:block/right_flat", "y": 180 }
+    },
+    {
+      "when": {
+        "AND": [
+          { "right": "flat" },
+          {
+            "OR": [
+              { "facing": "west", "shape": "straight" },
+              { "facing": "west", "shape": "inner_left" },
+              { "facing": "south", "shape": "inner_right" }
+            ]
+          }
+        ]
+      },
+      "apply": { "model": "cubliminal:block/right_flat", "y": 270 }
+    },
+    {
+      "when": {
+        "AND": [
+          { "left": "up" },
+          {
+            "OR": [
+              { "facing": "north", "shape": "straight" },
+              { "facing": "north", "shape": "inner_right" },
+              { "facing": "east", "shape": "inner_left" }
+            ]
+          }
+        ]
+      },
+      "apply": { "model": "cubliminal:block/left_up" }
+    },
+    {
+      "when": {
+        "AND": [
+          { "left": "up" },
+          {
+            "OR": [
+              { "facing": "east", "shape": "straight" },
+              { "facing": "east", "shape": "inner_right" },
+              { "facing": "south", "shape": "inner_left" }
+            ]
+          }
+        ]
+      },
+      "apply": { "model": "cubliminal:block/left_up", "y": 90 }
+    },
+    {
+      "when": {
+        "AND": [
+          { "left": "up" },
+          {
+            "OR": [
+              { "facing": "south", "shape": "straight" },
+              { "facing": "south", "shape": "inner_right" },
+              { "facing": "west", "shape": "inner_left" }
+            ]
+          }
+        ]
+      },
+      "apply": { "model": "cubliminal:block/left_up", "y": 180 }
+    },
+    {
+      "when": {
+        "AND": [
+          { "left": "up" },
+          {
+            "OR": [
+              { "facing": "west", "shape": "straight" },
+              { "facing": "west", "shape": "inner_right" },
+              { "facing": "north", "shape": "inner_left" }
+            ]
+          }
+        ]
+      },
+      "apply": { "model": "cubliminal:block/left_up", "y": 270 }
+    },
+    {
+      "when": {
+        "AND": [
+          { "right": "up" },
+          {
+            "OR": [
+              { "facing": "north", "shape": "straight" },
+
+              { "facing": "north", "shape": "inner_left" },
+              { "facing": "west", "shape": "inner_right" }
+            ]
+          }
+        ]
+      },
+      "apply": { "model": "cubliminal:block/right_up" }
+    },
+    {
+      "when": {
+        "AND": [
+          { "right": "up" },
+          {
+            "OR": [
+              { "facing": "east", "shape": "straight" },
+              { "facing": "east", "shape": "inner_left" },
+              { "facing": "north", "shape": "inner_right" }
+            ]
+          }
+        ]
+      },
+      "apply": { "model": "cubliminal:block/right_up", "y": 90 }
+    },
+    {
+      "when": {
+        "AND": [
+          { "right": "up" },
+          {
+            "OR": [
+              { "facing": "south", "shape": "straight" },
+              { "facing": "south", "shape": "inner_left" },
+              { "facing": "east", "shape": "inner_right" }
+            ]
+          }
+        ]
+      },
+      "apply": { "model": "cubliminal:block/right_up", "y": 180 }
+    },
+    {
+      "when": {
+        "AND": [
+          { "right": "up" },
+          {
+            "OR": [
+              { "facing": "west", "shape": "straight" },
+              { "facing": "west", "shape": "inner_left" },
+              { "facing": "south", "shape": "inner_right" }
+            ]
+          }
+        ]
+      },
+      "apply": { "model": "cubliminal:block/right_up", "y": 270 }
+    },
+    {
+      "when": {
+        "AND": [
+          { "left": "down" },
+          {
+            "OR": [
+              { "facing": "north", "shape": "straight" },
+              { "facing": "north", "shape": "inner_right" },
+              { "facing": "east", "shape": "inner_left" }
+            ]
+          }
+        ]
+      },
+      "apply": { "model": "cubliminal:block/left_down" }
+    },
+    {
+      "when": {
+        "AND": [
+          { "left": "down" },
+          {
+            "OR": [
+              { "facing": "east", "shape": "straight" },
+              { "facing": "east", "shape": "inner_right" },
+              { "facing": "south", "shape": "inner_left" }
+            ]
+          }
+        ]
+      },
+      "apply": { "model": "cubliminal:block/left_down", "y": 90 }
+    },
+    {
+      "when": {
+        "AND": [
+          { "left": "down" },
+          {
+            "OR": [
+              { "facing": "south", "shape": "straight" },
+              { "facing": "south", "shape": "inner_right" },
+              { "facing": "west", "shape": "inner_left" }
+            ]
+          }
+        ]
+      },
+      "apply": { "model": "cubliminal:block/left_down", "y": 180 }
+    },
+    {
+      "when": {
+        "AND": [
+          { "left": "down" },
+          {
+            "OR": [
+              { "facing": "west", "shape": "straight" },
+              { "facing": "west", "shape": "inner_right" },
+              { "facing": "north", "shape": "inner_left" }
+            ]
+          }
+        ]
+      },
+      "apply": { "model": "cubliminal:block/left_down", "y": 270 }
+    },
+    {
+      "when": {
+        "AND": [
+          { "right": "down" },
+          {
+            "OR": [
+              { "facing": "north", "shape": "straight" },
+
+              { "facing": "north", "shape": "inner_left" },
+              { "facing": "west", "shape": "inner_right" }
+            ]
+          }
+        ]
+      },
+      "apply": { "model": "cubliminal:block/right_down" }
+    },
+    {
+      "when": {
+        "AND": [
+          { "right": "down" },
+          {
+            "OR": [
+              { "facing": "east", "shape": "straight" },
+              { "facing": "east", "shape": "inner_left" },
+              { "facing": "north", "shape": "inner_right" }
+            ]
+          }
+        ]
+      },
+      "apply": { "model": "cubliminal:block/right_down", "y": 90 }
+    },
+    {
+      "when": {
+        "AND": [
+          { "right": "down" },
+          {
+            "OR": [
+              { "facing": "south", "shape": "straight" },
+              { "facing": "south", "shape": "inner_left" },
+              { "facing": "east", "shape": "inner_right" }
+            ]
+          }
+        ]
+      },
+      "apply": { "model": "cubliminal:block/right_down", "y": 180 }
+    },
+    {
+      "when": {
+        "AND": [
+          { "right": "down" },
+          {
+            "OR": [
+              { "facing": "west", "shape": "straight" },
+              { "facing": "west", "shape": "inner_left" },
+              { "facing": "south", "shape": "inner_right" }
+            ]
+          }
+        ]
+      },
+      "apply": { "model": "cubliminal:block/right_down", "y": 270 }
+    }
+  ]
+}

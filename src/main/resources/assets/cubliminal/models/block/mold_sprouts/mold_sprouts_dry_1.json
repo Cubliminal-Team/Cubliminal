@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cross",
+  "textures": {
+    "cross": "cubliminal:block/mold_sprouts/mold_sprouts_dry_1"
+  }
+}

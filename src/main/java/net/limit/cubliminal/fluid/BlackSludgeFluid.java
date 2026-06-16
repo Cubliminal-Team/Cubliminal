@@ -61,6 +61,11 @@ public class BlackSludgeFluid extends BackroomsFlowableFluid {
     }
 
     @Override
+    public int getTickRate(WorldView world) {
+        return 20;
+    }
+
+    @Override
     protected boolean isInfinite(ServerWorld world) {
         return false;
     }
