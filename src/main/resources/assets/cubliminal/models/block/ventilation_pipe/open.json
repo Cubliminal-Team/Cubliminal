@@ -1,0 +1,21 @@
+{
+	"format_version": "1.21.11",
+	"credit": "Made by Miffen Kop!",
+	"textures": {
+		"edge": "cubliminal:block/ventilation_pipe/ventilation_pipe_open",
+		"particle": "cubliminal:block/ventilation_pipe/ventilation_pipe_straight"
+	},
+	"elements": [
+		{
+			"from": [-0.01, -0.01, -0.01],
+			"to": [16.01, 16.01, 8],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8, 8]},
+			"faces": {
+				"east": {"uv": [0, 0, 16, 8], "rotation": 90, "texture": "#edge", "cullface": "east"},
+				"west": {"uv": [0, 0, 16, 8], "rotation": 270, "texture": "#edge", "cullface": "west"},
+				"up": {"uv": [0, 0, 16, 8], "texture": "#edge", "cullface": "up"},
+				"down": {"uv": [0, 0, 16, 8], "rotation": 180, "texture": "#edge", "cullface": "down"}
+			}
+		}
+	]
+}
