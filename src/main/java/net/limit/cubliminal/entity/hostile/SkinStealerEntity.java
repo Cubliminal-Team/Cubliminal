@@ -39,7 +39,7 @@ public class SkinStealerEntity extends HostileEntity implements Angerable {
     private static final UniformIntProvider ANGER_TIME_RANGE = TimeHelper.betweenSeconds(70, 80);
     private static final TrackedData<Boolean> IN_DISGUISED = DataTracker.registerData(SkinStealerEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
     private static final TrackedData<Optional<UUID>> DISGUISED_AS = DataTracker.registerData(SkinStealerEntity.class, TrackedDataHandlerRegistry.OPTIONAL_UUID);
-    private static final UniformIntProvider DISGUISED_TIME_RANGE = TimeHelper.betweenSeconds(25, 40);
+    private static final UniformIntProvider DISGUISED_TIME_RANGE = TimeHelper.betweenSeconds(10, 20);
 
     // The dimensions for the disguised state
     public static final EntityDimensions PLAYER_DIMENSIONS = EntityDimensions.changing(0.6F, 1.8F)
