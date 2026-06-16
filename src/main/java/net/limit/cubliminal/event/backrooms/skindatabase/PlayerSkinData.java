@@ -28,6 +28,7 @@ public class PlayerSkinData implements IPlayerData {
         this.displayName = displayName;
     }
 
+    @Override
     public UUID getUuid() {
         return uuid;
     }

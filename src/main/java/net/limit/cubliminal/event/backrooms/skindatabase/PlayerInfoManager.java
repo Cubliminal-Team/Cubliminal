@@ -28,10 +28,18 @@ public class PlayerInfoManager {
         this.messages = new PlayerDataManager<>(() -> this.data.getPlayerMessageData(), () -> this.data.markDirty());
     }
 
+    /**
+     * Get skins data
+     * @return instance of skins data manager
+     */
     public PlayerDataManager<PlayerSkinData> getSkins() {
         return skins;
     }
 
+    /**
+     * Get messages data
+     * @return instance of messages data manager
+     */
     public PlayerDataManager<PlayerMessageData> getMessages() {
         return messages;
     }
@@ -44,6 +52,10 @@ public class PlayerInfoManager {
         );
     }
 
+    /**
+     * Get the current instance of player info manager
+     * @return instance
+     */
     public static PlayerInfoManager getInstance() {
         return INSTANCE;
     }

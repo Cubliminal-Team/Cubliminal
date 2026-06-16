@@ -9,6 +9,13 @@ import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+/**
+ * Generic class for managing player data
+ *
+ * @param getterFunc function that return list of player data
+ * @param markDirtyFunc function that mark the data as dirty
+ * @param <T> player data class
+ */
 public record PlayerDataManager<T extends IPlayerData>(Supplier<List<T>> getterFunc, Runnable markDirtyFunc) {
 
     /**

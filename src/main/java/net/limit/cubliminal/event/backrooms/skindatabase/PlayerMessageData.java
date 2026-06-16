@@ -10,6 +10,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Player messages data object
+ * <br/>
+ * Use {@link PlayerMessageData#createEmpty(UUID)} to create new instance
+ */
 public class PlayerMessageData implements IPlayerData {
     public static final Codec<PlayerMessageData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Uuids.CODEC.fieldOf("uuid").forGetter(PlayerMessageData::getUuid),
@@ -24,6 +29,7 @@ public class PlayerMessageData implements IPlayerData {
         this.messages = new ArrayList<>(messages);
     }
 
+    @Override
     public UUID getUuid() {
         return uuid;
     }
