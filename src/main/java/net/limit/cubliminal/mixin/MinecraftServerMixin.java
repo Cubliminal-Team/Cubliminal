@@ -1,7 +1,6 @@
 package net.limit.cubliminal.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import net.limit.cubliminal.access.MinecraftServerAccessor;
 import net.limit.cubliminal.event.backrooms.PlayerSkinDataManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.WorldGenerationProgressListener;
@@ -13,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(MinecraftServer.class)
-public abstract class MinecraftServerMixin implements MinecraftServerAccessor {
+public abstract class MinecraftServerMixin {
 
     @Unique
     private final PlayerSkinDataManager playerSkinDataManager = new PlayerSkinDataManager();
@@ -26,11 +25,6 @@ public abstract class MinecraftServerMixin implements MinecraftServerAccessor {
             )
     )
     private void initPlayerSkinDataManager(WorldGenerationProgressListener worldGenerationProgressListener, CallbackInfo ci, @Local PersistentStateManager persistentStateManager) {
-        persistentStateManager.getOrCreate(this.getPlayerSkinDataManager().getPersistentStateType(), "player_skin_manager");
-    }
-
-    @Override
-    public PlayerSkinDataManager getPlayerSkinDataManager() {
-        return this.playerSkinDataManager;
+        persistentStateManager.getOrCreate(this.playerSkinDataManager.getPersistentStateType(), "player_skin_manager");
     }
 }

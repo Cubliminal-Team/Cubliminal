@@ -5,11 +5,9 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.limit.cubliminal.Cubliminal;
-import net.limit.cubliminal.access.MinecraftServerAccessor;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextCodecs;
@@ -24,7 +22,13 @@ import java.util.UUID;
 import java.util.function.Consumer;
 
 public class PlayerSkinDataManager {
+    private static PlayerSkinDataManager INSTANCE;
+
     private Data data;
+
+    public PlayerSkinDataManager() {
+        INSTANCE = this;
+    }
 
     /**
      * Update player data entry
@@ -141,8 +145,8 @@ public class PlayerSkinDataManager {
         return createPlayerData(player.getUuid(), player.getName());
     }
 
-    public static PlayerSkinDataManager getInstance(MinecraftServer server) {
-        return ((MinecraftServerAccessor) server).getPlayerSkinDataManager();
+    public static PlayerSkinDataManager getInstance() {
+        return INSTANCE;
     }
 
     // The main data chunk

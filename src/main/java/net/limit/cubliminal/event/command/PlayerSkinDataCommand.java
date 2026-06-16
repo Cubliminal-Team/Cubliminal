@@ -10,8 +10,6 @@ import net.limit.cubliminal.event.backrooms.PlayerSkinDataManager;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.command.argument.UuidArgumentType;
-import net.minecraft.command.suggestion.SuggestionProviders;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -26,43 +24,43 @@ public class PlayerSkinDataCommand {
         dispatcher.register(CommandManager.literal("playerskindata").requires(source -> source.hasPermissionLevel(2))
                 .then(CommandManager.literal("remove")
                         .then(CommandManager.argument("player", EntityArgumentType.player())
-                                .executes(context -> executeRemove(context.getSource(), context.getSource().getServer(), EntityArgumentType.getPlayer(context, "player").getUuid()))
+                                .executes(context -> executeRemove(context.getSource(), EntityArgumentType.getPlayer(context, "player").getUuid()))
                         )
                         .then(CommandManager.argument("uuid", UuidArgumentType.uuid())
                                 .suggests(new PlayerSkinDataUUIDSuggestionProvider())
-                                .executes(context -> executeRemove(context.getSource(), context.getSource().getServer(), UuidArgumentType.getUuid(context, "uuid")))
+                                .executes(context -> executeRemove(context.getSource(), UuidArgumentType.getUuid(context, "uuid")))
                         )
                 )
                 .then(CommandManager.literal("set").then(CommandManager.argument("player", EntityArgumentType.player())
-                        .executes(context -> executeSet(context.getSource(), context.getSource().getServer(), EntityArgumentType.getPlayer(context, "player")))
+                        .executes(context -> executeSet(context.getSource(), EntityArgumentType.getPlayer(context, "player")))
                 ))
                 .then(CommandManager.literal("get")
-                        .executes(context -> executeGetAll(context.getSource(), context.getSource().getServer()))
+                        .executes(context -> executeGetAll(context.getSource()))
                         .then(CommandManager.argument("player", EntityArgumentType.player())
-                                .executes(context -> executeGet(context.getSource(), context.getSource().getServer(), EntityArgumentType.getPlayer(context, "player").getUuid()))
+                                .executes(context -> executeGet(context.getSource(), EntityArgumentType.getPlayer(context, "player").getUuid()))
                         )
                         .then(CommandManager.argument("uuid", UuidArgumentType.uuid())
                                 .suggests(new PlayerSkinDataUUIDSuggestionProvider())
-                                .executes(context -> executeGet(context.getSource(), context.getSource().getServer(), UuidArgumentType.getUuid(context, "uuid")))
+                                .executes(context -> executeGet(context.getSource(), UuidArgumentType.getUuid(context, "uuid")))
                         )
                 )
         );
     }
 
-    private static int executeRemove(ServerCommandSource source, MinecraftServer server, UUID uuid) {
-        PlayerSkinDataManager.getInstance(server).deletePlayerData(uuid);
+    private static int executeRemove(ServerCommandSource source, UUID uuid) {
+        PlayerSkinDataManager.getInstance().deletePlayerData(uuid);
         source.sendFeedback(() -> Text.literal("Deleted player data"), false);
         return 1;
     }
 
-    private static int executeSet(ServerCommandSource source, MinecraftServer server, ServerPlayerEntity player) {
-        PlayerSkinDataManager.getInstance(server).storePlayerData(PlayerSkinDataManager.createFromPlayer(player));
+    private static int executeSet(ServerCommandSource source, ServerPlayerEntity player) {
+        PlayerSkinDataManager.getInstance().storePlayerData(PlayerSkinDataManager.createFromPlayer(player));
         source.sendFeedback(() -> Text.literal("Stored player data"), false);
         return 1;
     }
 
-    private static int executeGet(ServerCommandSource source, MinecraftServer server, UUID uuid) {
-        PlayerSkinDataManager playerSkinDataManager = PlayerSkinDataManager.getInstance(server);
+    private static int executeGet(ServerCommandSource source, UUID uuid) {
+        PlayerSkinDataManager playerSkinDataManager = PlayerSkinDataManager.getInstance();
 
         Optional<PlayerSkinDataManager.PlayerSkinData> playerSkinData = playerSkinDataManager.getPlayerData(uuid);
 
@@ -75,8 +73,8 @@ public class PlayerSkinDataCommand {
         return 1;
     }
 
-    private static int executeGetAll(ServerCommandSource source, MinecraftServer server) {
-        PlayerSkinDataManager playerSkinDataManager = PlayerSkinDataManager.getInstance(server);
+    private static int executeGetAll(ServerCommandSource source) {
+        PlayerSkinDataManager playerSkinDataManager = PlayerSkinDataManager.getInstance();
 
         source.sendFeedback(() -> Text.literal(String.valueOf(playerSkinDataManager.getEntryCount())), false);
 
@@ -86,7 +84,7 @@ public class PlayerSkinDataCommand {
     private static class PlayerSkinDataUUIDSuggestionProvider implements SuggestionProvider<ServerCommandSource> {
         @Override
         public CompletableFuture<Suggestions> getSuggestions(CommandContext<ServerCommandSource> context, SuggestionsBuilder builder) throws CommandSyntaxException {
-            PlayerSkinDataManager playerSkinDataManager = PlayerSkinDataManager.getInstance(context.getSource().getServer());
+            PlayerSkinDataManager playerSkinDataManager = PlayerSkinDataManager.getInstance();
 
             for (PlayerSkinDataManager.PlayerSkinData playerSkinData : playerSkinDataManager.getAllData()) {
                 builder.suggest(playerSkinData.getUuid().toString());
