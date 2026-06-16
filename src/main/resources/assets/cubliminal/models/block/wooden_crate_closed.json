@@ -1,6 +1,8 @@
 {
-  "parent": "block/cube_all",
+  "parent": "block/cube_bottom_top",
   "textures": {
-    "all": "cubliminal:block/wooden_crate"
+    "side": "cubliminal:block/wooden_crate",
+    "bottom": "cubliminal:block/wooden_crate_top",
+    "top": "cubliminal:block/wooden_crate_top"
   }
 }

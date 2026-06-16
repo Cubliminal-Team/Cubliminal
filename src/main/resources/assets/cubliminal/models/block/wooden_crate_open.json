@@ -1,12 +1,8 @@
 {
-  "parent": "block/cube",
+  "parent": "block/cube_bottom_top",
   "textures": {
-    "particle": "cubliminal:block/wooden_crate",
-    "down": "cubliminal:block/wooden_crate",
-    "up": "cubliminal:block/wooden_crate_opened",
-    "north": "cubliminal:block/wooden_crate",
-    "south": "cubliminal:block/wooden_crate",
-    "west": "cubliminal:block/wooden_crate",
-    "east": "cubliminal:block/wooden_crate"
+    "side": "cubliminal:block/wooden_crate",
+    "bottom": "cubliminal:block/wooden_crate_top",
+    "top": "cubliminal:block/wooden_crate_top_open"
   }
 }

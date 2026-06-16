@@ -35,6 +35,7 @@ import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.sound.BlockSoundGroup;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Rarity;
@@ -240,6 +241,19 @@ public class CubliminalBlocks implements Initer {
 					.strength(2, 6)
 					.requiresTool());
 
+	public static final Block CARPETED_YELLOW_WALLPAPERS = register("carpeted_yellow_wallpapers", Block::new,
+			AbstractBlock.Settings.create()
+					.mapColor(MapColor.OAK_TAN)
+					.sounds(new BlockSoundGroup(
+							1.0f, 1.0f,
+							SoundEvents.BLOCK_BASALT_BREAK,
+							SoundEvents.BLOCK_WOOL_STEP,
+							SoundEvents.BLOCK_BASALT_PLACE,
+							SoundEvents.BLOCK_BASALT_HIT,
+							SoundEvents.BLOCK_WOOL_FALL
+					))
+					.strength(5, 7));
+
     public static final Block DAMP_CARPET = register("damp_carpet", Block::new,
             AbstractBlock.Settings.create()
 					.mapColor(MapColor.OAK_TAN)
@@ -390,6 +404,9 @@ public class CubliminalBlocks implements Initer {
 
 	public static final Block SPRUCE_CHAIR = register("spruce_chair", ChairBlock::new,
 			AbstractBlock.Settings.copy(Blocks.SPRUCE_PLANKS).requiresTool());
+
+	public static final Block DARK_OAK_RAILING = register("dark_oak_railing", RailingBlock::new,
+			AbstractBlock.Settings.copy(Blocks.DARK_OAK_PLANKS));
 
 	public static final Block MANILA_WALLPAPERS = register("manila_wallpapers", Block::new,
 			AbstractBlock.Settings.create()

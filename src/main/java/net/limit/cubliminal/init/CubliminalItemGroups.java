@@ -29,6 +29,7 @@ public class CubliminalItemGroups implements Initer {
                         entries.add(CubliminalBlocks.TOP_YELLOW_WALLPAPERS);
                         entries.add(CubliminalBlocks.DAMAGED_YELLOW_WALLPAPERS);
                         entries.add(CubliminalBlocks.FALSE_CEILING);
+                        entries.add(CubliminalBlocks.CARPETED_YELLOW_WALLPAPERS);
                         entries.add(CubliminalBlocks.DAMP_CARPET);
                         entries.add(CubliminalBlocks.DIRTY_DAMP_CARPET);
                         entries.add(CubliminalBlocks.DAMP_CARPET_SLAB);
@@ -100,6 +101,7 @@ public class CubliminalItemGroups implements Initer {
                         entries.add(CubliminalItems.BLACK_SLUDGE_BUCKET);
 						entries.add(CubliminalBlocks.TWO_LONG_SPRUCE_TABLE);
                         entries.add(CubliminalBlocks.SPRUCE_CHAIR);
+                        entries.add(CubliminalBlocks.DARK_OAK_RAILING);
 						entries.add(CubliminalBlocks.SINK);
 						entries.add(CubliminalBlocks.SHOWER);
                         entries.add(CubliminalBlocks.WOODEN_PLANK);

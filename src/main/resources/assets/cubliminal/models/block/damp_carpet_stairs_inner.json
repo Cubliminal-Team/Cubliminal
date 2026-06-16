@@ -1,8 +1,10 @@
 {
-  "parent": "minecraft:block/inner_stairs",
+  "parent": "cubliminal:block/stairs/carpeted_inner_stairs",
   "textures": {
-    "bottom": "cubliminal:block/damp_carpet",
-    "side": "cubliminal:block/damp_carpet",
-    "top": "cubliminal:block/damp_carpet"
+    "right": "cubliminal:block/yellow_carpeted_stairs_right",
+    "back": "cubliminal:block/yellow_carpeted_wall",
+    "left": "cubliminal:block/yellow_carpeted_stairs_left",
+    "top": "cubliminal:block/damp_carpet",
+    "bottom": "cubliminal:block/yellow_wallpaper"
   }
 }
