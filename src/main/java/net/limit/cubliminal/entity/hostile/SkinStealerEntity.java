@@ -59,9 +59,11 @@ public class SkinStealerEntity extends HostileEntity implements Angerable {
 
     @Override
     public @Nullable EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData) {
+        PlayerSkinDataManager playerSkinDataManager = PlayerSkinDataManager.getInstance(((ServerWorld) world).getServer());
+
         // 1/3 chance to spawn in disguise
-        if (this.random.nextBetween(0, 2) == 0) {
-            PlayerSkinDataManager.PlayerSkinData playerSkinData = PlayerSkinDataManager.getInstance(((ServerWorld) world).getServer()).getRandomPlayer(this.getRandom());
+        if (playerSkinDataManager.getEntryCount() > 0 && this.random.nextBetween(0, 2) == 0) {
+            PlayerSkinDataManager.PlayerSkinData playerSkinData = playerSkinDataManager.getRandomPlayer(this.getRandom());
             this.setDisguise(playerSkinData);
         }
 
