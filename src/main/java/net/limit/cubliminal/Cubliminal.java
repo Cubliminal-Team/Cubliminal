@@ -8,13 +8,16 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
+import net.fabricmc.fabric.api.message.v1.ServerMessageEvents;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.limit.cubliminal.access.PEAccessor;
 import net.limit.cubliminal.config.CubliminalConfig;
+import net.limit.cubliminal.entity.hostile.SkinStealerEntity;
 import net.limit.cubliminal.event.backrooms.BlackoutParams;
+import net.limit.cubliminal.event.backrooms.skindatabase.PlayerInfoManager;
 import net.limit.cubliminal.event.command.BlackoutCommand;
 import net.limit.cubliminal.event.command.NoclipCommand;
-import net.limit.cubliminal.event.command.PlayerSkinDataCommand;
+import net.limit.cubliminal.event.command.PlayerInfoCommand;
 import net.limit.cubliminal.event.command.SanityCommand;
 import net.limit.cubliminal.init.*;
 import net.limit.cubliminal.event.backrooms.NoclipDestination;
@@ -28,6 +31,8 @@ import net.minecraft.loot.entry.ItemEntry;
 import net.minecraft.loot.function.SetCountLootFunction;
 import net.minecraft.loot.provider.number.ConstantLootNumberProvider;
 import net.minecraft.loot.provider.number.UniformLootNumberProvider;
+import net.minecraft.network.message.MessageType;
+import net.minecraft.network.message.SignedMessage;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.resource.ResourceType;
@@ -69,10 +74,11 @@ public class Cubliminal implements ModInitializer {
 
 		ServerLifecycleEvents.SERVER_STARTED.register(server -> SERVER = server.getWorld(CubliminalRegistrar.THE_LOBBY_KEY));
 		ServerPlayerEvents.AFTER_RESPAWN.register(Cubliminal::afterDeath);
+		ServerMessageEvents.CHAT_MESSAGE.register(Cubliminal::chatMessage);
 		CommandRegistrationCallback.EVENT.register(NoclipCommand::register);
 		CommandRegistrationCallback.EVENT.register(SanityCommand::register);
 		CommandRegistrationCallback.EVENT.register(BlackoutCommand::register);
-		CommandRegistrationCallback.EVENT.register(PlayerSkinDataCommand::register);
+		CommandRegistrationCallback.EVENT.register(PlayerInfoCommand::register);
 
 		LootTableEvents.MODIFY.register(((key, tableBuilder, source, registries) -> {
 			if (source.isBuiltin() && key.getValue().equals(BURIED_TREASURE_ID)) {
@@ -90,5 +96,19 @@ public class Cubliminal implements ModInitializer {
 		((PEAccessor) newPlayer).getSanityManager().resetTimer();
 		int ticksToNc = ((PEAccessor) oldPlayer).getNoclipEngine().getTicksToNc();
 		((PEAccessor) newPlayer).getNoclipEngine().setTicksToNc(ticksToNc);
+	}
+
+	private static void chatMessage(SignedMessage signedMessage, ServerPlayerEntity serverPlayerEntity, MessageType.Parameters parameters) {
+		if (parameters.type() == MessageType.CHAT) {
+			boolean isSkinStealerInRange = !serverPlayerEntity.getWorld().getEntitiesByClass(
+					SkinStealerEntity.class,
+					serverPlayerEntity.getBoundingBox().expand(30), // Range
+					entity -> true
+			).isEmpty();
+
+			if (isSkinStealerInRange) {
+				PlayerInfoManager.processPlayerMessage(signedMessage.getContent(), serverPlayerEntity);
+			}
+		}
 	}
 }

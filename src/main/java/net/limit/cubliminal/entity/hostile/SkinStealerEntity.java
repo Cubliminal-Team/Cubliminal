@@ -1,6 +1,8 @@
 package net.limit.cubliminal.entity.hostile;
 
-import net.limit.cubliminal.event.backrooms.PlayerSkinDataManager;
+import net.limit.cubliminal.event.backrooms.skindatabase.PlayerDataManager;
+import net.limit.cubliminal.event.backrooms.skindatabase.PlayerInfoManager;
+import net.limit.cubliminal.event.backrooms.skindatabase.PlayerSkinData;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.ai.pathing.EntityNavigation;
@@ -59,11 +61,11 @@ public class SkinStealerEntity extends HostileEntity implements Angerable {
 
     @Override
     public @Nullable EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData) {
-        PlayerSkinDataManager playerSkinDataManager = PlayerSkinDataManager.getInstance();
+        PlayerDataManager<PlayerSkinData> skinsData = PlayerInfoManager.getInstance().getSkins();
 
         // 1/3 chance to spawn in disguise
-        if (playerSkinDataManager.getEntryCount() > 0 && this.random.nextBetween(0, 2) == 0) {
-            PlayerSkinDataManager.PlayerSkinData playerSkinData = playerSkinDataManager.getRandomPlayer(this.getRandom());
+        if (skinsData.getEntryCount() > 0 && this.random.nextBetween(0, 2) == 0) {
+            PlayerSkinData playerSkinData = skinsData.getRandomPlayer(this.getRandom());
             this.setDisguise(playerSkinData);
         }
 
@@ -115,18 +117,18 @@ public class SkinStealerEntity extends HostileEntity implements Angerable {
     public boolean onKilledOther(ServerWorld world, LivingEntity other) {
         // Take the skin of the last player killed
         if (other instanceof ServerPlayerEntity player) {
-            PlayerSkinDataManager playerSkinDataManager = PlayerSkinDataManager.getInstance();
+            PlayerDataManager<PlayerSkinData> skinsData = PlayerInfoManager.getInstance().getSkins();
 
-            PlayerSkinDataManager.PlayerSkinData playerSkinData;
+            PlayerSkinData playerSkinData;
 
             // Update / store the player in the database
-            if (playerSkinDataManager.hasPlayerData(player.getUuid())) {
-                playerSkinData = playerSkinDataManager.updatePlayerData(player.getUuid(), data -> {
+            if (skinsData.hasPlayerData(player.getUuid())) {
+                playerSkinData = skinsData.updatePlayerData(player.getUuid(), data -> {
                     data.setDisplayName(player.getDisplayName());
                 });
             } else {
-                playerSkinData = PlayerSkinDataManager.createFromPlayer(player);
-                playerSkinDataManager.storePlayerData(playerSkinData);
+                playerSkinData = PlayerSkinData.createFromPlayer(player);
+                skinsData.storePlayerData(playerSkinData);
             }
 
             this.setDisguise(playerSkinData);
@@ -145,7 +147,7 @@ public class SkinStealerEntity extends HostileEntity implements Angerable {
      *
      * @param playerSkinData player skin data
      */
-    public void setDisguise(PlayerSkinDataManager.PlayerSkinData playerSkinData) {
+    public void setDisguise(PlayerSkinData playerSkinData) {
         this.setDisguisedTime(DISGUISED_TIME_RANGE.get(this.random));
         this.setInDisguised(true);
         this.setDisguisedAs(playerSkinData.getUuid());
