@@ -405,6 +405,9 @@ public class CubliminalBlocks implements Initer {
 	public static final Block SPRUCE_CHAIR = register("spruce_chair", ChairBlock::new,
 			AbstractBlock.Settings.copy(Blocks.SPRUCE_PLANKS).requiresTool());
 
+	public static final Block DARK_OAK_RAILING = register("dark_oak_railing", RailingBlock::new,
+			AbstractBlock.Settings.copy(Blocks.DARK_OAK_PLANKS));
+
 	public static final Block MANILA_WALLPAPERS = register("manila_wallpapers", Block::new,
 			AbstractBlock.Settings.create()
 					.mapColor(MapColor.IRON_GRAY)

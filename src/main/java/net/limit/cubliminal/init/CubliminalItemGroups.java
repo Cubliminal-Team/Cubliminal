@@ -101,6 +101,7 @@ public class CubliminalItemGroups implements Initer {
                         entries.add(CubliminalItems.BLACK_SLUDGE_BUCKET);
 						entries.add(CubliminalBlocks.TWO_LONG_SPRUCE_TABLE);
                         entries.add(CubliminalBlocks.SPRUCE_CHAIR);
+                        entries.add(CubliminalBlocks.DARK_OAK_RAILING);
 						entries.add(CubliminalBlocks.SINK);
 						entries.add(CubliminalBlocks.SHOWER);
                         entries.add(CubliminalBlocks.WOODEN_PLANK);
