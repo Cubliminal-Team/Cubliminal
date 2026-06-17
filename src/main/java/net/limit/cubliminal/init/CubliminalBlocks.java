@@ -857,7 +857,7 @@ public class CubliminalBlocks implements Initer {
 					.noCollision()
 					.breakInstantly()
 					.ticksRandomly()
-					.offset(AbstractBlock.OffsetType.XYZ)
+					.offset(AbstractBlock.OffsetType.XZ)
 					.sounds(BlockSoundGroup.GLOW_LICHEN)
 					.burnable()
 					.pistonBehavior(PistonBehavior.DESTROY));
