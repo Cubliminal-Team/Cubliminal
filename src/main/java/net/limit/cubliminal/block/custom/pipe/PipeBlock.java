@@ -56,7 +56,10 @@ public abstract class PipeBlock extends HorizontalFacingBlock implements Waterlo
         }
     }
 
-    // TODO northernlimit, add documentation for this.
+    /**
+     * When a pipe is placed, {@code getPlacementState} decides whether the pipe leaks by generating a
+     * pseudorandom number from its block position. Thus, the leaking state of a pipe depends on its position.
+     */
     @Nullable
     @Override
     public BlockState getPlacementState(ItemPlacementContext ctx) {

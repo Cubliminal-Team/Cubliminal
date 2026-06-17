@@ -261,7 +261,7 @@ public class CubliminalBlocks implements Initer {
 					.strength(1, 3));
 
 	public static final Block DAMP_CARPET_STAIRS = register("damp_carpet_stairs", StairsBlock::new,
-			AbstractBlock.Settings.copy(DAMP_CARPET), DAMP_CARPET.getDefaultState());
+			AbstractBlock.Settings.copy(CARPETED_YELLOW_WALLPAPERS), CARPETED_YELLOW_WALLPAPERS.getDefaultState());
 
 	public static final Block DAMP_CARPET_SLAB = register("damp_carpet_slab", SlabBlock::new, AbstractBlock.Settings.copy(DAMP_CARPET));
 
