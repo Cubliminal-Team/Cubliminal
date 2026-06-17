@@ -41,9 +41,11 @@ public class CubliminalItems implements Initer {
             settings -> new BucketItem(CubliminalFluids.BLACK_SLUDGE, settings),
             new Item.Settings().recipeRemainder(Items.BUCKET).maxCount(1));
 
+    //region Registered Spawn Eggs
     public static Item SMILER_SPAWN_EGG = registerSpawnEgg("smiler", CubliminalEntities.SMILER, 0, 16777215);
     public static Item HOUND_SPAWN_EGG = registerSpawnEgg("hound", CubliminalEntities.HOUND, 56063, 44543);
     public static Item SKIN_STEALER_SPAWN_EGG = registerSpawnEgg("skin_stealer", CubliminalEntities.SKIN_STEALER, 6381921, 0);
+    //endregion
 
     /**
      * Register a spawn egg for an entity.

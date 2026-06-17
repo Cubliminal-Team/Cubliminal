@@ -110,10 +110,11 @@ public class CubliminalItemGroups implements Initer {
                         entries.add(CubliminalItems.NAILED_BAT);
                         entries.add(CubliminalItems.SILVER_INGOT);
                         entries.add(CubliminalBlocks.FLUX_CAPACITOR);
-
+                        //region Spawn Eggs
                         entries.add(CubliminalItems.SMILER_SPAWN_EGG);
                         entries.add(CubliminalItems.SKIN_STEALER_SPAWN_EGG);
                         entries.add(CubliminalItems.HOUND_SPAWN_EGG);
+                        //endregion
 
                     }).build());
 
