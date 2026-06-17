@@ -151,5 +151,7 @@
   "gui.cubliminal.flip": "Flip",
   "gui.cubliminal.use": "Use",
   "container.wooden_crate": "Wooden Crate",
-  "container.box": "Box"
+  "container.box": "Box",
+  "container.corpse.default": "Deceased Wanderer",
+  "container.corpse.player": "Deceased %s"
 }

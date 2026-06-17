@@ -38,4 +38,6 @@ public class CubliminalBlockEntities implements Initer {
 	public static final BlockEntityType<BoxBlockEntity> BOX_BLOCK_ENTITY =
 			register("box", FabricBlockEntityTypeBuilder.create(BoxBlockEntity::new, CubliminalBlocks.BOX).build());
 
+	public static final BlockEntityType<CorpseBlockEntity> CORPSE_BLOCK_ENTITY =
+			register("corpse", FabricBlockEntityTypeBuilder.create(CorpseBlockEntity::new, CubliminalBlocks.CORPSE).build());
 }

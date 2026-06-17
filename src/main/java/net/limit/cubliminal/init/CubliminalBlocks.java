@@ -878,6 +878,8 @@ public class CubliminalBlocks implements Initer {
 	public static final Block CRATE_AIR = registerWithoutItem("crate_air", CrateAirBlock::new, AbstractBlock.Settings.copy(Blocks.AIR));
 	//endregion
 
+	public static final Block CORPSE = register("corpse", CorpseBlock::new, AbstractBlock.Settings.copy(Blocks.BONE_BLOCK));
+
 	//region Liquids
 	/**
 	 * The almond water fluid block will primarily be used in levels that contains oceans of almond water.
