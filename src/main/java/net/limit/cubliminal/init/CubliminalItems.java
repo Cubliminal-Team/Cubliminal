@@ -3,6 +3,8 @@ package net.limit.cubliminal.init;
 import net.fabricmc.fabric.api.registry.FuelRegistryEvents;
 import net.limit.cubliminal.Cubliminal;
 import net.limit.cubliminal.Initer;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.item.*;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
@@ -38,6 +40,28 @@ public class CubliminalItems implements Initer {
     public static final Item BLACK_SLUDGE_BUCKET = register("black_sludge_bucket",
             settings -> new BucketItem(CubliminalFluids.BLACK_SLUDGE, settings),
             new Item.Settings().recipeRemainder(Items.BUCKET).maxCount(1));
+
+    public static Item SMILER_SPAWN_EGG = registerSpawnEgg("smiler", CubliminalEntities.SMILER, 0, 16777215);
+    public static Item HOUND_SPAWN_EGG = registerSpawnEgg("hound", CubliminalEntities.HOUND, 56063, 44543);
+    public static Item SKIN_STEALER_SPAWN_EGG = registerSpawnEgg("skin_stealer", CubliminalEntities.SKIN_STEALER, 6381921, 0);
+
+    /**
+     * Register a spawn egg for an entity.
+     * @param entityName The entity name (All lower case).
+     * @param type The type of entity
+     * @param primaryColor The primary color of the spawn egg
+     * @param secondaryColor The secondary color of the spawn egg
+     * @return The item
+     */
+    private static Item registerSpawnEgg(String entityName, EntityType<? extends MobEntity> type, int primaryColor, int secondaryColor){
+        return register(entityName + "_spawn_egg", settings -> new SpawnEggItem(type, primaryColor, secondaryColor, settings));
+    }
+
+    public static Item register(String id, Function<Item.Settings, Item> factory){
+        RegistryKey<Item> itemKey = RegistryKey.of(RegistryKeys.ITEM, Cubliminal.id(id));
+        Item item = factory.apply(new Item.Settings().registryKey(itemKey));
+        return Registry.register(Registries.ITEM, itemKey, item);
+    }
 
     private static Item register(String id, Function<Item.Settings, Item> itemFactory, Item.Settings itemSettings) {
         RegistryKey<Item> itemKey = RegistryKey.of(RegistryKeys.ITEM, Cubliminal.id(id));
