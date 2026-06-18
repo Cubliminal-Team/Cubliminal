@@ -5,6 +5,6 @@
     "back": "cubliminal:block/yellow_carpeted_wall",
     "left": "cubliminal:block/yellow_carpeted_stairs_left",
     "top": "cubliminal:block/damp_carpet",
-    "bottom": "cubliminal:block/yellow_wallpaper"
+    "bottom": "cubliminal:block/yellow_wallpapers"
   }
 }

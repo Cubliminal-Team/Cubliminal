@@ -25,10 +25,12 @@ public class CubliminalParticleTypes {
     public static SimpleParticleType FALLING_CONTAMINATED_WATER = register("falling_contaminated_water");
     public static SimpleParticleType LANDING_CONTAMINATED_WATER = register("landing_contaminated_water");
 
+    public static SimpleParticleType MOLD_SPORE = register("mold_spore");
+
     @Obsolete
     public static SimpleParticleType SPLASH = register("splash");
 
-    private static SimpleParticleType register(String name){
+    private static SimpleParticleType register(String name) {
         return Registry.register(Registries.PARTICLE_TYPE, Cubliminal.id(name), FabricParticleTypes.simple());
     }
 

@@ -1,6 +1,7 @@
 package net.limit.cubliminal.block.custom;
 
 import com.mojang.serialization.MapCodec;
+import net.limit.cubliminal.init.CubliminalParticleTypes;
 import net.minecraft.block.*;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.StateManager;
@@ -16,7 +17,7 @@ public class MoldSproutsBlock extends PlantBlock implements Fertilizable {
 
     public static final MapCodec<MoldSproutsBlock> CODEC = MoldSproutsBlock.createCodec(MoldSproutsBlock::new);
     public static final int MAX_GROWTH_LIGHT_LVL = 11;
-    protected static final VoxelShape SHAPE = Block.createCuboidShape(2.0, 0.0, 2.0, 14.0, 13.0, 14.0);
+    protected static final VoxelShape SHAPE = Block.createCuboidShape(2.0, 0.0, 2.0, 14.0, 11.0, 14.0);
     public static final BooleanProperty DRY = BooleanProperty.of("dry");
 
     public MoldSproutsBlock(Settings settings) {
@@ -36,7 +37,7 @@ public class MoldSproutsBlock extends PlantBlock implements Fertilizable {
 
     @Override
     protected VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-        return Block.createCuboidShape(2.0, 0.0, 2.0, 14.0, 11.0, 14.0);
+        return SHAPE;
     }
 
     @Override
@@ -70,6 +71,16 @@ public class MoldSproutsBlock extends PlantBlock implements Fertilizable {
             if (world.isAir(blockPos2) && state.canPlaceAt(world, blockPos2) && world.getBaseLightLevel(blockPos2, 0) <= MAX_GROWTH_LIGHT_LVL) {
                 world.setBlockState(blockPos2, state, Block.NOTIFY_LISTENERS);
             }
+        }
+    }
+
+    @Override
+    public void randomDisplayTick(BlockState state, World world, BlockPos pos, Random random) {
+        if (!state.get(DRY) && random.nextDouble() <= 0.7) {
+            double x = pos.getX() + random.nextDouble() * 6.0 - 3.0;
+            double y = pos.getY() + random.nextDouble() * 2.3;
+            double z = pos.getZ() + random.nextDouble() * 6.0 - 3.0;
+            world.addParticle(CubliminalParticleTypes.MOLD_SPORE, x, y, z, 0.0, 0.0, 0.0);
         }
     }
 
