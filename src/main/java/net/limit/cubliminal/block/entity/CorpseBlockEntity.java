@@ -100,6 +100,22 @@ public class CorpseBlockEntity extends LootableContainerBlockEntity {
         return uuid;
     }
 
+    /**
+     * Receives the corpse skeleton state
+     * @return skeleton state
+     */
+    public boolean isSkeleton() {
+        return false;
+    }
+
+    /**
+     * Receives the corpse muscle state
+     * @return body muscle state
+     */
+    public boolean isMuscleOnly() {
+        return false;
+    }
+
     protected void readNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registries) {
         super.readNbt(nbt, registries);
         // Sets the inventory to empty.

@@ -11,12 +11,9 @@ import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.limit.cubliminal.access.GameRendererAccessor;
 import net.limit.cubliminal.block.fluid.CustomFluidBlock;
-import net.limit.cubliminal.client.block.WrittenDocumentRenderer;
+import net.limit.cubliminal.client.block.*;
 import net.limit.cubliminal.client.hud.SanityBarHudOverlay;
 import net.limit.cubliminal.client.particle.CubliminalParticleManager;
-import net.limit.cubliminal.client.block.FluxCapacitorRenderer;
-import net.limit.cubliminal.client.block.ManilaGatewayRenderer;
-import net.limit.cubliminal.client.block.UnlimitedStructureBlockRenderer;
 import net.limit.cubliminal.client.fog.FogSettings;
 import net.limit.cubliminal.client.entity.SeatRenderer;
 import net.limit.cubliminal.client.screen.DocBlockEditScreen;
@@ -66,6 +63,7 @@ public class CubliminalClient implements ClientModInitializer {
 		BlockEntityRendererFactories.register(CubliminalBlockEntities.FLUX_CAPACITOR_BLOCK_ENTITY, FluxCapacitorRenderer::new);
 		BlockEntityRendererFactories.register(CubliminalBlockEntities.USBLOCK_BLOCK_ENTITY, UnlimitedStructureBlockRenderer::new);
 		BlockEntityRendererFactories.register(CubliminalBlockEntities.WRITTEN_DOCUMENT_BLOCK_ENTITY, WrittenDocumentRenderer::new);
+		BlockEntityRendererFactories.register(CubliminalBlockEntities.CORPSE_BLOCK_ENTITY, CorpseBlockEntityRenderer::new);
 
 		ClientWorldEvents.AFTER_CLIENT_WORLD_CHANGE.register((client, world) -> ((GameRendererAccessor) client.gameRenderer).setTriggered(false));
 

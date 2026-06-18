@@ -878,7 +878,7 @@ public class CubliminalBlocks implements Initer {
 	public static final Block CRATE_AIR = registerWithoutItem("crate_air", CrateAirBlock::new, AbstractBlock.Settings.copy(Blocks.AIR));
 	//endregion
 
-	public static final Block CORPSE = register("corpse", CorpseBlock::new, AbstractBlock.Settings.copy(Blocks.BONE_BLOCK));
+	public static final Block CORPSE = register("corpse", CorpseBlock::new, AbstractBlock.Settings.copy(Blocks.BONE_BLOCK).nonOpaque());
 
 	//region Liquids
 	/**
