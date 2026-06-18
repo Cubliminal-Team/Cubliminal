@@ -8,23 +8,34 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.StateManager;
+import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.EnumProperty;
+import net.minecraft.state.property.IntProperty;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public class CorpseBlock extends BlockWithEntity {
     public static final EnumProperty<Direction> FACING = HorizontalFacingBlock.FACING;
-
+    public static final IntProperty AGE = IntProperty.of("age", 0, 15);
+    public static final BooleanProperty SKIN_STOLEN = BooleanProperty.of("skin_stolen");
+    public static final VoxelShape SHAPE = Block.createCuboidShape(0, 0, -8, 16, 4, 24);
     public static final MapCodec<CorpseBlock> CODEC = createCodec(CorpseBlock::new);
 
     public CorpseBlock(Settings settings) {
         super(settings);
-        // Sets default facing state to NORTH.
-        setDefaultState(getDefaultState().with(FACING, Direction.NORTH));
+        // Sets the default state for facing, age, and if skin is stolen.
+        setDefaultState(
+                getDefaultState()
+                        .with(FACING, Direction.NORTH)
+                        .with(SKIN_STOLEN, false)
+                        .with(AGE, 0)
+        );
     }
 
     @Override
@@ -41,7 +52,7 @@ public class CorpseBlock extends BlockWithEntity {
     // Builds and appends the properties.
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        builder.add(FACING);
+        builder.add(FACING).add(AGE).add(SKIN_STOLEN);
     }
 
     @Override
@@ -76,5 +87,10 @@ public class CorpseBlock extends BlockWithEntity {
             }
         }
         return ActionResult.SUCCESS;
+    }
+
+    @Override
+    protected VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+        return SHAPE;
     }
 }
