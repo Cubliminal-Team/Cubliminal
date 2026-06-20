@@ -61,7 +61,21 @@ public class PlayerInfoManager {
     }
 
     public static void processPlayerMessage(Text content, ServerPlayerEntity player) {
+        PlayerMessageProcessor.ProcessedMessage processedMessage = PlayerMessageProcessor.process(content);
 
+        if (processedMessage == null) return;
+
+        PlayerDataManager<PlayerMessageData> manager = getInstance().getMessages();
+
+        if (manager.hasPlayerData(player.getUuid())) {
+            manager.updatePlayerData(player.getUuid(), playerMessageData -> {
+                playerMessageData.addMessage(processedMessage);
+            });
+        } else {
+            PlayerMessageData messageData = PlayerMessageData.createEmpty(player.getUuid());
+            messageData.addMessage(processedMessage);
+            manager.storePlayerData(messageData);
+        }
     }
 
     // The main data chunk

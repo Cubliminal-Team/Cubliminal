@@ -99,7 +99,7 @@ public class Cubliminal implements ModInitializer {
 	}
 
 	private static void chatMessage(SignedMessage signedMessage, ServerPlayerEntity serverPlayerEntity, MessageType.Parameters parameters) {
-		if (parameters.type() == MessageType.CHAT) {
+		if (parameters.type().matchesKey(MessageType.CHAT)) {
 			boolean isSkinStealerInRange = !serverPlayerEntity.getWorld().getEntitiesByClass(
 					SkinStealerEntity.class,
 					serverPlayerEntity.getBoundingBox().expand(30), // Range
