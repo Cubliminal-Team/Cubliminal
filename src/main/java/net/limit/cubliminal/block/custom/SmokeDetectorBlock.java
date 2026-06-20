@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class SmokeDetectorBlock extends Block implements BlockVariantHolder {
 
-	protected static final VoxelShape SHAPE = Block.createCuboidShape(6.5, 15, 6.5, 9.5, 16, 9.5);
+	protected static final VoxelShape SHAPE = Block.createCuboidShape(6, 14, 6, 10, 16, 10);
 
 	public SmokeDetectorBlock(Settings settings) {
 		super(settings);
@@ -33,11 +33,6 @@ public class SmokeDetectorBlock extends Block implements BlockVariantHolder {
 	@Override
 	public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
         Vec3d vec3d = state.getModelOffset(pos);
-		return SHAPE.offset(vec3d.x, vec3d.y, vec3d.z);
-	}
-	@Override
-	public VoxelShape getCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-		Vec3d vec3d = state.getModelOffset(pos);
 		return SHAPE.offset(vec3d.x, vec3d.y, vec3d.z);
 	}
 

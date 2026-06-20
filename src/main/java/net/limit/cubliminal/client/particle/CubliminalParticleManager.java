@@ -32,6 +32,8 @@ public class CubliminalParticleManager {
         registerPipeLeakFactory(CubliminalParticleTypes.DRIPPING_CONTAMINATED_WATER, PipeLeakParticle::createDrippingContaminatedWater);
         registerPipeLeakFactory(CubliminalParticleTypes.FALLING_CONTAMINATED_WATER, PipeLeakParticle::createFallingContaminatedWater);
         registerPipeLeakFactory(CubliminalParticleTypes.LANDING_CONTAMINATED_WATER, PipeLeakParticle::createLandingContaminatedWater);
+
+        registerFactory(CubliminalParticleTypes.MOLD_SPORE, MoldSporeParticle.Factory::new);
     }
 
     public static <T extends ParticleEffect> void registerFactory(
