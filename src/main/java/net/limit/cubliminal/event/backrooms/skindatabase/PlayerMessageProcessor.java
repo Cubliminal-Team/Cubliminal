@@ -25,9 +25,17 @@ public class PlayerMessageProcessor {
         Intent bestIntent = null;
         double bestScore = 0.0;
 
+        Intent debugIntent = null;
+        double debugScore = 0;
+
         for (Intent intent : Intent.values()) {
             for (String phrase : intent.getPhrases()) {
                 double score = testMessage(content, phrase);
+
+                if (score > debugScore) {
+                    debugScore = score;
+                    debugIntent = intent;
+                }
 
                 if (score >= intent.getThreshold() && score > bestScore) {
                     bestScore = score;
@@ -36,8 +44,8 @@ public class PlayerMessageProcessor {
             }
         }
 
-        Cubliminal.LOGGER.info("Best score: '%s'".formatted(bestScore));
-        Cubliminal.LOGGER.info("Best intent: '%s'".formatted(bestIntent));
+        Cubliminal.LOGGER.info("Best score: '%s'".formatted(debugScore));
+        Cubliminal.LOGGER.info("Best intent: '%s'".formatted(debugIntent));
 
         if (bestIntent == null) return null;
 
@@ -58,22 +66,38 @@ public class PlayerMessageProcessor {
             int end = Math.min(i + phraseWords.length, words.length);
             String window = String.join(" ", Arrays.asList(words).subList(i, end));
             double score = similarity(window, phrase);
-            maxScore = Math.max(maxScore, score);
+
+            double coverage = (double) (end - i) / words.length;
+            double adjustedScore = score * coverage;
+
+            maxScore = Math.max(maxScore, adjustedScore);
         }
 
         // Test #2 - test by words
-        double wordScoreSum = 0.0;
+        double phraseOuterSum = 0.0;
         for (String pw : phraseWords) {
             double maxWordScore = 0.0;
             for (String w : words) {
                 double wordScore = similarity(w, pw);
                 maxWordScore = Math.max(maxWordScore, wordScore);
             }
-            wordScoreSum += maxWordScore;
+            phraseOuterSum += maxWordScore;
         }
+        double phraseOuterScore = phraseOuterSum / phraseWords.length;
 
-        double avgWordScore = wordScoreSum / phraseWords.length;
-        maxScore = Math.max(maxScore, avgWordScore);
+        double wordsOuterSum = 0.0;
+        for (String w : words) {
+            double maxWordScore = 0.0;
+            for (String pw : phraseWords) {
+                double wordScore = similarity(w, pw);
+                maxWordScore = Math.max(maxWordScore, wordScore);
+            }
+            wordsOuterSum += maxWordScore;
+        }
+        double wordsOuterScore = wordsOuterSum / words.length;
+
+        double bestWordScore = Math.min(phraseOuterScore, wordsOuterScore);
+        maxScore = Math.max(maxScore, bestWordScore);
 
         return maxScore;
     }
@@ -139,15 +163,20 @@ public class PlayerMessageProcessor {
         ),
         HELP(
                 "help",
-                0.75f,
+                0.65f,
                 "help me", "please help", "i need help", "can you help me", "i'm stuck"
         ),
         TRUST(
                 "trust",
-                0.75f,
+                0.65f,
                 "i'm human", "i'm a survivor", "don't be afraid", "it's just me", "i'm your friend"
-        )
-        ;
+        ),
+        HESITATION(
+                "hesitation",
+                false,
+                0.75f,
+                "who are you?", "go away", "don't come closer", "don't come here", "don't come any closer", "what is your name?", "you are scaring me", "are you my friend?", "you are a monster"
+        );
 
         public static final Codec<Intent> CODEC = Codec.STRING.comapFlatMap(
                 s -> {
@@ -162,12 +191,17 @@ public class PlayerMessageProcessor {
         );
 
         private final String id;
+        private final boolean canMimic;
         private final float threshold;
         private final List<String> phrases;
 
         Intent(String id, float threshold, String... phrases) {
+            this(id, true, threshold, phrases);
+        }
 
+        Intent(String id, boolean canMimic, float threshold, String... phrases) {
             this.id = id;
+            this.canMimic = canMimic;
             this.threshold = threshold;
             this.phrases = Arrays.stream(phrases).toList();
         }
@@ -182,6 +216,10 @@ public class PlayerMessageProcessor {
 
         public List<String> getPhrases() {
             return phrases;
+        }
+
+        public boolean canMimic() {
+            return canMimic;
         }
 
         public static Intent fromId(String id) {

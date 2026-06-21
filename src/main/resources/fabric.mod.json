@@ -41,6 +41,7 @@
             "net.limit.cubliminal.init.CubliminalEntities",
             "net.limit.cubliminal.init.CubliminalItemGroups",
             "net.limit.cubliminal.init.CubliminalItems",
+            "net.limit.cubliminal.init.CubliminalMessageTypes",
             "net.limit.cubliminal.init.CubliminalSounds",
             "net.limit.cubliminal.init.CubliminalStructures",
             "net.limit.cubliminal.networking.c2s.C2SPackets",

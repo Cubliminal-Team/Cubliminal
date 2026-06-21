@@ -20,6 +20,7 @@ import net.ludocrypt.limlib.api.effects.sky.StaticDimensionEffects;
 import net.ludocrypt.limlib.api.effects.sound.SoundEffects;
 import net.ludocrypt.limlib.api.effects.sound.reverb.StaticReverbEffect;
 import net.ludocrypt.limlib.api.skybox.Skybox;
+import net.minecraft.network.message.MessageType;
 import net.minecraft.registry.RegistryEntryLookup;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
@@ -27,6 +28,7 @@ import net.minecraft.registry.RegistryOps;
 import net.minecraft.registry.entry.RegistryEntryInfo;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.sound.MusicType;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.intprovider.ConstantIntProvider;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionOptions;
@@ -183,6 +185,10 @@ public class CubliminalRegistrar implements LimlibRegistrar {
 			RegistryNoisePreset.initNoisePresets(infoLookup);
 
 		});
+
+		LimlibRegistryHooks.hook(RegistryKeys.MESSAGE_TYPE, (infoLookup, registryKey, registry) ->
+				CubliminalMessageTypes.registerAll(infoLookup, registryKey, registry)
+		);
 	}
 
 	private static <W extends LimlibWorld> W getWorld(String id, W world) {

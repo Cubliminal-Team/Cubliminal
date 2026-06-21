@@ -10,14 +10,15 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.world.PersistentState;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class PlayerInfoManager {
     private static PlayerInfoManager INSTANCE;
 
     private final PlayerDataManager<PlayerSkinData> skins;
     private final PlayerDataManager<PlayerMessageData> messages;
+
+    private final HashMap<UUID, PlayerMessageProcessor.Intent> playerIntent;
 
     private Data data;
 
@@ -26,6 +27,8 @@ public class PlayerInfoManager {
 
         this.skins = new PlayerDataManager<>(() -> this.data.getPlayerSkinData(), () -> this.data.markDirty());
         this.messages = new PlayerDataManager<>(() -> this.data.getPlayerMessageData(), () -> this.data.markDirty());
+
+        this.playerIntent = new HashMap<>();
     }
 
     /**
@@ -42,6 +45,18 @@ public class PlayerInfoManager {
      */
     public PlayerDataManager<PlayerMessageData> getMessages() {
         return messages;
+    }
+
+    private void setPlayerIntent(UUID player, PlayerMessageProcessor.Intent intent) {
+        this.playerIntent.put(player, intent);
+    }
+
+    public void removePlayerIntent(UUID player) {
+        this.playerIntent.remove(player);
+    }
+
+    public PlayerMessageProcessor.Intent getPlayerIntent(UUID player) {
+        return this.playerIntent.get(player);
     }
 
     public PersistentState.Type<Data> getPersistentStateType() {
@@ -64,6 +79,10 @@ public class PlayerInfoManager {
         PlayerMessageProcessor.ProcessedMessage processedMessage = PlayerMessageProcessor.process(content);
 
         if (processedMessage == null) return;
+
+        getInstance().setPlayerIntent(player.getUuid(), processedMessage.intent());
+
+        if (!processedMessage.intent().canMimic()) return;
 
         PlayerDataManager<PlayerMessageData> manager = getInstance().getMessages();
 

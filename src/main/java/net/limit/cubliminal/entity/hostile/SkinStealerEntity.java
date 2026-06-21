@@ -1,8 +1,8 @@
 package net.limit.cubliminal.entity.hostile;
 
-import net.limit.cubliminal.event.backrooms.skindatabase.PlayerDataManager;
-import net.limit.cubliminal.event.backrooms.skindatabase.PlayerInfoManager;
-import net.limit.cubliminal.event.backrooms.skindatabase.PlayerSkinData;
+import net.limit.cubliminal.Cubliminal;
+import net.limit.cubliminal.event.backrooms.skindatabase.*;
+import net.limit.cubliminal.init.CubliminalMessageTypes;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.ai.pathing.EntityNavigation;
@@ -17,6 +17,8 @@ import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.mob.*;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.network.message.MessageType;
+import net.minecraft.network.message.SignedMessage;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
@@ -87,6 +89,7 @@ public class SkinStealerEntity extends HostileEntity implements Angerable {
         this.goalSelector.add(0, new SwimGoal(this));
         this.goalSelector.add(1, new SkinStealerEntity.FleeAndRecoverGoal(this, 15, 25, 40, 1f)); // Make the mob flee and recover health faster then normal
         this.goalSelector.add(2, new SkinStealerEntity.AttackGoal(this, 1.0, false)); // Make the mob attack if not disguised
+        this.goalSelector.add(3, new SkinStealerEntity.MimicPlayerGoal(this, 80)); // Follow the victim when in disguise
         this.goalSelector.add(3, new SkinStealerEntity.FollowVictimGoal(this, 1.0, 4f)); // Follow the victim when in disguise
         this.goalSelector.add(4, new SkinStealerEntity.RevealSelfGoal(this, 28)); // Reveal its true form when he wants to attack
         this.goalSelector.add(7, new WanderAroundFarGoal(this, 1.0, 0.0f));
@@ -376,6 +379,7 @@ public class SkinStealerEntity extends HostileEntity implements Angerable {
         private final float maxDistance;
         private PlayerEntity target;
         private double maxHealth;
+        private boolean wasNear;
 
         /**
          * This triggers when the skin stealer is in disguise and if one of the 3 is happening.
@@ -408,6 +412,11 @@ public class SkinStealerEntity extends HostileEntity implements Angerable {
         }
 
         @Override
+        public void stop() {
+            this.wasNear = false;
+        }
+
+        @Override
         public boolean shouldRunEveryTick() {
             return true;
         }
@@ -416,8 +425,16 @@ public class SkinStealerEntity extends HostileEntity implements Angerable {
         public void tick() {
             this.maxHealth = Math.max(maxHealth, this.skinStealer.getHealth());
 
-            if (this.skinStealer.distanceTo(this.target) >= this.maxDistance || this.skinStealer.getDisguisedTime() <= 0 || this.skinStealer.getHealth() < this.maxHealth) {
+            if (this.skinStealer.getDisguisedTime() <= 0 || this.skinStealer.getHealth() < this.maxHealth) {
                 this.skinStealer.revealSelf();
+            }
+
+            if (this.skinStealer.squaredDistanceTo(this.target) >= this.maxDistance * this.maxDistance) {
+                if (this.wasNear) {
+                    this.skinStealer.revealSelf();
+                }
+            } else {
+                this.wasNear = true;
             }
         }
     }
@@ -465,6 +482,91 @@ public class SkinStealerEntity extends HostileEntity implements Angerable {
             if (skinStealer.age % 10 == 0) {
                 this.skinStealer.heal(2);
             }
+        }
+    }
+
+    private static class MimicPlayerGoal extends Goal {
+        private final SkinStealerEntity skinStealer;
+        private final int chance;
+
+        private PlayerEntity target;
+        private PlayerMessageData playerMessageData;
+        private PlayerSkinData playerSkinData;
+        private boolean responded = false;
+
+        private MimicPlayerGoal(SkinStealerEntity skinStealer, int chance) {
+            this.skinStealer = skinStealer;
+            this.chance = chance;
+        }
+
+        @Override
+        public boolean canStart() {
+            UUID targetUUID = this.skinStealer.getAngryAt();
+            if (targetUUID == null) return false;
+            this.target = this.skinStealer.getWorld().getPlayerByUuid(targetUUID);
+
+            Optional<UUID> disguiseUuid = this.skinStealer.getDisguisedAs();
+
+            if (disguiseUuid.isPresent()) {
+                PlayerInfoManager playerInfoManager = PlayerInfoManager.getInstance();
+
+                this.playerSkinData = playerInfoManager.getSkins().getPlayerData(disguiseUuid.get()).orElse(null);
+                this.playerMessageData = playerInfoManager.getMessages().getPlayerData(disguiseUuid.get()).orElse(null);
+            }
+
+            return this.skinStealer.isInDisguised() && this.skinStealer.isAngry() && this.target != null && this.playerMessageData != null && this.playerSkinData != null;
+        }
+
+        @Override
+        public boolean shouldContinue() {
+            return this.skinStealer.isInDisguised() && this.target != null && this.playerMessageData != null && this.playerSkinData != null;
+        }
+
+        @Override
+        public void tick() {
+            PlayerMessageProcessor.Intent playerIntent = PlayerInfoManager.getInstance().getPlayerIntent(this.target.getUuid());
+
+            // reset the response
+            responded = responded && playerIntent != null;
+
+            if (playerIntent == PlayerMessageProcessor.Intent.GREETING && !this.responded) {
+                this.mimicPlayer(PlayerMessageProcessor.Intent.GREETING);
+                this.markResponse();
+            } else if (this.skinStealer.squaredDistanceTo(this.target) > 7*7 && this.shouldTriggerRandomResponse()) {
+                this.mimicPlayer(PlayerMessageProcessor.Intent.COME_HERE, PlayerMessageProcessor.Intent.HELP);
+            } else if (playerIntent == PlayerMessageProcessor.Intent.HESITATION && !this.responded) {
+               this.mimicPlayer(PlayerMessageProcessor.Intent.TRUST);
+                this.markResponse();
+            } else if (this.shouldTriggerRandomResponse()) {
+                this.mimicPlayer(PlayerMessageProcessor.Intent.GREETING);
+            }
+        }
+
+        private void mimicPlayer(PlayerMessageProcessor.Intent... intents) {
+            Cubliminal.LOGGER.info("trying to mimic");
+            PlayerMessageProcessor.ProcessedMessage processedMessage = this.playerMessageData.getRandomMessageFromIntents(this.skinStealer.getRandom(), intents);
+            if (processedMessage == null) return;
+
+            UUID mimicPlayerUuid = this.skinStealer.getDisguisedAs().get();
+
+            ServerPlayerEntity mimicPlayer = skinStealer.getServer().getPlayerManager().getPlayer(mimicPlayerUuid);
+
+            MessageType.Parameters parameters = MessageType.params(CubliminalMessageTypes.MIMIC, this.skinStealer.getRegistryManager(), this.playerSkinData.getDisplayName());
+            if (mimicPlayer == null) {
+                this.skinStealer.getServer().getPlayerManager().broadcast(parameters.applyChatDecoration(processedMessage.message()), false);
+            } else {
+                SignedMessage signedMessage = SignedMessage.ofUnsigned(mimicPlayerUuid, processedMessage.message().getString());
+                this.skinStealer.getServer().getPlayerManager().broadcast(signedMessage, mimicPlayer, parameters);
+            }
+        }
+
+        private boolean shouldTriggerRandomResponse() {
+            return chance <= 0 || this.skinStealer.random.nextBetween(0, chance) == 0;
+        }
+
+        private void markResponse() {
+            this.responded = true;
+            PlayerInfoManager.getInstance().removePlayerIntent(this.target.getUuid());
         }
     }
 }
