@@ -1,0 +1,21 @@
+{
+    "textures": {
+        "face": "corrugated_iron",
+        "edge": "corrugated_iron_end",
+        "particle": "#face"
+    },
+    "elements": [
+        {
+            "from": [0, 0, 0],
+            "to":   [16, 16, 2],
+            "faces": {
+                "north": {"uv": [0, 0, 16, 16], "texture": "#face", "cullface": "north"},
+                "east":  {"uv": [7, 0,  9, 16], "texture": "#face", "cullface": "west"},
+                "south": {"uv": [0, 0, 16, 16], "texture": "#face"},
+                "west":  {"uv": [7, 0,  9, 16], "texture": "#face", "cullface": "west"},
+                "up":    {"uv": [16, 7, 0, 9], "rotation": 180, "texture": "#edge", "cullface": "up"},
+                "down":  {"uv": [0, 7, 16, 9], "rotation": 180, "texture": "#edge", "cullface": "down"}
+            }
+        }
+    ]
+}

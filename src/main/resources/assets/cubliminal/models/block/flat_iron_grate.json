@@ -1,0 +1,21 @@
+{
+    "textures": {
+        "grate": "iron_grate",
+        "edge":  "corrugated_iron",
+        "particle": "#edge"
+    },
+    "elements": [
+        {
+            "from": [0, 0, 0],
+            "to":   [16, 16, 2],
+            "faces": {
+                "north": {"uv": [0, 0, 16, 16], "texture": "#grate", "cullface": "north"},
+                "east":  {"uv": [0, 0,  2, 16], "texture": "#edge", "cullface": "east"},
+                "south": {"uv": [0, 0, 16, 16], "texture": "#grate"},
+                "west":  {"uv": [0, 0,  2, 16], "texture": "#edge", "cullface": "west"},
+                "up":    {"uv": [0, 16, 2,  0], "rotation": 90, "texture": "#edge", "cullface": "up"},
+                "down":  {"uv": [0, 16, 2,  0], "rotation": 90, "texture": "#edge", "cullface": "down"}
+            }
+        }
+    ]
+}
