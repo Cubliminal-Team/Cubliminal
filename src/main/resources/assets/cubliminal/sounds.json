@@ -220,5 +220,13 @@
       }
     ],
     "subtitle": "subtitle.block.paper_fall"
+  },
+  "entity.skin_stealer.angry": {
+    "sounds": [
+      {
+        "name": "cubliminal:entity/skin_stealer/angry"
+      }
+    ],
+    "subtitle": "subtitle.entity.skin_stealer.angry"
   }
 }

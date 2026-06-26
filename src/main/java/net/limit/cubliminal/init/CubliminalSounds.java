@@ -48,6 +48,8 @@ public class CubliminalSounds implements Initer {
 	public static final SoundEvent PAPER_HIT = register("block.paper_hit");
 	public static final SoundEvent PAPER_FALL = register("block.paper_fall");
 
+	public static final SoundEvent SKIN_STEALER_ANGRY = register("entity.skin_stealer.angry");
+
 
 	/**
 	 * Sends a packet to a specific client for a positional sound event to be played.

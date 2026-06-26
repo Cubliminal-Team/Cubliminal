@@ -3,6 +3,7 @@ package net.limit.cubliminal.entity.hostile;
 import net.limit.cubliminal.Cubliminal;
 import net.limit.cubliminal.event.backrooms.skindatabase.*;
 import net.limit.cubliminal.init.CubliminalMessageTypes;
+import net.limit.cubliminal.init.CubliminalSounds;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.ai.pathing.EntityNavigation;
@@ -166,6 +167,10 @@ public class SkinStealerEntity extends HostileEntity implements Angerable {
         this.setDisguisedAs(null);
         this.setCustomNameVisible(false);
         this.setCustomName(null);
+
+        if (!this.getWorld().isClient()) {
+            this.playSound(CubliminalSounds.SKIN_STEALER_ANGRY, 2.5f, 1f);
+        }
     }
 
     @Override
