@@ -20,7 +20,7 @@ public class PlayerMessageProcessor {
     public static ProcessedMessage process(Text message) {
         String content = message.getString();
 
-        Cubliminal.LOGGER.info("Processing Player Message: '%s'".formatted(content));
+//        Cubliminal.LOGGER.info("Processing Player Message: '%s'".formatted(content));
 
         Intent bestIntent = null;
         double bestScore = 0.0;
@@ -44,8 +44,8 @@ public class PlayerMessageProcessor {
             }
         }
 
-        Cubliminal.LOGGER.info("Best score: '%s'".formatted(debugScore));
-        Cubliminal.LOGGER.info("Best intent: '%s'".formatted(debugIntent));
+//        Cubliminal.LOGGER.info("Best score: '%s'".formatted(debugScore));
+//        Cubliminal.LOGGER.info("Best intent: '%s'".formatted(debugIntent));
 
         if (bestIntent == null) return null;
 
