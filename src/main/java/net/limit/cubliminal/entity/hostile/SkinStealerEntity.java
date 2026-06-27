@@ -20,6 +20,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.message.MessageType;
 import net.minecraft.network.message.SignedMessage;
+import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
@@ -157,6 +158,10 @@ public class SkinStealerEntity extends HostileEntity implements Angerable {
         this.setDisguisedAs(playerSkinData.getUuid());
         this.setCustomNameVisible(true);
         this.setCustomName(playerSkinData.getDisplayName());
+
+        if (this.getWorld() instanceof ServerWorld world) {
+            this.spawnTransitionParticles(world);
+        }
     }
 
     /**
@@ -168,9 +173,17 @@ public class SkinStealerEntity extends HostileEntity implements Angerable {
         this.setCustomNameVisible(false);
         this.setCustomName(null);
 
+        if (this.getWorld() instanceof ServerWorld world) {
+            this.spawnTransitionParticles(world);
+        }
+
         if (!this.getWorld().isClient()) {
             this.playSound(CubliminalSounds.SKIN_STEALER_ANGRY, 2.5f, 1f);
         }
+    }
+
+    private void spawnTransitionParticles(ServerWorld world) {
+        world.spawnParticles(ParticleTypes.SMOKE, this.getX(), this.getY() + 0.5, this.getZ(), 400, 0.5, 1, 0.5, 0);
     }
 
     @Override
