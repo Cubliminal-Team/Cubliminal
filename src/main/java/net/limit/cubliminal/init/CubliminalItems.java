@@ -68,7 +68,7 @@ public class CubliminalItems implements Initer {
     @Override
     public void init() {
         FuelRegistryEvents.BUILD.register((builder, context) -> {
-
+            builder.add(FIRESALT, context.baseSmeltTime() * 250);
         });
 	}
 }
