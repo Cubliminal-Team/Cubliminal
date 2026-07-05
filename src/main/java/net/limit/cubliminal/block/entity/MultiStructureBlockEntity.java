@@ -1,7 +1,7 @@
 package net.limit.cubliminal.block.entity;
 
 import net.limit.cubliminal.access.PEAccessor;
-import net.limit.cubliminal.block.custom.UnlimitedStructureBlock;
+import net.limit.cubliminal.block.custom.MultiStructureBlock;
 import net.limit.cubliminal.init.CubliminalBlockEntities;
 import net.limit.cubliminal.init.CubliminalBlocks;
 import net.minecraft.block.BlockState;
@@ -32,10 +32,9 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-public class USBlockBlockEntity extends BlockEntity {
+public class MultiStructureBlockEntity extends BlockEntity {
     // FIXME: STRUCTURES SIZED 48+ BLOCKS DON'T LOAD PROPERLY DURING WORLDGEN
-    private static final int structure_size_limit = 128;
-    public static final String AUTHOR_KEY = "author";
+    private static final int structure_size_limit = 48;
     @Nullable
     private Identifier templateName;
     private String author = "";
@@ -52,15 +51,15 @@ public class USBlockBlockEntity extends BlockEntity {
     private float integrity;
     private long seed;
 
-    public USBlockBlockEntity(BlockPos pos, BlockState state) {
-        super(CubliminalBlockEntities.USBLOCK_BLOCK_ENTITY, pos, state);
+    public MultiStructureBlockEntity(BlockPos pos, BlockState state) {
+        super(CubliminalBlockEntities.MULTISTRUCTURE_BLOCK_ENTITY, pos, state);
         this.size = Vec3i.ZERO;
         this.mirror = BlockMirror.NONE;
         this.rotation = BlockRotation.NONE;
         this.ignoreEntities = true;
         this.showBoundingBox = true;
         this.integrity = 1.0F;
-        this.mode = state.get(UnlimitedStructureBlock.MODE);
+        this.mode = state.get(MultiStructureBlock.MODE);
     }
 
     protected void writeNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registries) {
@@ -139,8 +138,8 @@ public class USBlockBlockEntity extends BlockEntity {
         if (this.world != null) {
             BlockPos blockPos = this.getPos();
             BlockState blockState = this.world.getBlockState(blockPos);
-            if (blockState.isOf(CubliminalBlocks.UNLIMITED_STRUCTURE_BLOCK)) {
-                this.world.setBlockState(blockPos, blockState.with(UnlimitedStructureBlock.MODE, this.mode), 2);
+            if (blockState.isOf(CubliminalBlocks.MULTISTRUCTURE_BLOCK)) {
+                this.world.setBlockState(blockPos, blockState.with(MultiStructureBlock.MODE, this.mode), 2);
             }
 
         }
@@ -234,7 +233,7 @@ public class USBlockBlockEntity extends BlockEntity {
         this.mode = mode;
         BlockState blockState = this.world.getBlockState(this.getPos());
         if (blockState.isOf(Blocks.STRUCTURE_BLOCK)) {
-            this.world.setBlockState(this.getPos(), blockState.with(UnlimitedStructureBlock.MODE, mode), 2);
+            this.world.setBlockState(this.getPos(), blockState.with(MultiStructureBlock.MODE, mode), 2);
         }
 
     }
@@ -291,14 +290,14 @@ public class USBlockBlockEntity extends BlockEntity {
 
     private Stream<BlockPos> streamCornerPos(BlockPos start, BlockPos end) {
         Stream<BlockPos> var10000 = BlockPos.stream(start, end).filter((pos) -> {
-            return this.world.getBlockState(pos).isOf(CubliminalBlocks.UNLIMITED_STRUCTURE_BLOCK);
+            return this.world.getBlockState(pos).isOf(CubliminalBlocks.MULTISTRUCTURE_BLOCK);
         });
         World var10001 = this.world;
         Objects.requireNonNull(var10001);
         return var10000.map(var10001::getBlockEntity).filter((blockEntity) -> {
-            return blockEntity instanceof USBlockBlockEntity;
+            return blockEntity instanceof MultiStructureBlockEntity;
         }).map((blockEntity) -> {
-            return (USBlockBlockEntity)blockEntity;
+            return (MultiStructureBlockEntity)blockEntity;
         }).filter((blockEntity) -> {
             return blockEntity.mode == StructureBlockMode.CORNER && Objects.equals(this.templateName, blockEntity.templateName);
         }).map(BlockEntity::getPos);

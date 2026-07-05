@@ -92,4 +92,9 @@ public class BoardBlock extends WallMountedBlock implements Waterloggable {
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
         builder.add(FACING, FACE, WATERLOGGED);
     }
+
+    @Override
+    protected boolean hasSidedTransparency(BlockState state) {
+        return true;
+    }
 }

@@ -1,14 +1,11 @@
 package net.limit.cubliminal.world.room;
 
 import com.mojang.datafixers.util.Either;
-import com.mojang.datafixers.util.Pair;
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.resource.SimpleResourceReloadListener;
 import net.limit.cubliminal.Cubliminal;
-import net.limit.cubliminal.util.WeightedHolderSet;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.resource.Resource;
@@ -25,7 +22,7 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
-public class RoomRegistry implements SimpleResourceReloadListener<Object2ObjectOpenHashMap<Either<RegistryKey<Biome>, String>, RoomRegistry.RoomPreset>> {
+public class RoomRegistry implements SimpleResourceReloadListener<Object2ObjectOpenHashMap<Either<RegistryKey<Biome>, String>, RoomPreset>> {
 
     private static final Object2ObjectOpenHashMap<RegistryKey<Biome>, RoomPreset> ROOMS = new Object2ObjectOpenHashMap<>();
     private static final Object2ObjectOpenHashMap<String, RoomPreset> DEFERRED = new Object2ObjectOpenHashMap<>();
@@ -35,29 +32,17 @@ public class RoomRegistry implements SimpleResourceReloadListener<Object2ObjectO
         return CompletableFuture.supplyAsync(() -> {
             Object2ObjectOpenHashMap<Either<RegistryKey<Biome>, String>, RoomPreset> roomPresets = new Object2ObjectOpenHashMap<>();
 
-            for (Map.Entry<Identifier, Resource> entry : resourceManager.findResources("worldgen/room/biome", id -> id.getPath().endsWith(".json")).entrySet()) {
-                try (Reader reader = entry.getValue().getReader()) {
-                    RegistryKey<Biome> biome = RegistryKey.of(RegistryKeys.BIOME, Identifier.of(
-                            entry.getKey().getNamespace(), FilenameUtils.getBaseName(entry.getKey().getPath())));
-                    roomPresets.computeIfAbsent(Either.left(biome), key -> {
-                        DataResult<RoomPreset> rooms = RoomPreset.CODEC.parse(JsonOps.INSTANCE, JsonHelper.deserialize(reader));
-                        return rooms.getOrThrow();
-                    });
-                } catch (IOException e) {
-                    Cubliminal.LOGGER.error("Couldn't parse room preset json file in: {}", entry.getKey());
-                }
+            for (var presetResource : resourceManager.findResources("worldgen/room/biome", RoomRegistry::isPathValid).entrySet()) {
+                RegistryKey<Biome> biome = RegistryKey.of(
+                        RegistryKeys.BIOME,
+                        Identifier.of(presetResource.getKey().getNamespace(), FilenameUtils.getBaseName(presetResource.getKey().getPath()))
+                );
+                decodePreset(roomPresets, Either.left(biome), presetResource, resourceManager);
             }
 
-            for (Map.Entry<Identifier, Resource> entry : resourceManager.findResources("worldgen/room/deferred", id -> id.getPath().endsWith(".json")).entrySet()) {
-                try (Reader reader = entry.getValue().getReader()) {
-                    String mappingKey = FilenameUtils.getBaseName(entry.getKey().getPath());
-                    roomPresets.computeIfAbsent(Either.right(mappingKey), key -> {
-                        DataResult<RoomPreset> rooms = RoomPreset.CODEC.parse(JsonOps.INSTANCE, JsonHelper.deserialize(reader));
-                        return rooms.getOrThrow();
-                    });
-                } catch (IOException e) {
-                    Cubliminal.LOGGER.error("Couldn't parse deferred room preset json file in: {}", entry.getKey());
-                }
+            for (var presetResource : resourceManager.findResources("worldgen/room/deferred", RoomRegistry::isPathValid).entrySet()) {
+                String mappingKey = FilenameUtils.getBaseName(presetResource.getKey().getPath());
+                decodePreset(roomPresets, Either.right(mappingKey), presetResource, resourceManager);
             }
 
             return roomPresets;
@@ -73,6 +58,23 @@ public class RoomRegistry implements SimpleResourceReloadListener<Object2ObjectO
                 either.ifRight(key -> DEFERRED.put(key, roomPreset));
             });
         }, executor);
+    }
+
+    private static boolean isPathValid(Identifier path) {
+        return path.getPath().endsWith(".json");
+    }
+
+    private static void decodePreset(Object2ObjectOpenHashMap<Either<RegistryKey<Biome>, String>, RoomPreset> roomPresets,
+                                     Either<RegistryKey<Biome>, String> key, Map.Entry<Identifier, Resource> presetResource,
+                                     ResourceManager resourceManager) {
+        try (Reader reader = presetResource.getValue().getReader()) {
+            roomPresets.computeIfAbsent(key, k -> {
+                var rawPreset = RoomPreset.CODEC.parse(JsonOps.INSTANCE, JsonHelper.deserialize(reader)).getOrThrow();
+                return RoomPreset.parse(resourceManager, rawPreset.getFirst(), rawPreset.getSecond());
+            });
+        } catch (IOException e) {
+            Cubliminal.LOGGER.error("Couldn't parse room preset json file in: {}", presetResource.getKey());
+        }
     }
 
     public static boolean contains(RegistryKey<Biome> biome) {
@@ -110,14 +112,5 @@ public class RoomRegistry implements SimpleResourceReloadListener<Object2ObjectO
     @Override
     public Identifier getFabricId() {
         return Cubliminal.id("room_preset_loader");
-    }
-
-    public record RoomPreset(float spacing, WeightedHolderSet<Room> holder) {
-
-        public static final Codec<WeightedHolderSet<Room>> SET_CODEC = WeightedHolderSet.createCodec(Room.CODEC).fieldOf("rooms").codec();
-
-        public static final Codec<RoomPreset> CODEC = Codec
-                .pair(Codec.floatRange(0.0f, Float.MAX_VALUE).optionalFieldOf("spacing", 1.0f).codec(), SET_CODEC)
-                .xmap(pair -> new RoomPreset(pair.getFirst(), pair.getSecond()), preset -> Pair.of(preset.spacing(), preset.holder()));
     }
 }

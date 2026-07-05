@@ -1,0 +1,40 @@
+{
+  "type": "cubliminal:compound_set",
+  "components": [
+    {
+      "pos": [0,0],
+      "width": 2,
+      "height": 2,
+      "structures": {
+        "room:pk_0": 1.0
+      }
+    },
+    {
+      "pos": [2,0],
+      "width": 2,
+      "height": 2,
+      "structures": {
+        "room:pk_1": 1.0
+      }
+    },
+    {
+      "pos": [0,2],
+      "width": 3,
+      "height": 2,
+      "structures": {
+        "room:pk_2": 1.0
+      }
+    },
+    {
+      "pos": [2,2],
+      "width": 3,
+      "height": 2,
+      "structures": {
+        "room:pk_3": 1.0
+      }
+    }
+  ],
+  "width": 5,
+  "height": 4,
+  "doors": "n_0_0_1:e_0_0_1:s_1"
+}

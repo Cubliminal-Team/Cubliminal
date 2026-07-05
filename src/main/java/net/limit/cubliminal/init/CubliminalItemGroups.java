@@ -115,7 +115,11 @@ public class CubliminalItemGroups implements Initer {
 	@Override
     public void init() {
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.OPERATOR).register(entries -> {
-            entries.addAfter(Blocks.STRUCTURE_BLOCK, CubliminalBlocks.UNLIMITED_STRUCTURE_BLOCK);
+            entries.addAfter(
+                    Blocks.STRUCTURE_BLOCK,
+                    CubliminalBlocks.MULTISTRUCTURE_BLOCK,
+                    CubliminalItems.ROOM_CREATOR_TOOL
+            );
         });
     }
 }

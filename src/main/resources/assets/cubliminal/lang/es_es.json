@@ -1,6 +1,6 @@
 {
-  "block.cubliminal.unlimited_structure_block": "Bloque de estructuras ilimitado",
-  "item.cubliminal.unlimited_structure_block": "Bloque de estructuras ilimitado",
+  "block.cubliminal.multistructure_block": "Bloque de multiestructuras",
+  "item.cubliminal.multistructure_block": "Bloque de multiestructuras",
   "item.cubliminal.yellow_wallpaper": "Tapiz amarillo",
   "item.cubliminal.crimson_wallpaper": "Tapiz carmesí",
   "item.cubliminal.wooden_plank": "Tablón de madera",
@@ -94,6 +94,7 @@
   "item.cubliminal.chain_stairs": "Escaleras de rejilla metálica",
   "item.cubliminal.gray_asphalt_stairs": "Escaleras de asfalto gris",
   "item.cubliminal.cyan_terracotta_stairs": "Escaleras de terracota cian",
+  "item.cubliminal.room_creator_tool": "Herramienta de creador de habitaciones",
   "commands.noclip.success.multiple": "Noclippeando %s jugadores",
   "commands.noclip.success.single": "Noclippeando %s",
   "commands.noclip.failed.invalid_range": "El valor determinado está por debajo del rango de ticks posibles",
@@ -142,9 +143,15 @@
   "subtitle.block.paper_hit": "Papel ondeando",
   "subtitle.block.paper_fall": "Papel arrugándose",
   "text.autoconfig.cubliminal.title": "Cubliminal",
-  "text.autoconfig.cubliminal.option.disableAggressiveGraphics": "Desactivar cambios abruptos en los gráficos",
+  "text.autoconfig.cubliminal.option.disableCustomShaders": "Desactivar shaders personalizadas",
   "text.autoconfig.cubliminal.option.enableSuperDenseFog": "Abilitar niebla densa",
   "gui.cubliminal.flip": "Dar la vuelta",
   "gui.cubliminal.use": "Usar",
-  "container.wooden_crate": "Caja de madera"
+  "gui.cubliminal.refresh": "Actualizar",
+  "container.wooden_crate": "Caja de madera",
+  "item.cubliminal.room_creator_tool.set_corner": "Esquina %s seleccionada",
+  "key.category.cubliminal": "Cubliminal",
+  "key.cubliminal.open_room_creator_menu": "Abrir Menú de Creación de Habitaciones",
+  "level.cubliminal.level_0": "Nivel 0",
+  "level.cubliminal.level_1": "Nivel 1"
 }

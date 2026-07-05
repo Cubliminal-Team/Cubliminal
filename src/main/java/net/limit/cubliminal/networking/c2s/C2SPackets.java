@@ -5,6 +5,7 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.limit.cubliminal.Initer;
 import net.limit.cubliminal.networking.s2c.NoClipSyncPayload;
 import net.limit.cubliminal.networking.s2c.SanitySyncPayload;
+import net.limit.cubliminal.networking.s2c.StructureTemplateListS2CPayload;
 import net.limit.cubliminal.networking.s2c.WrittenDocScreenPayload;
 
 /**
@@ -17,15 +18,20 @@ public class C2SPackets implements Initer {
         PayloadTypeRegistry.playC2S().register(NoClipC2SPayload.ID, NoClipC2SPayload.CODEC);
         PayloadTypeRegistry.playS2C().register(NoClipSyncPayload.ID, NoClipSyncPayload.CODEC);
         PayloadTypeRegistry.playS2C().register(SanitySyncPayload.ID, SanitySyncPayload.CODEC);
-        PayloadTypeRegistry.playC2S().register(USBlockC2SPayload.ID, USBlockC2SPayload.PAYLOAD_CODEC);
+        PayloadTypeRegistry.playC2S().register(MultistructureBlockC2SPayload.ID, MultistructureBlockC2SPayload.PAYLOAD_CODEC);
         PayloadTypeRegistry.playS2C().register(WrittenDocScreenPayload.ID, WrittenDocScreenPayload.CODEC);
         PayloadTypeRegistry.playC2S().register(DocUpdateC2SPayload.ID, DocUpdateC2SPayload.PACKET_CODEC);
+        PayloadTypeRegistry.playC2S().register(SaveSelectionC2SPayload.ID, SaveSelectionC2SPayload.PACKET_CODEC);
+        PayloadTypeRegistry.playC2S().register(StructureTemplateInfoC2SPayload.ID, StructureTemplateInfoC2SPayload.PACKET_CODEC);
+        PayloadTypeRegistry.playS2C().register(StructureTemplateListS2CPayload.ID, StructureTemplateListS2CPayload.PACKET_CODEC);
     }
 
     public static void registerGlobalReceivers() {
         ServerPlayNetworking.registerGlobalReceiver(NoClipC2SPayload.ID, NoClipC2SPayload::receive);
-        ServerPlayNetworking.registerGlobalReceiver(USBlockC2SPayload.ID, USBlockC2SPayload::receive);
+        ServerPlayNetworking.registerGlobalReceiver(MultistructureBlockC2SPayload.ID, MultistructureBlockC2SPayload::receive);
         ServerPlayNetworking.registerGlobalReceiver(DocUpdateC2SPayload.ID, DocUpdateC2SPayload::receive);
+        ServerPlayNetworking.registerGlobalReceiver(SaveSelectionC2SPayload.ID, SaveSelectionC2SPayload::receive);
+        ServerPlayNetworking.registerGlobalReceiver(StructureTemplateInfoC2SPayload.ID, StructureTemplateInfoC2SPayload::receive);
     }
 
     @Override

@@ -1,7 +1,7 @@
 package net.limit.cubliminal.block.custom;
 
 import com.mojang.serialization.MapCodec;
-import net.limit.cubliminal.block.entity.USBlockBlockEntity;
+import net.limit.cubliminal.block.entity.MultiStructureBlockEntity;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.enums.StructureBlockMode;
@@ -19,27 +19,27 @@ import net.minecraft.world.World;
 import net.minecraft.world.block.WireOrientation;
 import org.jetbrains.annotations.Nullable;
 
-public class UnlimitedStructureBlock extends BlockWithEntity implements OperatorBlock {
-    public static final MapCodec<UnlimitedStructureBlock> CODEC = createCodec(UnlimitedStructureBlock::new);
+public class MultiStructureBlock extends BlockWithEntity implements OperatorBlock {
+    public static final MapCodec<MultiStructureBlock> CODEC = createCodec(MultiStructureBlock::new);
     public static final EnumProperty<StructureBlockMode> MODE;
 
-    public MapCodec<UnlimitedStructureBlock> getCodec() {
+    public MapCodec<MultiStructureBlock> getCodec() {
         return CODEC;
     }
 
-    public UnlimitedStructureBlock(AbstractBlock.Settings settings) {
+    public MultiStructureBlock(AbstractBlock.Settings settings) {
         super(settings);
         this.setDefaultState(this.stateManager.getDefaultState().with(MODE, StructureBlockMode.LOAD));
     }
 
     public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
-        return new USBlockBlockEntity(pos, state);
+        return new MultiStructureBlockEntity(pos, state);
     }
 
     protected ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
         BlockEntity blockEntity = world.getBlockEntity(pos);
-        if (blockEntity instanceof USBlockBlockEntity usBlockBlockEntity) {
-            return usBlockBlockEntity.openScreen(player) ? ActionResult.SUCCESS : ActionResult.PASS;
+        if (blockEntity instanceof MultiStructureBlockEntity multiStructureBlockEntity) {
+            return multiStructureBlockEntity.openScreen(player) ? ActionResult.SUCCESS : ActionResult.PASS;
         } else {
             return ActionResult.PASS;
         }
@@ -49,8 +49,8 @@ public class UnlimitedStructureBlock extends BlockWithEntity implements Operator
         if (!world.isClient) {
             if (placer != null) {
                 BlockEntity blockEntity = world.getBlockEntity(pos);
-                if (blockEntity instanceof USBlockBlockEntity usBlockBlockEntity) {
-                    usBlockBlockEntity.setAuthor(placer);
+                if (blockEntity instanceof MultiStructureBlockEntity multiStructureBlockEntity) {
+                    multiStructureBlockEntity.setAuthor(placer);
                 }
             }
 
@@ -68,21 +68,21 @@ public class UnlimitedStructureBlock extends BlockWithEntity implements Operator
     protected void neighborUpdate(BlockState state, World world, BlockPos pos, Block sourceBlock, @Nullable WireOrientation wireOrientation, boolean notify) {
         if (world instanceof ServerWorld) {
             BlockEntity blockEntity = world.getBlockEntity(pos);
-            if (blockEntity instanceof USBlockBlockEntity usBlockBlockEntity) {
+            if (blockEntity instanceof MultiStructureBlockEntity multiStructureBlockEntity) {
                 boolean bl = world.isReceivingRedstonePower(pos);
-                boolean bl2 = usBlockBlockEntity.isPowered();
+                boolean bl2 = multiStructureBlockEntity.isPowered();
                 if (bl && !bl2) {
-                    usBlockBlockEntity.setPowered(true);
-                    this.doAction((ServerWorld)world, usBlockBlockEntity);
+                    multiStructureBlockEntity.setPowered(true);
+                    this.doAction((ServerWorld)world, multiStructureBlockEntity);
                 } else if (!bl && bl2) {
-                    usBlockBlockEntity.setPowered(false);
+                    multiStructureBlockEntity.setPowered(false);
                 }
 
             }
         }
     }
 
-    private void doAction(ServerWorld world, USBlockBlockEntity blockEntity) {
+    private void doAction(ServerWorld world, MultiStructureBlockEntity blockEntity) {
         switch (blockEntity.getMode()) {
             case SAVE:
                 blockEntity.saveStructure(false);

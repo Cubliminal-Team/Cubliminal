@@ -3,13 +3,10 @@ package net.limit.cubliminal.init;
 import net.fabricmc.fabric.api.registry.FuelRegistryEvents;
 import net.limit.cubliminal.Cubliminal;
 import net.limit.cubliminal.Initer;
-import net.limit.cubliminal.block.custom.template.BoardBlock;
-import net.limit.cubliminal.block.custom.template.WallCeilBlock;
+import net.limit.cubliminal.block.custom.template.*;
 import net.limit.cubliminal.block.state.CustomProperties;
 import net.limit.cubliminal.block.custom.*;
 import net.limit.cubliminal.block.custom.pipe.*;
-import net.limit.cubliminal.block.custom.template.RotatableBlock;
-import net.limit.cubliminal.block.custom.template.RotatableLightBlock;
 import net.limit.cubliminal.block.fluid.AlmondWaterFluidBlock;
 import net.limit.cubliminal.block.fluid.BlackSludgeFluidBlock;
 import net.limit.cubliminal.block.fluid.ContaminatedWaterBlock;
@@ -189,7 +186,7 @@ public class CubliminalBlocks implements Initer {
 	public static final BlockSoundGroup PAPER = new BlockSoundGroup(1.0f, 1.0f, CubliminalSounds.PAPER_BREAK, CubliminalSounds.PAPER_STEP, CubliminalSounds.PAPER_PLACE, CubliminalSounds.PAPER_HIT, CubliminalSounds.PAPER_FALL);
 
 	//region Blocks
-	public static final Block UNLIMITED_STRUCTURE_BLOCK = register("unlimited_structure_block", UnlimitedStructureBlock::new,
+	public static final Block MULTISTRUCTURE_BLOCK = register("multistructure_block", MultiStructureBlock::new,
 			AbstractBlock.Settings.copy(Blocks.STRUCTURE_BLOCK), OperatorOnlyBlockItem::new, new Item.Settings().rarity(Rarity.EPIC));
 
 	public static final Block YELLOW_WALLPAPERS = register("yellow_wallpapers", Block::new,
@@ -665,12 +662,12 @@ public class CubliminalBlocks implements Initer {
 					.requiresTool()
 					.nonOpaque());
 
-	public static final Block CHAIN_SLAB = register("chain_slab", SlabBlock::new, AbstractBlock.Settings.copy(CHAIN_BLOCK));
+	public static final Block CHAIN_SLAB = register("chain_slab", TransparentSlabBlock::new, AbstractBlock.Settings.copy(CHAIN_BLOCK));
 
 	public static final Block CHAIN_STAIRS = register("chain_stairs", StairsBlock::new,
 			AbstractBlock.Settings.copy(CHAIN_BLOCK), CHAIN_BLOCK.getDefaultState());
 
-	public static final Block CHAIN_WALL = registerBlock("chain_wall", new BoardBlock(
+	public static final Block CHAIN_WALL = registerBlock("chain_wall", new TransparentBoardBlock(
 			AbstractBlock.Settings.copy(CHAIN_BLOCK).registryKey(key("chain_wall")))
 			.voxelShapes(2));
 

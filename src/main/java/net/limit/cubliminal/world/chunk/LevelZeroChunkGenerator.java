@@ -6,9 +6,9 @@ import net.limit.cubliminal.Cubliminal;
 import net.limit.cubliminal.block.custom.template.BlockVariantHolder;
 import net.limit.cubliminal.init.CubliminalBiomes;
 import net.limit.cubliminal.init.CubliminalBlocks;
-import net.limit.cubliminal.init.CubliminalRegistrar;
 import net.limit.cubliminal.access.ChunkAccessor;
 import net.limit.cubliminal.level.Level;
+import net.limit.cubliminal.level.Levels;
 import net.limit.cubliminal.world.biome.source.SimplexBiomeSource;
 import net.ludocrypt.limlib.api.world.LimlibHelper;
 import net.ludocrypt.limlib.api.world.Manipulation;
@@ -40,30 +40,27 @@ import java.util.concurrent.CompletableFuture;
 public class LevelZeroChunkGenerator extends AbstractNbtChunkGenerator implements BackroomsLevel {
 	public static final MapCodec<LevelZeroChunkGenerator> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
 			SimplexBiomeSource.CODEC.codec().fieldOf("biome_source").stable().forGetter(chunkGenerator -> chunkGenerator.biomeSource),
-			NbtGroup.CODEC.fieldOf("group").stable().forGetter(chunkGenerator -> chunkGenerator.nbtGroup),
-			Level.LEVEL_CODEC.fieldOf("level").stable().forGetter(chunkGenerator -> chunkGenerator.level)
+			NbtGroup.CODEC.fieldOf("group").stable().forGetter(chunkGenerator -> chunkGenerator.nbtGroup)
 	).apply(instance, instance.stable(LevelZeroChunkGenerator::new)));
 
 	private final SimplexBiomeSource biomeSource;
-	private final Level level;
 	private final int layerCount;
 	private final int layerHeight;
 	private final int thicknessX;
 	private final int thicknessZ;
 
-	public LevelZeroChunkGenerator(SimplexBiomeSource biomeSource, NbtGroup group, Level level) {
+	public LevelZeroChunkGenerator(SimplexBiomeSource biomeSource, NbtGroup group) {
 		super(biomeSource, biome -> GenerationSettings.INSTANCE, group);
 		this.biomeSource = biomeSource;
-		this.level = level;
-		this.layerCount = level.layer_count;
-		this.layerHeight = level.layer_height;
-		this.thicknessX = level.spacing_x;
-		this.thicknessZ = level.spacing_z;
+		this.layerCount = this.getLevel().layer_count;
+		this.layerHeight = this.getLevel().layer_height;
+		this.thicknessX = this.getLevel().spacing_x;
+		this.thicknessZ = this.getLevel().spacing_z;
 	}
 
 	public static NbtGroup createGroup() {
 		return NbtGroup.Builder
-				.create(Cubliminal.id(CubliminalRegistrar.THE_LOBBY))
+				.create(Levels.LEVEL_0.name)
 				.with("0column", 1, 2)
 				.with("0corner", 1, 1)
 				.with("0corridor", 1, 1)
@@ -239,12 +236,12 @@ public class LevelZeroChunkGenerator extends AbstractNbtChunkGenerator implement
 
 	@Override
 	public int getMinimumY() {
-		return this.level.min_y;
+		return this.getLevel().min_y;
 	}
 
 	@Override
 	public int getWorldHeight() {
-		return this.level.world_height;
+		return this.getLevel().world_height;
 	}
 
 	@Override
@@ -253,6 +250,6 @@ public class LevelZeroChunkGenerator extends AbstractNbtChunkGenerator implement
 
 	@Override
 	public Level getLevel() {
-		return this.level;
+		return Levels.LEVEL_0;
 	}
 }

@@ -2,7 +2,7 @@ package net.limit.cubliminal.client.block;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.limit.cubliminal.block.entity.USBlockBlockEntity;
+import net.limit.cubliminal.block.entity.MultiStructureBlockEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.enums.StructureBlockMode;
@@ -21,13 +21,13 @@ import net.minecraft.world.BlockView;
 import java.util.Iterator;
 
 @Environment(EnvType.CLIENT)
-public class UnlimitedStructureBlockRenderer implements BlockEntityRenderer<USBlockBlockEntity> {
+public class MultitructureBlockRenderer implements BlockEntityRenderer<MultiStructureBlockEntity> {
 
-    public UnlimitedStructureBlockRenderer(BlockEntityRendererFactory.Context ctx) {
+    public MultitructureBlockRenderer(BlockEntityRendererFactory.Context ctx) {
     }
 
     @Override
-    public void render(USBlockBlockEntity structureBlockBlockEntity, float f, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, int j) {
+    public void render(MultiStructureBlockEntity structureBlockBlockEntity, float f, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, int j) {
         if (MinecraftClient.getInstance().player.isCreativeLevelTwoOp() || MinecraftClient.getInstance().player.isSpectator()) {
             BlockPos blockPos = structureBlockBlockEntity.getOffset();
             Vec3i vec3i = structureBlockBlockEntity.getSize();
@@ -97,7 +97,7 @@ public class UnlimitedStructureBlockRenderer implements BlockEntityRenderer<USBl
         }
     }
 
-    private void renderInvisibleBlocks(USBlockBlockEntity entity, VertexConsumerProvider vertexConsumers, MatrixStack matrices) {
+    private void renderInvisibleBlocks(MultiStructureBlockEntity entity, VertexConsumerProvider vertexConsumers, MatrixStack matrices) {
         BlockView blockView = entity.getWorld();
         VertexConsumer vertexConsumer = vertexConsumers.getBuffer(RenderLayer.getLines());
         BlockPos blockPos = entity.getPos();
@@ -145,12 +145,12 @@ public class UnlimitedStructureBlockRenderer implements BlockEntityRenderer<USBl
     }
 
     @Override
-    public boolean rendersOutsideBoundingBox(USBlockBlockEntity blockEntity) {
+    public boolean rendersOutsideBoundingBox(MultiStructureBlockEntity blockEntity) {
         return true;
     }
 
     @Override
     public int getRenderDistance() {
-        return USBlockBlockEntity.structureSizeLimit() * 2;
+        return MultiStructureBlockEntity.structureSizeLimit() * 2;
     }
 }

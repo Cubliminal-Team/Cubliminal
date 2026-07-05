@@ -5,7 +5,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.limit.cubliminal.Cubliminal;
-import net.limit.cubliminal.client.screen.DocScreen;
+import net.limit.cubliminal.client.screen.documents.DocScreen;
 import net.limit.cubliminal.init.CubliminalDataComponents;
 import net.limit.cubliminal.item.component.WrittenDocContentComponent;
 import net.minecraft.client.network.ClientPlayerEntity;

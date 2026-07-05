@@ -2,6 +2,7 @@ package net.limit.cubliminal.level;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.util.Identifier;
 
 /**
  * An inheritor of {@link Level} that uses a maze-like layout.
@@ -9,6 +10,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 public class LevelWithMaze extends Level {
     public static Codec<LevelWithMaze> LEVEL_WITH_MAZE_CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            Identifier.CODEC.fieldOf("name").forGetter(level -> level.name),
             Codec.INT.optionalFieldOf("world_height", 256).forGetter(level -> level.world_height),
             Codec.INT.optionalFieldOf("min_y", 0).forGetter(level -> level.min_y),
             Codec.intRange(0, Integer.MAX_VALUE).optionalFieldOf("max_layer_count", 0).forGetter(level -> level.layer_count),
@@ -26,6 +28,7 @@ public class LevelWithMaze extends Level {
 
     /**
      * Note that {@code maze_width} and {@code maze_height} are in cells, not in blocks.
+     * @param name Internal name of the Level.
      * @param world_height World height in blocks. Must be a multiple of 16.
      * @param min_y Minimum height in blocks. Must be a multiple of 16.
      * @param max_layer_count Maximum number of floors within the top and bottom boundaries of the world. Note that there won't be more layers than those that fit.
@@ -36,9 +39,9 @@ public class LevelWithMaze extends Level {
      * @param maze_height How many cells tiled horizontally in the X axis takes up the maze.
      * @param maze_seed_modifier A number that slightly modifies the pseudorandom number sequence.
      */
-    public LevelWithMaze(int world_height, int min_y, int max_layer_count, int layer_height,
+    public LevelWithMaze(Identifier name, int world_height, int min_y, int max_layer_count, int layer_height,
                          int spacing_x, int spacing_z, int maze_width, int maze_height, long maze_seed_modifier) {
-        super(world_height, min_y, max_layer_count, layer_height, spacing_x, spacing_z);
+        super(name, world_height, min_y, max_layer_count, layer_height, spacing_x, spacing_z);
         if (maze_width > 0) {
             this.maze_width = maze_width;
         } else {

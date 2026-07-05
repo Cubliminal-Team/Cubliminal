@@ -17,7 +17,7 @@ import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 
 public class CubliminalBiomes implements Initer {
-    public static final RegistryKey<Biome> THE_LOBBY_BIOME = of(CubliminalRegistrar.THE_LOBBY);
+    public static final RegistryKey<Biome> THE_LOBBY_BIOME = of("the_lobby");
 	public static final RegistryKey<Biome> PILLAR_BIOME = of("pillar_biome");
 	public static final RegistryKey<Biome> REDROOMS_BIOME = of("redrooms");
 

@@ -26,8 +26,8 @@ public class CubliminalBlockEntities implements Initer {
 	public static final BlockEntityType<ShowerBlockEntity> SHOWER_BLOCK_ENTITY =
 			register("shower", FabricBlockEntityTypeBuilder.create(ShowerBlockEntity::new, CubliminalBlocks.SHOWER).build());
 
-	public static final BlockEntityType<USBlockBlockEntity> USBLOCK_BLOCK_ENTITY =
-			register("unlimited_structure_block", FabricBlockEntityTypeBuilder.create(USBlockBlockEntity::new, CubliminalBlocks.UNLIMITED_STRUCTURE_BLOCK).build());
+	public static final BlockEntityType<MultiStructureBlockEntity> MULTISTRUCTURE_BLOCK_ENTITY =
+			register("multistructure_block", FabricBlockEntityTypeBuilder.create(MultiStructureBlockEntity::new, CubliminalBlocks.MULTISTRUCTURE_BLOCK).build());
 
 	public static final BlockEntityType<WrittenDocumentBlockEntity> WRITTEN_DOCUMENT_BLOCK_ENTITY =
 			register("written_document", FabricBlockEntityTypeBuilder.create(WrittenDocumentBlockEntity::new, CubliminalBlocks.WRITTEN_DOCUMENT).build());

@@ -4,7 +4,7 @@ import com.llamalad7.mixinextras.sugar.Local;
 import net.limit.cubliminal.Cubliminal;
 import net.limit.cubliminal.access.PEAccessor;
 import net.limit.cubliminal.advancements.AdvancementHelper;
-import net.limit.cubliminal.block.entity.USBlockBlockEntity;
+import net.limit.cubliminal.block.entity.MultiStructureBlockEntity;
 import net.limit.cubliminal.event.backrooms.NoclipEngine;
 import net.limit.cubliminal.event.backrooms.SanityManager;
 import net.minecraft.entity.EntityPose;
@@ -104,7 +104,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PEAccess
 
 
 	@Override
-	public void openUSBlockScreen(USBlockBlockEntity blockEntity) {
+	public void openUSBlockScreen(MultiStructureBlockEntity blockEntity) {
 	}
 
 

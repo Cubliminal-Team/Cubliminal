@@ -6,7 +6,7 @@ import io.netty.buffer.ByteBufUtil;
 import io.netty.handler.codec.DecoderException;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.limit.cubliminal.Cubliminal;
-import net.limit.cubliminal.block.entity.USBlockBlockEntity;
+import net.limit.cubliminal.block.entity.MultiStructureBlockEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.enums.StructureBlockMode;
@@ -25,20 +25,20 @@ import net.minecraft.util.math.Vec3i;
 
 import java.nio.charset.StandardCharsets;
 
-public class USBlockC2SPayload implements CustomPayload {
-    public static final Codec<USBlockC2SPayload> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            StructureBlockContext.CODEC.fieldOf("structure_block_context").forGetter(USBlockC2SPayload::context)
-    ).apply(instance, USBlockC2SPayload::new));
+public class MultistructureBlockC2SPayload implements CustomPayload {
+    public static final Codec<MultistructureBlockC2SPayload> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            StructureBlockContext.CODEC.fieldOf("structure_block_context").forGetter(MultistructureBlockC2SPayload::context)
+    ).apply(instance, MultistructureBlockC2SPayload::new));
 
     private final StructureBlockContext context;
 
     public static Identifier USBLOCK_UPDATE = Cubliminal.id("usblock_update");
 
-    public static final CustomPayload.Id<USBlockC2SPayload> ID = new CustomPayload.Id<>(USBLOCK_UPDATE);
+    public static final CustomPayload.Id<MultistructureBlockC2SPayload> ID = new CustomPayload.Id<>(USBLOCK_UPDATE);
 
-    public static final PacketCodec<RegistryByteBuf, USBlockC2SPayload> PAYLOAD_CODEC = PacketCodecs.unlimitedRegistryCodec(CODEC);
+    public static final PacketCodec<RegistryByteBuf, MultistructureBlockC2SPayload> PAYLOAD_CODEC = PacketCodecs.unlimitedRegistryCodec(CODEC);
 
-    public USBlockC2SPayload(BlockPos pos, USBlockBlockEntity.Action action, StructureBlockMode mode, String templateName, BlockPos offset, Vec3i size, BlockMirror mirror, BlockRotation rotation, String metadata, boolean ignoreEntities, boolean showAir, boolean showBoundingBox, float integrity, long seed) {
+    public MultistructureBlockC2SPayload(BlockPos pos, MultiStructureBlockEntity.Action action, StructureBlockMode mode, String templateName, BlockPos offset, Vec3i size, BlockMirror mirror, BlockRotation rotation, String metadata, boolean ignoreEntities, boolean showAir, boolean showBoundingBox, float integrity, long seed) {
         int i = 0;
         if (ignoreEntities) {
             i |= 1;
@@ -54,7 +54,7 @@ public class USBlockC2SPayload implements CustomPayload {
         this.context = new StructureBlockContext(pos, action, mode, templateName, offset, size, mirror, rotation, metadata, i, integrity, seed);
     }
 
-    public USBlockC2SPayload(StructureBlockContext context) {
+    public MultistructureBlockC2SPayload(StructureBlockContext context) {
         this.context = context;
     }
 
@@ -66,7 +66,7 @@ public class USBlockC2SPayload implements CustomPayload {
         return context.pos();
     }
 
-    public USBlockBlockEntity.Action getAction() {
+    public MultiStructureBlockEntity.Action getAction() {
         return context.action();
     }
 
@@ -123,42 +123,42 @@ public class USBlockC2SPayload implements CustomPayload {
         return ID;
     }
 
-    public static void receive(USBlockC2SPayload payload, ServerPlayNetworking.Context context) {
+    public static void receive(MultistructureBlockC2SPayload payload, ServerPlayNetworking.Context context) {
         if (context.player().isCreativeLevelTwoOp()) {
             BlockPos blockPos = payload.getPos();
             BlockState blockState = context.player().getWorld().getBlockState(blockPos);
             BlockEntity blockEntity = context.player().getWorld().getBlockEntity(blockPos);
-            if (blockEntity instanceof USBlockBlockEntity usBlockBlockEntity) {
-                usBlockBlockEntity.setMode(payload.getMode());
-                usBlockBlockEntity.setTemplateName(payload.getTemplateName());
-                usBlockBlockEntity.setOffset(payload.getOffset());
-                usBlockBlockEntity.setSize(payload.getSize());
-                usBlockBlockEntity.setMirror(payload.getMirror());
-                usBlockBlockEntity.setRotation(payload.getRotation());
-                usBlockBlockEntity.setMetadata(payload.getMetadata());
-                usBlockBlockEntity.setIgnoreEntities(payload.shouldIgnoreEntities());
-                usBlockBlockEntity.setShowAir(payload.shouldShowAir());
-                usBlockBlockEntity.setShowBoundingBox(payload.shouldShowBoundingBox());
-                usBlockBlockEntity.setIntegrity(payload.getIntegrity());
-                usBlockBlockEntity.setSeed(payload.getSeed());
-                if (usBlockBlockEntity.hasStructureName()) {
-                    String string = usBlockBlockEntity.getTemplateName();
-                    if (payload.getAction() == USBlockBlockEntity.Action.SAVE_AREA) {
-                        if (usBlockBlockEntity.saveStructure()) {
+            if (blockEntity instanceof MultiStructureBlockEntity multiStructureBlockEntity) {
+                multiStructureBlockEntity.setMode(payload.getMode());
+                multiStructureBlockEntity.setTemplateName(payload.getTemplateName());
+                multiStructureBlockEntity.setOffset(payload.getOffset());
+                multiStructureBlockEntity.setSize(payload.getSize());
+                multiStructureBlockEntity.setMirror(payload.getMirror());
+                multiStructureBlockEntity.setRotation(payload.getRotation());
+                multiStructureBlockEntity.setMetadata(payload.getMetadata());
+                multiStructureBlockEntity.setIgnoreEntities(payload.shouldIgnoreEntities());
+                multiStructureBlockEntity.setShowAir(payload.shouldShowAir());
+                multiStructureBlockEntity.setShowBoundingBox(payload.shouldShowBoundingBox());
+                multiStructureBlockEntity.setIntegrity(payload.getIntegrity());
+                multiStructureBlockEntity.setSeed(payload.getSeed());
+                if (multiStructureBlockEntity.hasStructureName()) {
+                    String string = multiStructureBlockEntity.getTemplateName();
+                    if (payload.getAction() == MultiStructureBlockEntity.Action.SAVE_AREA) {
+                        if (multiStructureBlockEntity.saveStructure()) {
                             context.player().sendMessage(Text.translatable("structure_block.save_success", string), false);
                         } else {
                             context.player().sendMessage(Text.translatable("structure_block.save_failure", string), false);
                         }
-                    } else if (payload.getAction() == USBlockBlockEntity.Action.LOAD_AREA) {
-                        if (!usBlockBlockEntity.isStructureAvailable()) {
+                    } else if (payload.getAction() == MultiStructureBlockEntity.Action.LOAD_AREA) {
+                        if (!multiStructureBlockEntity.isStructureAvailable()) {
                             context.player().sendMessage(Text.translatable("structure_block.load_not_found", string), false);
-                        } else if (usBlockBlockEntity.loadAndTryPlaceStructure(context.player().getServerWorld())) {
+                        } else if (multiStructureBlockEntity.loadAndTryPlaceStructure(context.player().getServerWorld())) {
                             context.player().sendMessage(Text.translatable("structure_block.load_success", string), false);
                         } else {
                             context.player().sendMessage(Text.translatable("structure_block.load_prepare", string), false);
                         }
-                    } else if (payload.getAction() == USBlockBlockEntity.Action.SCAN_AREA) {
-                        if (usBlockBlockEntity.detectStructureSize()) {
+                    } else if (payload.getAction() == MultiStructureBlockEntity.Action.SCAN_AREA) {
+                        if (multiStructureBlockEntity.detectStructureSize()) {
                             context.player().sendMessage(Text.translatable("structure_block.size_success", string), false);
                         } else {
                             context.player().sendMessage(Text.translatable("structure_block.size_failure"), false);
@@ -168,16 +168,16 @@ public class USBlockC2SPayload implements CustomPayload {
                     context.player().sendMessage(Text.translatable("structure_block.invalid_structure_name", payload.getTemplateName()), false);
                 }
 
-                usBlockBlockEntity.markDirty();
+                multiStructureBlockEntity.markDirty();
                 context.player().getWorld().updateListeners(blockPos, blockState, blockState, 3);
             }
         }
     }
 
-    public record StructureBlockContext(BlockPos pos, USBlockBlockEntity.Action action, StructureBlockMode mode, String templateName, BlockPos offset, Vec3i size, BlockMirror mirror, BlockRotation rotation, String metadata, int booleans, float integrity, long seed) {
+    public record StructureBlockContext(BlockPos pos, MultiStructureBlockEntity.Action action, StructureBlockMode mode, String templateName, BlockPos offset, Vec3i size, BlockMirror mirror, BlockRotation rotation, String metadata, int booleans, float integrity, long seed) {
         public static final Codec<StructureBlockContext> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 BlockPos.CODEC.fieldOf("pos").forGetter(StructureBlockContext::pos),
-                StringIdentifiable.BasicCodec.STRING.fieldOf("action").xmap(USBlockBlockEntity.Action::valueOf, USBlockBlockEntity.Action::toString).forGetter(StructureBlockContext::action),
+                StringIdentifiable.BasicCodec.STRING.fieldOf("action").xmap(MultiStructureBlockEntity.Action::valueOf, MultiStructureBlockEntity.Action::toString).forGetter(StructureBlockContext::action),
                 StringIdentifiable.BasicCodec.STRING.fieldOf("mode").xmap(StructureBlockMode::valueOf, StructureBlockMode::toString).forGetter(StructureBlockContext::mode),
                 Codec.STRING.fieldOf("templateName").forGetter(StructureBlockContext::templateName),
                 BlockPos.CODEC.fieldOf("offset").forGetter(StructureBlockContext::offset),
@@ -190,19 +190,19 @@ public class USBlockC2SPayload implements CustomPayload {
                 Codec.LONG.fieldOf("seed").forGetter(StructureBlockContext::seed)
         ).apply(instance, StructureBlockContext::new));
 
-        public StructureBlockContext(BlockPos pos, USBlockBlockEntity.Action action, StructureBlockMode mode, String templateName, BlockPos offset, Vec3i size, BlockMirror mirror, BlockRotation rotation, String metadata, int booleans, float integrity, long seed) {
+        public StructureBlockContext(BlockPos pos, MultiStructureBlockEntity.Action action, StructureBlockMode mode, String templateName, BlockPos offset, Vec3i size, BlockMirror mirror, BlockRotation rotation, String metadata, int booleans, float integrity, long seed) {
             this.pos = pos;
             this.action = action;
             this.mode = mode;
             this.templateName = templateName;
             this.offset = new BlockPos(
-                    MathHelper.clamp(offset.getX(), -USBlockBlockEntity.structureSizeLimit(), USBlockBlockEntity.structureSizeLimit()),
-                    MathHelper.clamp(offset.getY(), -USBlockBlockEntity.structureSizeLimit(), USBlockBlockEntity.structureSizeLimit()),
-                    MathHelper.clamp(offset.getZ(), -USBlockBlockEntity.structureSizeLimit(), USBlockBlockEntity.structureSizeLimit()));
+                    MathHelper.clamp(offset.getX(), -MultiStructureBlockEntity.structureSizeLimit(), MultiStructureBlockEntity.structureSizeLimit()),
+                    MathHelper.clamp(offset.getY(), -MultiStructureBlockEntity.structureSizeLimit(), MultiStructureBlockEntity.structureSizeLimit()),
+                    MathHelper.clamp(offset.getZ(), -MultiStructureBlockEntity.structureSizeLimit(), MultiStructureBlockEntity.structureSizeLimit()));
             this.size = new Vec3i(
-                    MathHelper.clamp(size.getX(), 0, USBlockBlockEntity.structureSizeLimit()),
-                    MathHelper.clamp(size.getY(), 0, USBlockBlockEntity.structureSizeLimit()),
-                    MathHelper.clamp(size.getZ(), 0, USBlockBlockEntity.structureSizeLimit()));
+                    MathHelper.clamp(size.getX(), 0, MultiStructureBlockEntity.structureSizeLimit()),
+                    MathHelper.clamp(size.getY(), 0, MultiStructureBlockEntity.structureSizeLimit()),
+                    MathHelper.clamp(size.getZ(), 0, MultiStructureBlockEntity.structureSizeLimit()));
             this.mirror = mirror;
             this.rotation = rotation;
             this.metadata = decode(metadata, 128);

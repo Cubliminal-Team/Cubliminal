@@ -7,7 +7,9 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.limit.cubliminal.access.PEAccessor;
 import net.limit.cubliminal.config.CubliminalConfig;
@@ -17,6 +19,8 @@ import net.limit.cubliminal.event.command.NoclipCommand;
 import net.limit.cubliminal.event.command.SanityCommand;
 import net.limit.cubliminal.init.*;
 import net.limit.cubliminal.event.backrooms.NoclipDestination;
+import net.limit.cubliminal.item.RoomCreatorToolItem;
+import net.limit.cubliminal.networking.ServerEventPacketCallbacks;
 import net.limit.cubliminal.world.connection.ConnectionPlacementType;
 import net.limit.cubliminal.world.connection.ConnectionRegistry;
 import net.limit.cubliminal.world.room.RoomRegistry;
@@ -82,6 +86,9 @@ public class Cubliminal implements ModInitializer {
 				tableBuilder.pool(builder.build());
 			}
 		}));
+
+		PlayerBlockBreakEvents.AFTER.register((world, player, pos, state, blockEntity) -> RoomCreatorToolItem.afterBreakingBlock(world, player, pos, state));
+		ServerPlayConnectionEvents.JOIN.register(ServerEventPacketCallbacks::onPlayerJoin);
 	}
 
 	public static void afterDeath(ServerPlayerEntity oldPlayer, ServerPlayerEntity newPlayer, boolean alive) {

@@ -1,4 +1,4 @@
-package net.limit.cubliminal.client.screen;
+package net.limit.cubliminal.client.screen.documents;
 
 import net.limit.cubliminal.block.entity.WrittenDocumentBlockEntity;
 import net.limit.cubliminal.init.CubliminalScreenHandlers;

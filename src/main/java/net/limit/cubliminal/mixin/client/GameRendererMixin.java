@@ -59,7 +59,7 @@ public abstract class GameRendererMixin implements GameRendererAccessor {
 
     @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/WorldRenderer;drawEntityOutlinesFramebuffer()V", shift = At.Shift.AFTER))
     private void cubliminal$renderPostEffects(RenderTickCounter tickCounter, boolean tick, CallbackInfo ci) {
-        if (client.player != null && client.world != null && !CubliminalConfig.get().disableAggressiveGraphics) {
+        if (client.player != null && client.world != null) {
             ClientPlayerEntity player = client.player;
             if (((PEAccessor) player).getNoclipEngine().isClipping()) {
                 Optional<PostEffect> optional = snatch(Cubliminal.id("noclip"));

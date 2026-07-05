@@ -197,7 +197,7 @@ public class LevelOneMazeRegion extends MazeRegion<LevelOneMaze> {
         }
 
         // Run poisson disk sampler to find a position for each room
-        Collections.shuffle(validRoomPos, new java.util.Random(LimlibHelper.blockSeed(mazePos)));
+        Collections.shuffle(validRoomPos, new java.util.Random(random.nextLong()));
         List<Room.Instance> roomInstances = new ArrayList<>();
         List<Vec2i> roomPositions = sampler.generate(roomInstances, roomCache, biomeGrid, validRoomPos, random);
         roomPositions.addAll(cachedPositions);
@@ -251,10 +251,11 @@ public class LevelOneMazeRegion extends MazeRegion<LevelOneMaze> {
     }
 
     private List<Vector2D> addConnections(BlockPos mazePos, int width, int height, int thicknessX, int thicknessZ) {
-        Random randomUp = Random.create(LimlibHelper.blockSeed(mazePos.add(height * thicknessZ - 1, 0, 0)));
-        Random randomDown = Random.create(LimlibHelper.blockSeed(mazePos.add(-1, 0, 0)));
-        Random randomLeft = Random.create(LimlibHelper.blockSeed(mazePos));
-        Random randomRight = Random.create(LimlibHelper.blockSeed(mazePos.add(0, 0, width * thicknessX)));
+        long seed = Cubliminal.SERVER.getSeed();
+        Random randomUp = Random.create(LimlibHelper.blockSeed(mazePos.add(height * thicknessZ - 1, 0, 0)) + seed);
+        Random randomDown = Random.create(LimlibHelper.blockSeed(mazePos.add(-1, 0, 0)) + seed);
+        Random randomLeft = Random.create(LimlibHelper.blockSeed(mazePos) + seed);
+        Random randomRight = Random.create(LimlibHelper.blockSeed(mazePos.add(0, 0, width * thicknessX)) + seed);
         List<Vector2D> connections = new ArrayList<>();
         // East
         connections.add(new Vector2D(width - 1, randomUp.nextInt(height)));
@@ -268,10 +269,11 @@ public class LevelOneMazeRegion extends MazeRegion<LevelOneMaze> {
     }
 
     private List<Vec2i> addConnections(BlockPos mazePos, int width, int height, int thicknessX, int thicknessZ, int a) {
-        Random randomUp = Random.create(LimlibHelper.blockSeed(mazePos.add(height * thicknessZ - 1, 0, 0)));
-        Random randomDown = Random.create(LimlibHelper.blockSeed(mazePos.add(-1, 0, 0)));
-        Random randomLeft = Random.create(LimlibHelper.blockSeed(mazePos));
-        Random randomRight = Random.create(LimlibHelper.blockSeed(mazePos.add(0, 0, width * thicknessX)));
+        long seed = Cubliminal.SERVER.getSeed();
+        Random randomUp = Random.create(LimlibHelper.blockSeed(mazePos.add(height * thicknessZ - 1, 0, 0)) + seed);
+        Random randomDown = Random.create(LimlibHelper.blockSeed(mazePos.add(-1, 0, 0)) + seed);
+        Random randomLeft = Random.create(LimlibHelper.blockSeed(mazePos) + seed);
+        Random randomRight = Random.create(LimlibHelper.blockSeed(mazePos.add(0, 0, width * thicknessX)) + seed);
         List<Vec2i> connections = new ArrayList<>();
         // East
         connections.add(new Vec2i(width - 1, randomUp.nextBetween(-a, height + a - 1)));

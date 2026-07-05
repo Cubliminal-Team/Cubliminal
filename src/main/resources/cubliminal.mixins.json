@@ -13,7 +13,8 @@
     "LivingEntityMixin",
     "PlayerEntityMixin",
     "ServerChunkManagerMixin",
-    "ServerWorldMixin"
+    "ServerWorldMixin",
+    "StructureTemplateMixin"
   ],
   "client": [
     "client.BackgroundRendererMixin",

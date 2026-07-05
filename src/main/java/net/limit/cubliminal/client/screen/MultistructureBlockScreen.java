@@ -4,9 +4,9 @@ import com.google.common.collect.ImmutableList;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.limit.cubliminal.block.entity.USBlockBlockEntity;
+import net.limit.cubliminal.block.entity.MultiStructureBlockEntity;
 import net.limit.cubliminal.init.CubliminalBlocks;
-import net.limit.cubliminal.networking.c2s.USBlockC2SPayload;
+import net.limit.cubliminal.networking.c2s.MultistructureBlockC2SPayload;
 import net.minecraft.block.enums.StructureBlockMode;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
@@ -26,7 +26,7 @@ import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 
 @Environment(EnvType.CLIENT)
-public class USBlockScreen extends Screen {
+public class MultistructureBlockScreen extends Screen {
     private static final Text STRUCTURE_NAME_TEXT = Text.translatable("structure_block.structure_name");
     private static final Text POSITION_TEXT = Text.translatable("structure_block.position");
     private static final Text SIZE_TEXT = Text.translatable("structure_block.size");
@@ -38,7 +38,7 @@ public class USBlockScreen extends Screen {
     private static final Text SHOW_BOUNDING_BOX_TEXT = Text.translatable("structure_block.show_boundingbox");
     private static final ImmutableList<StructureBlockMode> MODES = ImmutableList.copyOf(StructureBlockMode.values());
     private static final ImmutableList<StructureBlockMode> MODES_EXCEPT_DATA;
-    private final USBlockBlockEntity structureBlock;
+    private final MultiStructureBlockEntity structureBlock;
     private BlockMirror mirror;
     private BlockRotation rotation;
     private StructureBlockMode mode;
@@ -68,8 +68,8 @@ public class USBlockScreen extends Screen {
     private CyclingButtonWidget<Boolean> buttonShowBoundingBox;
     private final DecimalFormat decimalFormat;
 
-    public USBlockScreen(USBlockBlockEntity structureBlock) {
-        super(Text.translatable(CubliminalBlocks.UNLIMITED_STRUCTURE_BLOCK.getTranslationKey()));
+    public MultistructureBlockScreen(MultiStructureBlockEntity structureBlock) {
+        super(Text.translatable(CubliminalBlocks.MULTISTRUCTURE_BLOCK.getTranslationKey()));
         this.mirror = BlockMirror.NONE;
         this.rotation = BlockRotation.NONE;
         this.mode = StructureBlockMode.DATA;
@@ -79,7 +79,7 @@ public class USBlockScreen extends Screen {
     }
 
     private void done() {
-        if (this.updateStructureBlock(USBlockBlockEntity.Action.UPDATE_DATA)) {
+        if (this.updateStructureBlock(MultiStructureBlockEntity.Action.UPDATE_DATA)) {
             this.client.setScreen(null);
         }
 
@@ -110,14 +110,14 @@ public class USBlockScreen extends Screen {
         this.showBoundingBox = this.structureBlock.shouldShowBoundingBox();
         this.buttonSave = this.addDrawableChild(ButtonWidget.builder(Text.translatable("structure_block.button.save"), (button) -> {
             if (this.structureBlock.getMode() == StructureBlockMode.SAVE) {
-                this.updateStructureBlock(USBlockBlockEntity.Action.SAVE_AREA);
+                this.updateStructureBlock(MultiStructureBlockEntity.Action.SAVE_AREA);
                 this.client.setScreen(null);
             }
 
         }).dimensions(this.width / 2 + 4 + 100, 185, 50, 20).build());
         this.buttonLoad = this.addDrawableChild(ButtonWidget.builder(Text.translatable("structure_block.button.load"), (button) -> {
             if (this.structureBlock.getMode() == StructureBlockMode.LOAD) {
-                this.updateStructureBlock(USBlockBlockEntity.Action.LOAD_AREA);
+                this.updateStructureBlock(MultiStructureBlockEntity.Action.LOAD_AREA);
                 this.client.setScreen(null);
             }
 
@@ -130,7 +130,7 @@ public class USBlockScreen extends Screen {
         }));
         this.buttonDetect = this.addDrawableChild(ButtonWidget.builder(Text.translatable("structure_block.button.detect_size"), (button) -> {
             if (this.structureBlock.getMode() == StructureBlockMode.SAVE) {
-                this.updateStructureBlock(USBlockBlockEntity.Action.SCAN_AREA);
+                this.updateStructureBlock(MultiStructureBlockEntity.Action.SCAN_AREA);
                 this.client.setScreen(null);
             }
 
@@ -165,7 +165,7 @@ public class USBlockScreen extends Screen {
         }).dimensions(this.width / 2 + 1 + 40 + 1 + 20, 185, 40, 20).build());
         this.inputName = new TextFieldWidget(this.textRenderer, this.width / 2 - 152, 40, 300, 20, Text.translatable("structure_block.structure_name")) {
             public boolean charTyped(char chr, int modifiers) {
-                return USBlockScreen.this.isValidCharacterForName(this.getText(), chr, this.getCursor()) && super.charTyped(chr, modifiers);
+                return MultistructureBlockScreen.this.isValidCharacterForName(this.getText(), chr, this.getCursor()) && super.charTyped(chr, modifiers);
             }
         };
         this.inputName.setMaxLength(128);
@@ -321,12 +321,12 @@ public class USBlockScreen extends Screen {
 
     }
 
-    private boolean updateStructureBlock(USBlockBlockEntity.Action action) {
+    private boolean updateStructureBlock(MultiStructureBlockEntity.Action action) {
         BlockPos blockPos = new BlockPos(this.parseInt(this.inputPosX.getText()), this.parseInt(this.inputPosY.getText()), this.parseInt(this.inputPosZ.getText()));
         Vec3i vec3i = new Vec3i(this.parseInt(this.inputSizeX.getText()), this.parseInt(this.inputSizeY.getText()), this.parseInt(this.inputSizeZ.getText()));
         float f = this.parseFloat(this.inputIntegrity.getText());
         long l = this.parseLong(this.inputSeed.getText());
-        ClientPlayNetworking.send(new USBlockC2SPayload(this.structureBlock.getPos(), action, this.structureBlock.getMode(), this.inputName.getText(), blockPos, vec3i, this.structureBlock.getMirror(), this.structureBlock.getRotation(), this.inputMetadata.getText(), this.structureBlock.shouldIgnoreEntities(), this.structureBlock.shouldShowAir(), this.structureBlock.shouldShowBoundingBox(), f, l));
+        ClientPlayNetworking.send(new MultistructureBlockC2SPayload(this.structureBlock.getPos(), action, this.structureBlock.getMode(), this.inputName.getText(), blockPos, vec3i, this.structureBlock.getMirror(), this.structureBlock.getRotation(), this.inputMetadata.getText(), this.structureBlock.shouldIgnoreEntities(), this.structureBlock.shouldShowAir(), this.structureBlock.shouldShowBoundingBox(), f, l));
         return true;
     }
 

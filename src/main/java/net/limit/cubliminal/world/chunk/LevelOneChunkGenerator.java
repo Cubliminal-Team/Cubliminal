@@ -3,18 +3,16 @@ package net.limit.cubliminal.world.chunk;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.limit.cubliminal.Cubliminal;
 import net.limit.cubliminal.block.custom.template.BlockVariantHolder;
 import net.limit.cubliminal.init.CubliminalBiomes;
 import net.limit.cubliminal.init.CubliminalBlocks;
-import net.limit.cubliminal.init.CubliminalRegistrar;
 import net.limit.cubliminal.access.ChunkAccessor;
 import net.limit.cubliminal.level.Level;
 import net.limit.cubliminal.level.LevelWithMaze;
+import net.limit.cubliminal.level.Levels;
 import net.limit.cubliminal.world.biome.source.LevelOneBiomeSource;
 import net.limit.cubliminal.world.maze.*;
 import net.limit.cubliminal.world.placement.PoissonDiskSampler;
-import net.ludocrypt.limlib.api.world.LimlibHelper;
 import net.ludocrypt.limlib.api.world.Manipulation;
 import net.ludocrypt.limlib.api.world.NbtGroup;
 import net.ludocrypt.limlib.api.world.chunk.AbstractNbtChunkGenerator;
@@ -45,8 +43,7 @@ import java.util.concurrent.CompletableFuture;
 public class LevelOneChunkGenerator extends AbstractNbtChunkGenerator implements BackroomsLevel {
 	public static final MapCodec<LevelOneChunkGenerator> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
 			LevelOneBiomeSource.CODEC.fieldOf("biome_source").stable().forGetter(chunkGenerator -> chunkGenerator.biomeSource),
-			NbtGroup.CODEC.fieldOf("group").stable().forGetter(chunkGenerator -> chunkGenerator.nbtGroup),
-			LevelWithMaze.LEVEL_WITH_MAZE_CODEC.fieldOf("level").stable().forGetter(chunkGenerator -> chunkGenerator.level)
+			NbtGroup.CODEC.fieldOf("group").stable().forGetter(chunkGenerator -> chunkGenerator.nbtGroup)
 	).apply(instance, instance.stable(LevelOneChunkGenerator::new)));
 
 	private final LevelOneBiomeSource biomeSource;
@@ -58,10 +55,10 @@ public class LevelOneChunkGenerator extends AbstractNbtChunkGenerator implements
 	private final int spacingZ;
 	private final int layerCount;
 
-    public LevelOneChunkGenerator(LevelOneBiomeSource biomeSource, NbtGroup group, LevelWithMaze level) {
+    public LevelOneChunkGenerator(LevelOneBiomeSource biomeSource, NbtGroup group) {
 		super(biomeSource, group);
 		this.biomeSource = biomeSource;
-		this.level = level;
+		this.level = Levels.LEVEL_1;
         this.mazeGenerator = MazeRegionGenerator.create(level);
 		this.spacingX = level.spacing_x;
 		this.layerHeight = level.layer_height;
@@ -72,7 +69,7 @@ public class LevelOneChunkGenerator extends AbstractNbtChunkGenerator implements
 
 	public static NbtGroup createGroup() {
 		return NbtGroup.Builder
-				.create(Cubliminal.id(CubliminalRegistrar.HABITABLE_ZONE))
+				.create(Levels.LEVEL_1.name)
 				.with("corridor_dark", "corridor_dark_i", "corridor_dark_l", "corridor_dark_f", "corridor_dark_t", "corridor_dark_n")
 				.with("corridor_i_normal", 1, 5)
 				.with("corridor_i_variated", "fire_alarm", "open_1", "open_2", "pipes", "room_1", "room_2", "wall_1", "wall_2",
@@ -157,6 +154,7 @@ public class LevelOneChunkGenerator extends AbstractNbtChunkGenerator implements
 		int startY = startPos.getY();
 		int startZ = startPos.getZ();
         // Fill air gaps
+		/*
 		Random chunkRandom = Random.create(LimlibHelper.blockSeed(startX, startY, startZ));
 		BlockPos.Mutable mutable = startPos.mutableCopy();
 		for (int dy = 0; dy < this.getWorldHeight(); dy++) {
@@ -189,6 +187,8 @@ public class LevelOneChunkGenerator extends AbstractNbtChunkGenerator implements
 				region.setBlockState(mutable, CubliminalBlocks.GABBRO.getDefaultState(), Block.FORCE_STATE, 0);
 			}
 		}
+
+		 */
 
 		this.mazeGenerator.generateMazeRegion(startPos, region, layerCount, this::createRegion, this::decorateMaze);
 

@@ -7,6 +7,7 @@ import net.minecraft.util.math.random.Random;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -27,8 +28,15 @@ public class WeightedHolderSet<T> {
         this.replace(initValues);
     }
 
-    public void validateWeight(float weight) {
-        if (weight < 0) throw new IllegalArgumentException("Weight must be a number greater than 0");
+    public static float validateWeight(float weight) {
+        if (weight < 0) {
+            throw new IllegalArgumentException("Weight must be a number greater than 0");
+        }
+        return weight;
+    }
+
+    public int size() {
+        return this.values.size();
     }
 
     public List<Pair<Float, T>> getValues() {
@@ -36,9 +44,13 @@ public class WeightedHolderSet<T> {
     }
 
     public void add(float weight, T value) {
-        this.validateWeight(weight);
+        validateWeight(weight);
         this.values.add(Pair.of(weight, value));
         this.totalWeight += weight;
+    }
+
+    public void remove(T value) {
+        this.values.removeIf(pair -> pair.getSecond().equals(value));
     }
 
     public void clear() {
@@ -50,7 +62,7 @@ public class WeightedHolderSet<T> {
         this.values.clear();
         this.totalWeight = 0;
         for (Pair<Float, T> pair : newValues) {
-            this.validateWeight(pair.getFirst());
+            validateWeight(pair.getFirst());
             this.values.add(pair);
             this.totalWeight += pair.getFirst();
         }
@@ -71,6 +83,12 @@ public class WeightedHolderSet<T> {
 
             return this.values.getLast().getSecond();
         }
+    }
+
+    public <R> WeightedHolderSet<R> map(Function<? super T, ? extends R> mapper) {
+        List<Pair<Float, R>> list = new ArrayList<>(this.values.size());
+        this.values.forEach(pair -> list.add(Pair.of(pair.getFirst(), mapper.apply(pair.getSecond()))));
+        return new WeightedHolderSet<>(list);
     }
 
     public static <T> Codec<WeightedHolderSet<T>> createCodec(Codec<T> typeCodec) {

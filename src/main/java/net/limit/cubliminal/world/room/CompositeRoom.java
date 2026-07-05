@@ -72,6 +72,9 @@ public record CompositeRoom(List<Component> components, byte width, byte height,
         ).apply(instance, Component::new));
 
         public Component(Vec2b pos, byte width, byte height, WeightedHolderSet<String> structures) {
+            if (pos.x() < 0 || pos.y() < 0) {
+                throw new IllegalArgumentException("Room's relative position X: " + pos.x() + " and Z: " + pos.y() + " must be 0 or positive");
+            }
             this.pos = pos;
             if (width < 1 || height < 1) {
                 throw new IllegalArgumentException("Room width: " + width + " and height: " + height + " must be set above 0");

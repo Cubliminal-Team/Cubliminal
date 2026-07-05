@@ -5,10 +5,13 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientWorldEvents;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.fabricmc.fabric.api.client.render.fluid.v1.SimpleFluidRenderHandler;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
+import net.fabricmc.fabric.api.event.client.player.ClientPlayerBlockBreakEvents;
 import net.limit.cubliminal.access.GameRendererAccessor;
 import net.limit.cubliminal.block.fluid.CustomFluidBlock;
 import net.limit.cubliminal.client.block.WrittenDocumentRenderer;
@@ -16,13 +19,14 @@ import net.limit.cubliminal.client.hud.SanityBarHudOverlay;
 import net.limit.cubliminal.client.particle.CubliminalParticleManager;
 import net.limit.cubliminal.client.block.FluxCapacitorRenderer;
 import net.limit.cubliminal.client.block.ManilaGatewayRenderer;
-import net.limit.cubliminal.client.block.UnlimitedStructureBlockRenderer;
+import net.limit.cubliminal.client.block.MultitructureBlockRenderer;
 import net.limit.cubliminal.client.fog.FogSettings;
 import net.limit.cubliminal.client.entity.SeatRenderer;
-import net.limit.cubliminal.client.screen.DocBlockEditScreen;
-import net.limit.cubliminal.client.screen.DocBlockScreen;
-import net.limit.cubliminal.event.KeyInputHandler;
+import net.limit.cubliminal.client.screen.documents.DocBlockEditScreen;
+import net.limit.cubliminal.client.screen.documents.DocBlockScreen;
+import net.limit.cubliminal.client.screen.roomcreator.RoomCreatorDataManager;
 import net.limit.cubliminal.init.*;
+import net.limit.cubliminal.item.RoomCreatorToolItem;
 import net.minecraft.client.gui.screen.ingame.HandledScreens;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
@@ -65,12 +69,9 @@ public class CubliminalClient implements ClientModInitializer {
 
 		BlockEntityRendererFactories.register(CubliminalBlockEntities.THE_LOBBY_GATEWAY_BLOCK_ENTITY, ManilaGatewayRenderer::new);
 		BlockEntityRendererFactories.register(CubliminalBlockEntities.FLUX_CAPACITOR_BLOCK_ENTITY, FluxCapacitorRenderer::new);
-		BlockEntityRendererFactories.register(CubliminalBlockEntities.USBLOCK_BLOCK_ENTITY, UnlimitedStructureBlockRenderer::new);
+		BlockEntityRendererFactories.register(CubliminalBlockEntities.MULTISTRUCTURE_BLOCK_ENTITY, MultitructureBlockRenderer::new);
 		BlockEntityRendererFactories.register(CubliminalBlockEntities.WRITTEN_DOCUMENT_BLOCK_ENTITY, WrittenDocumentRenderer::new);
 
-		ClientWorldEvents.AFTER_CLIENT_WORLD_CHANGE.register((client, world) -> ((GameRendererAccessor) client.gameRenderer).setTriggered(false));
-
-		KeyInputHandler.registerKeyInputs();
 		EntityRendererRegistry.register(CubliminalEntities.SEAT_ENTITY, SeatRenderer::new);
 
 		for (CustomFluidBlock backroomFluidBlock : CustomFluidBlock.getAll()) {
@@ -94,6 +95,17 @@ public class CubliminalClient implements ClientModInitializer {
 		HudRenderCallback.EVENT.register(new SanityBarHudOverlay());
 		HandledScreens.register(CubliminalScreenHandlers.DOC_SCREEN_HANDLER, DocBlockScreen::make);
 		HandledScreens.register(CubliminalScreenHandlers.DOC_EDIT_SCREEN_HANDLER, DocBlockEditScreen::make);
+
+		ClientWorldEvents.AFTER_CLIENT_WORLD_CHANGE.register((client, world) -> {
+			((GameRendererAccessor) client.gameRenderer).setTriggered(false);
+			RoomCreatorDataManager.INSTANCE.clearData(true);
+		});
+
+		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> RoomCreatorDataManager.INSTANCE.clearData(false));
+
+		ClientPlayerBlockBreakEvents.AFTER.register(RoomCreatorToolItem::afterBreakingBlock);
+
+		WorldRenderEvents.BEFORE_DEBUG_RENDER.register(RoomCreatorDataManager.INSTANCE::renderSelection);
 	}
 
 }

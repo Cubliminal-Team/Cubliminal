@@ -1,0 +1,7 @@
+{
+  "type": "cubliminal:single_piece",
+  "id": "room:small",
+  "width": 1,
+  "height": 1,
+  "doors": "w_1:s_1"
+}

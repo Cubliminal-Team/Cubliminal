@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "mode=corner": {
+      "model": "cubliminal:block/multistructure_block_corner"
+    },
+    "mode=data": {
+      "model": "cubliminal:block/multistructure_block_data"
+    },
+    "mode=load": {
+      "model": "cubliminal:block/multistructure_block_load"
+    },
+    "mode=save": {
+      "model": "cubliminal:block/multistructure_block_save"
+    }
+  }
+}

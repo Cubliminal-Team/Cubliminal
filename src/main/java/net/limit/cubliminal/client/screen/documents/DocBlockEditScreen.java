@@ -1,4 +1,4 @@
-package net.limit.cubliminal.client.screen;
+package net.limit.cubliminal.client.screen.documents;
 
 import com.google.common.collect.Lists;
 import it.unimi.dsi.fastutil.ints.IntArrayList;

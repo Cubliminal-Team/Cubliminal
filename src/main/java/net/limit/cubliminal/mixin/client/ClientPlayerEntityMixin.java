@@ -4,8 +4,8 @@ import com.mojang.authlib.GameProfile;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.limit.cubliminal.access.PEAccessor;
-import net.limit.cubliminal.block.entity.USBlockBlockEntity;
-import net.limit.cubliminal.client.screen.USBlockScreen;
+import net.limit.cubliminal.block.entity.MultiStructureBlockEntity;
+import net.limit.cubliminal.client.screen.MultistructureBlockScreen;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.input.Input;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
@@ -51,7 +51,7 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
 	}
 
 	@Override
-	public void openUSBlockScreen(USBlockBlockEntity blockEntity) {
-		this.client.setScreen(new USBlockScreen(blockEntity));
+	public void openUSBlockScreen(MultiStructureBlockEntity blockEntity) {
+		this.client.setScreen(new MultistructureBlockScreen(blockEntity));
 	}
 }

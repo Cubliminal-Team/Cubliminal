@@ -2,6 +2,8 @@ package net.limit.cubliminal.level;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 
 /**
  * A {@code Level} object saves valuable information about a dimension's generation in a way that it can be easily accessed,
@@ -10,6 +12,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 public class Level {
     public static Codec<Level> LEVEL_CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            Identifier.CODEC.fieldOf("name").forGetter(level -> level.name),
             Codec.INT.optionalFieldOf("world_height", 256).forGetter(level -> level.world_height),
             Codec.INT.optionalFieldOf("min_y", 0).forGetter(level -> level.min_y),
             Codec.intRange(0, Integer.MAX_VALUE).optionalFieldOf("max_layer_count", 0).forGetter(level -> level.layer_count),
@@ -18,6 +21,7 @@ public class Level {
             Codec.intRange(1, Integer.MAX_VALUE).optionalFieldOf("spacing_z", 16).forGetter(level -> level.spacing_z)
     ).apply(instance, instance.stable(Level::new)));
 
+    public final Identifier name;
     public final int world_height;
     public final int min_y;
     public final int layer_height;
@@ -27,6 +31,7 @@ public class Level {
 
     /**
      * Most {@code Level's} are broken into smaller cells that make generation much easier to manage. Their size is a parameter in the constructor as well.
+     * @param name Internal name of the Level.
      * @param world_height World height in blocks. Must be a multiple of 16.
      * @param min_y Minimum height in blocks. Must be a multiple of 16.
      * @param max_layer_count Maximum number of floors within the top and bottom boundaries of the world. Note that there won't be more layers than those that fit.
@@ -34,7 +39,8 @@ public class Level {
      * @param spacing_x How many blocks a cell occupies in the X axis.
      * @param spacing_z How many blocks a cell occupies in the Z axis.
      */
-    public Level(int world_height, int min_y, int max_layer_count, int layer_height, int spacing_x, int spacing_z) {
+    public Level(Identifier name, int world_height, int min_y, int max_layer_count, int layer_height, int spacing_x, int spacing_z) {
+        this.name = name;
         if (world_height % 16 == 0) {
             this.world_height = world_height;
         } else {
@@ -65,6 +71,10 @@ public class Level {
         } else {
             this.spacing_z = spacing_z;
         }
+    }
+
+    public Text getTranslatableName() {
+        return Text.translatable("dimension." + this.name.getNamespace() + "." + this.name.getPath());
     }
 
     protected int calcLayerCount(int verticalRange, int maxLayerCount) {

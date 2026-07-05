@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:block/cube_all",
   "textures": {
-    "all": "cubliminal:block/unlimited_structure_block_load"
+    "all": "cubliminal:block/multistructure_block_save"
   }
 }

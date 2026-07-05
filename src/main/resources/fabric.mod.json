@@ -44,12 +44,14 @@
             "net.limit.cubliminal.init.CubliminalSounds",
             "net.limit.cubliminal.init.CubliminalStructures",
             "net.limit.cubliminal.networking.c2s.C2SPackets",
-            "net.limit.cubliminal.init.CubliminalScreenHandlers"
+            "net.limit.cubliminal.init.CubliminalScreenHandlers",
+            "net.limit.cubliminal.init.CubliminalPostEffects"
         ],
         "initerclient": [
             "net.limit.cubliminal.client.render.RenderLayers",
             "net.limit.cubliminal.init.CubliminalModelLayers",
-            "net.limit.cubliminal.networking.s2c.S2CPackets"
+            "net.limit.cubliminal.networking.s2c.S2CPackets",
+            "net.limit.cubliminal.event.KeyInputHandler"
         ]
     },
     "mixins": [
@@ -60,7 +62,7 @@
         "minecraft": "~1.21.3",
         "java": ">=21",
         "fabric-api": ">=0.114.1",
-        "limlib": "11.33",
+        "limlib": "11.34",
         "cloth-config": "*"
     },
     "accessWidener": "cubliminal.accesswidener",
