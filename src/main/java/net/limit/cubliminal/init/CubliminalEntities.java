@@ -7,6 +7,7 @@ import net.limit.cubliminal.entity.SeatEntity;
 import net.limit.cubliminal.entity.hostile.HoundEntity;
 import net.limit.cubliminal.entity.hostile.SkinStealerEntity;
 import net.limit.cubliminal.entity.hostile.SmilerEntity;
+import net.limit.cubliminal.entity.projectiles.FiresaltEntity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.registry.Registries;
@@ -20,6 +21,7 @@ public class CubliminalEntities implements Initer {
     public static final RegistryKey<EntityType<?>> SMILER_KEY = keyOf("smiler");
     public static final RegistryKey<EntityType<?>> HOUND_KEY = keyOf("hound");
     public static final RegistryKey<EntityType<?>> SKIN_STEALER_KEY = keyOf("skin_stealer");
+    public static final RegistryKey<EntityType<?>> FIRESALT_KEY = keyOf("firesalt");
 
     public static final EntityType<SeatEntity> SEAT_ENTITY = Registry.register(
             Registries.ENTITY_TYPE,
@@ -52,6 +54,17 @@ public class CubliminalEntities implements Initer {
                     .eyeHeight(2.4f)
                     .maxTrackingRange(8)
                     .build(SKIN_STEALER_KEY)
+    );
+
+    public static EntityType<FiresaltEntity> FIRESALT = Registry.register(
+            Registries.ENTITY_TYPE,
+            FIRESALT_KEY,
+            EntityType.Builder.<FiresaltEntity>create(FiresaltEntity::new, SpawnGroup.MISC)
+                    .dropsNothing()
+                    .dimensions(0.25F, 0.25F)
+                    .maxTrackingRange(4)
+                    .trackingTickInterval(10)
+                    .build(FIRESALT_KEY)
     );
 
     private static RegistryKey<EntityType<?>> keyOf(String name){

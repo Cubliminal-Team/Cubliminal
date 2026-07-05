@@ -3,6 +3,7 @@ package net.limit.cubliminal.init;
 import net.fabricmc.fabric.api.registry.FuelRegistryEvents;
 import net.limit.cubliminal.Cubliminal;
 import net.limit.cubliminal.Initer;
+import net.limit.cubliminal.item.FiresaltItem;
 import net.limit.cubliminal.item.RoomCreatorToolItem;
 import net.minecraft.item.*;
 import net.minecraft.registry.Registries;
@@ -43,6 +44,9 @@ public class CubliminalItems implements Initer {
 
     public static final Item ROOM_CREATOR_TOOL = register("room_creator_tool", RoomCreatorToolItem::new,
             new Item.Settings().rarity(Rarity.EPIC).maxCount(1));
+
+    public static final Item FIRESALT = register("firesalt", FiresaltItem::new,
+            new Item.Settings().maxCount(1));
 
     private static Item register(String id, Function<Item.Settings, Item> itemFactory, Item.Settings itemSettings) {
         RegistryKey<Item> itemKey = RegistryKey.of(RegistryKeys.ITEM, Cubliminal.id(id));

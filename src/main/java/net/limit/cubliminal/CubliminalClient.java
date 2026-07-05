@@ -30,6 +30,7 @@ import net.limit.cubliminal.item.RoomCreatorToolItem;
 import net.minecraft.client.gui.screen.ingame.HandledScreens;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
+import net.minecraft.client.render.entity.FlyingItemEntityRenderer;
 
 @Environment(EnvType.CLIENT)
 public class CubliminalClient implements ClientModInitializer {
@@ -73,6 +74,7 @@ public class CubliminalClient implements ClientModInitializer {
 		BlockEntityRendererFactories.register(CubliminalBlockEntities.WRITTEN_DOCUMENT_BLOCK_ENTITY, WrittenDocumentRenderer::new);
 
 		EntityRendererRegistry.register(CubliminalEntities.SEAT_ENTITY, SeatRenderer::new);
+		EntityRendererRegistry.register(CubliminalEntities.FIRESALT, FlyingItemEntityRenderer::new);
 
 		for (CustomFluidBlock backroomFluidBlock : CustomFluidBlock.getAll()) {
 			FluidRenderHandlerRegistry.INSTANCE.register(

@@ -109,6 +109,7 @@ public class CubliminalItemGroups implements Initer {
                         entries.add(CubliminalItems.NAILED_BAT);
                         entries.add(CubliminalItems.SILVER_INGOT);
                         entries.add(CubliminalBlocks.FLUX_CAPACITOR);
+                        entries.add(CubliminalItems.FIRESALT);
 
                     }).build());
 
