@@ -183,7 +183,6 @@ public class CorpseBlockEntity extends LootableContainerBlockEntity {
         }
         // Receives the UUID of player skin from nbt.
         setUuid(UUID.fromString(nbt.getString("uuid")));
-        DebugLogger.debug(nbt.toString());
     }
 
     protected void writeNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registries) {

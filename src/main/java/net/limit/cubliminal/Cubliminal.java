@@ -65,6 +65,7 @@ public class Cubliminal implements ModInitializer {
 		NoclipDestination.init();
 		ConnectionPlacementType.init();
 		RoomType.init();
+		CubliminalGameRules.init();
 
 		ServerLifecycleEvents.SERVER_STARTED.register(server -> SERVER = server.getWorld(CubliminalRegistrar.THE_LOBBY_KEY));
 		ServerPlayerEvents.AFTER_RESPAWN.register(Cubliminal::afterDeath);

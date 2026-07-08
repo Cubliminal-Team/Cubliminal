@@ -1,6 +1,8 @@
 package net.limit.cubliminal.mixin;
 
+import net.limit.cubliminal.init.CubliminalGameRules;
 import net.limit.cubliminal.util.CorpseManager;
+import net.limit.cubliminal.util.DebugLogger;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -19,6 +21,10 @@ public abstract class ServerPlayerEntityMixin {
             )
     )
     private void preventDrop(ServerPlayerEntity player, ServerWorld world, DamageSource source) {
-        CorpseManager.createCorpse((ServerPlayerEntity)(Object)this, player.getInventory());
+        if (world.getGameRules().getBoolean(CubliminalGameRules.CORPSES_ON_DEATH)){
+            CorpseManager.createCorpse((ServerPlayerEntity)(Object)this, player.getInventory());
+        } else {
+
+        }
     }
 }
