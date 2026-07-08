@@ -2,6 +2,8 @@ package net.limit.cubliminal.block.entity;
 
 import net.limit.cubliminal.client.screen.CorpseScreen;
 import net.limit.cubliminal.init.CubliminalBlockEntities;
+import net.limit.cubliminal.util.DebugLogger;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.block.entity.LootableContainerBlockEntity;
@@ -9,6 +11,9 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.network.listener.ClientPlayPacketListener;
+import net.minecraft.network.packet.Packet;
+import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.text.Text;
@@ -68,12 +73,27 @@ public class CorpseBlockEntity extends LootableContainerBlockEntity {
         return INVENTORY_SIZE;
     }
 
+    @Override
+    public Packet<ClientPlayPacketListener> toUpdatePacket() {
+        return BlockEntityUpdateS2CPacket.create(this);
+    }
+
+    @Override
+    public NbtCompound toInitialChunkDataNbt(RegistryWrapper.WrapperLookup registries) {
+        return this.createNbt(registries);
+    }
+
     /**
      * Sets the player name for the corpse.
      * @param playerName The player name
      */
     public void setPlayerName(String playerName) {
         this.playerName = playerName;
+        this.markDirty();
+
+        if (this.world != null) {
+            this.world.updateListeners(this.pos, this.getCachedState(), this.getCachedState(), Block.NOTIFY_ALL);
+        }
     }
 
     /**
@@ -90,6 +110,11 @@ public class CorpseBlockEntity extends LootableContainerBlockEntity {
      */
     public void setUuid(UUID uuid) {
         this.uuid = uuid;
+        this.markDirty();
+
+        if (this.world != null) {
+            this.world.updateListeners(this.pos, this.getCachedState(), this.getCachedState(), Block.NOTIFY_ALL);
+        }
     }
 
     /**
@@ -127,10 +152,11 @@ public class CorpseBlockEntity extends LootableContainerBlockEntity {
         // Does nbt contain data on player name
         if (nbt.contains("playerName")){
             // Receives the player name.
-            this.playerName = nbt.getString("playerName");
+            setPlayerName(nbt.getString("playerName"));
         }
         // Receives the UUID of player skin from nbt.
-        this.uuid = nbt.getUuid("uuid");
+        setUuid(UUID.fromString(nbt.getString("uuid")));
+        DebugLogger.debug(nbt.toString());
     }
 
     protected void writeNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registries) {
@@ -142,9 +168,9 @@ public class CorpseBlockEntity extends LootableContainerBlockEntity {
         // Checks to see if player name is not null.
         if (this.playerName != null) {
             // Saves player name to nbt.
-            nbt.putString("playerName", this.playerName);
+            nbt.putString("playerName", getPlayerName());
         }
         // Save UUID to nbt.
-        nbt.putUuid("uuid", this.uuid);
+        nbt.putString("uuid", getUuid().toString());
     }
 }

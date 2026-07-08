@@ -2,6 +2,7 @@ package net.limit.cubliminal.client.block;
 
 import net.limit.cubliminal.Cubliminal;
 import net.limit.cubliminal.block.entity.CorpseBlockEntity;
+import net.limit.cubliminal.util.DebugLogger;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.client.render.RenderLayer;
