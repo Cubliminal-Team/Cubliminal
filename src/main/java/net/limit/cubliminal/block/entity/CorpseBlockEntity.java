@@ -83,13 +83,40 @@ public class CorpseBlockEntity extends LootableContainerBlockEntity {
         return this.createNbt(registries);
     }
 
+    public void setInventory(PlayerInventory playerInventory) {
+        this.inventory = DefaultedList.ofSize(INVENTORY_SIZE, ItemStack.EMPTY);
+
+        int slot = 0;
+
+        // Main inventory
+        for (ItemStack stack : playerInventory.main) {
+            this.inventory.set(slot++, stack.copy());
+        }
+
+        // Armor
+        for (ItemStack stack : playerInventory.armor) {
+            this.inventory.set(slot++, stack.copy());
+        }
+
+        // Offhand
+        for (ItemStack stack : playerInventory.offHand) {
+            this.inventory.set(slot++, stack.copy());
+        }
+
+        markDirty();
+
+        if (world != null) {
+            world.updateListeners(pos, getCachedState(), getCachedState(), Block.NOTIFY_ALL);
+        }
+    }
+
     /**
      * Sets the player name for the corpse.
      * @param playerName The player name
      */
     public void setPlayerName(String playerName) {
         this.playerName = playerName;
-        this.markDirty();
+        markDirty();
 
         if (this.world != null) {
             this.world.updateListeners(this.pos, this.getCachedState(), this.getCachedState(), Block.NOTIFY_ALL);
@@ -110,7 +137,7 @@ public class CorpseBlockEntity extends LootableContainerBlockEntity {
      */
     public void setUuid(UUID uuid) {
         this.uuid = uuid;
-        this.markDirty();
+        markDirty();
 
         if (this.world != null) {
             this.world.updateListeners(this.pos, this.getCachedState(), this.getCachedState(), Block.NOTIFY_ALL);
