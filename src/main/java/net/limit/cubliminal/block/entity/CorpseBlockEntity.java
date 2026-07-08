@@ -2,7 +2,6 @@ package net.limit.cubliminal.block.entity;
 
 import net.limit.cubliminal.client.screen.CorpseScreen;
 import net.limit.cubliminal.init.CubliminalBlockEntities;
-import net.limit.cubliminal.util.DebugLogger;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
