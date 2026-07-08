@@ -6,11 +6,13 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Invoker;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(ServerPlayerEntity.class)
 public abstract class ServerPlayerEntityMixin {
+
     @Redirect(
             method = "onDeath",
             at = @At(
@@ -23,6 +25,8 @@ public abstract class ServerPlayerEntityMixin {
         if (world.getGameRules().getBoolean(CubliminalGameRules.CORPSES_ON_DEATH)){
             // Spawn a corpse block at the player's position
             CorpseManager.createCorpse((ServerPlayerEntity)(Object)this, player.getInventory(), source);
+        } else {
+            ((LivingEntityAccessor) player).invokeDrop(world, source);
         }
     }
 }

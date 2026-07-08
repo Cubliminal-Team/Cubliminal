@@ -25,16 +25,18 @@ public class CorpseManager {
         World world = player.getEntityWorld();
         // Gets server world
         ServerWorld serverWorld = player.getServerWorld();
+
+        // Spawn a corpse block at the player's position
+        world.setBlockState(player.getBlockPos(), CubliminalBlocks.CORPSE.getDefaultState());
+
         // Gets the block entity at the player's position
         BlockEntity blockEntity = world.getBlockEntity(player.getBlockPos());
         // Gets the block state at the player's position
         BlockState blockState = world.getBlockState(player.getBlockPos());
 
-        // Spawn a corpse block at the player's position
-        world.setBlockState(player.getBlockPos(), CubliminalBlocks.CORPSE.getDefaultState());
-
         // Check if the block entity is a CorpseBlockEntity
         if (blockEntity instanceof CorpseBlockEntity corpseBlockEntity){
+            DebugLogger.debug("Hello???");
             // Set the player name and UUID for corpse block entity
             corpseBlockEntity.setPlayerName(player.getName().getString());
             corpseBlockEntity.setUuid(player.getUuid());
