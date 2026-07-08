@@ -14,21 +14,38 @@ import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 
 public class CorpseManager {
+    /**
+     * Creates a corpse block at the player's position
+     * @param player The server player entity
+     * @param inventory The player inventory
+     * @param source The damage source (Primarily used for skin stealing)
+     */
     public static void createCorpse(ServerPlayerEntity player, PlayerInventory inventory, DamageSource source){
+        // Get the world
         World world = player.getEntityWorld();
+        // Gets server world
         ServerWorld serverWorld = player.getServerWorld();
-        world.setBlockState(player.getBlockPos(), CubliminalBlocks.CORPSE.getDefaultState());
+        // Gets the block entity at the player's position
         BlockEntity blockEntity = world.getBlockEntity(player.getBlockPos());
+        // Gets the block state at the player's position
         BlockState blockState = world.getBlockState(player.getBlockPos());
 
+        // Spawn a corpse block at the player's position
+        world.setBlockState(player.getBlockPos(), CubliminalBlocks.CORPSE.getDefaultState());
+
+        // Check if the block entity is a CorpseBlockEntity
         if (blockEntity instanceof CorpseBlockEntity corpseBlockEntity){
+            // Set the player name and UUID for corpse block entity
             corpseBlockEntity.setPlayerName(player.getName().getString());
             corpseBlockEntity.setUuid(player.getUuid());
+            // Set the inventory for corpse block entity if keep inventory is disabled
             if (!serverWorld.getGameRules().getBoolean(GameRules.KEEP_INVENTORY)){
                 corpseBlockEntity.setInventory(inventory);
             }
 
+            // Check if the attacker is a SkinStealerEntity
             if (source.getAttacker() instanceof SkinStealerEntity){
+                // Set the skin stolen block state to true
                 world.setBlockState(player.getBlockPos(), blockState.with(CorpseBlock.SKIN_STOLEN, true));
             }
         }

@@ -83,6 +83,10 @@ public class CorpseBlockEntity extends LootableContainerBlockEntity {
         return this.createNbt(registries);
     }
 
+    /**
+     * Sets the inventory for the corpse block entity
+     * @param playerInventory The player inventory
+     */
     public void setInventory(PlayerInventory playerInventory) {
         this.inventory = DefaultedList.ofSize(INVENTORY_SIZE, ItemStack.EMPTY);
 

@@ -19,10 +19,10 @@ public abstract class ServerPlayerEntityMixin {
             )
     )
     private void preventDrop(ServerPlayerEntity player, ServerWorld world, DamageSource source) {
+        // Checks to see if the game rule is enabled for corpses to spawn on player's death
         if (world.getGameRules().getBoolean(CubliminalGameRules.CORPSES_ON_DEATH)){
+            // Spawn a corpse block at the player's position
             CorpseManager.createCorpse((ServerPlayerEntity)(Object)this, player.getInventory(), source);
-        } else {
-
         }
     }
 }
