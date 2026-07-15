@@ -71,76 +71,106 @@ public class LevelOneMaze extends SpecialMaze {
     }
 
     private void generateHalls() {
-        if (mst != null) {
-            for (Edge2D edge : mst) {
-                Vec2i cell = new Vec2i((int) edge.a.x, (int) edge.a.y);
-                Vec2i end = new Vec2i((int) edge.b.x, (int) edge.b.y);
-                visitedCells++;
-                this.visit(cell);
-                Stack<Vec2i> corridor = new Stack<>();
-                stack.push(cell);
-                corridor.push(cell);
-                while (!corridor.isEmpty()) {
-                    // Reassign current cell
-                    cell = corridor.peek();
-                    // If it is the desired end, reassign and remove the new one
-                    if (cell.equals(end)) {
-                        for (CellState cellState : maze) {
-                            this.visit(cellState.getPosition(), false);
-                        }
-                        break;
-                    }
+        if (mst == null) return;
 
-                    List<Face> neighbours = new ArrayList<>(4);
-                    List<Face> optNeighbours = new ArrayList<>(4);
-                    int smallestDistance = Integer.MAX_VALUE;
-                    boolean followingPath = false;
+        for (Edge2D edge : mst) {
+            generateHall(
+                    new Vec2i((int) edge.a.x, (int) edge.a.y),
+                    new Vec2i((int) edge.b.x, (int) edge.b.y)
+            );
+        }
+    }
 
-                    for (Face face : Face.values()) {
-                        if (this.hasNeighbour(cell, face)) {
-                            // Create two lists: one including the available neighbours and another the closest to the end
-                            int distance = this.manhattanDistance(cell.go(face), end);
-                            if (distance <= smallestDistance) {
-                                // If a single cell is in the stack, remove those that aren't
-                                boolean visited = stack.contains(cell.go(face));
-                                if (distance < smallestDistance || (!followingPath && visited)) {
-                                    smallestDistance = distance;
-                                    optNeighbours.clear();
-                                    optNeighbours.add(face);
-                                    followingPath = visited;
-                                } else if (visited == followingPath) {
-                                    optNeighbours.add(face);
-                                }
-                            }
-                            neighbours.add(face);
-                        }
-                    }
+    private void generateHall(Vec2i start, Vec2i end) {
+        visitedCells++;
+        visit(start);
 
-                    if (!neighbours.isEmpty()) {
-                        // If a short path has already been generated, follow it
-                        if (followingPath || random.nextInt(8) > 0) neighbours = optNeighbours;
+        Stack<Vec2i> corridor = new Stack<>();
+        stack.push(start);
+        corridor.push(start);
 
-                        Face nextFace;
-                        // Determine whether the next cell is going to continue straight ahead
-                        if (random.nextFloat() > bias && neighbours.contains(this.dir(cell))) {
-                            nextFace = this.dir(cell);
-                        } else {
-                            nextFace = neighbours.get(random.nextInt(neighbours.size()));
-                        }
+        while (!corridor.isEmpty()) {
+            Vec2i current = corridor.peek();
 
-                        Vec2i nextCell = cell.go(nextFace);
-                        this.cellState(cell).go(nextFace);
-                        this.cellState(nextCell).go(nextFace.mirror());
-                        this.visit(nextCell);
-                        stack.push(nextCell);
-                        corridor.push(nextCell);
-                        visitedCells++;
-                    } else {
-                        stack.pop();
-                        corridor.pop();
-                    }
+            if (current.equals(end)) {
+                resetVisited();
+                break;
+            }
+
+            Face next = getNextDirection(current, end);
+
+            if (next == null) {
+                stack.pop();
+                corridor.pop();
+                continue;
+            }
+
+            moveTo(current, next, corridor);
+        }
+    }
+
+    private Face getNextDirection(Vec2i cell, Vec2i end) {
+        List<Face> options = new ArrayList<>();
+        List<Face> preferred = new ArrayList<>();
+
+        int smallestDistance = Integer.MAX_VALUE;
+        boolean followingPath = false;
+
+        for (Face face : Face.values()) {
+            if (!hasNeighbour(cell, face)) continue;
+
+            int distance = manhattanDistance(cell.go(face), end);
+            boolean visited = stack.contains(cell.go(face));
+
+            if (distance <= smallestDistance) {
+                if (distance < smallestDistance || (!followingPath && visited)) {
+                    smallestDistance = distance;
+                    preferred.clear();
+                    preferred.add(face);
+                    followingPath = visited;
+                } else if (visited == followingPath) {
+                    preferred.add(face);
                 }
             }
+
+            options.add(face);
+        }
+
+        if (options.isEmpty()) return null;
+
+        if (followingPath || random.nextInt(8) > 0) {
+            options = preferred;
+        }
+
+        return chooseDirection(cell, options);
+    }
+
+    private Face chooseDirection(Vec2i cell, List<Face> options) {
+        Face direction = dir(cell);
+
+        if (random.nextFloat() > bias && options.contains(direction)) {
+            return direction;
+        }
+
+        return options.get(random.nextInt(options.size()));
+    }
+
+    private void moveTo(Vec2i cell, Face direction, Stack<Vec2i> corridor) {
+        Vec2i next = cell.go(direction);
+
+        cellState(cell).go(direction);
+        cellState(next).go(direction.mirror());
+
+        visit(next);
+
+        stack.push(next);
+        corridor.push(next);
+        visitedCells++;
+    }
+
+    private void resetVisited() {
+        for (CellState cellState : maze) {
+            visit(cellState.getPosition(), false);
         }
     }
 
