@@ -1,23 +1,80 @@
 package net.limit.cubliminal.world.room;
 
 import com.mojang.datafixers.util.Pair;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.limit.cubliminal.util.Vec2b;
 import net.limit.cubliminal.util.WeightedHolderSet;
 import net.limit.cubliminal.world.room.CompositeRoom.Component;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A helper class used to construct rooms from individual templates.
+ * A helper class used to construct rooms out of individual templates.
  */
 public class RoomBuilder {
+    public final Int2ObjectOpenHashMap<FloorBuilder> floors = new Int2ObjectOpenHashMap<>();
 
-    public class FloorBuilder {
-        public List<ComponentBuilder> components;
-        public List<Door> doors;
+    public FloorBuilder create(int floor) {
+        FloorBuilder floorBuilder = new FloorBuilder();
+        this.floors.put(floor, floorBuilder);
+        return floorBuilder;
     }
 
-    public class ComponentBuilder {
+    @Nullable
+    public FloorBuilder getFloor(int floor) {
+        return this.floors.getOrDefault(floor, null);
+    }
+
+    public static class FloorBuilder {
+        public final List<ComponentBuilder> components;
+        public final List<Door> doors;
+
+        public FloorBuilder() {
+            this.components = new ArrayList<>();
+            this.doors = new ArrayList<>();
+        }
+
+        @Nullable
+        public ComponentBuilder getComponent(Vec2b pos) {
+            for (ComponentBuilder component : this.components) {
+                if (component.pos.equals(pos)) {
+                    return component;
+                }
+            }
+
+            return null;
+        }
+
+        // Returns null if there's a suitable component for this template at the specified location, otherwise
+        // return the freshly created component
+        @Nullable
+        public ComponentBuilder add(Vec2b pos, byte width, byte height, String templateName, float weight) {
+            for (ComponentBuilder component : this.components) {
+                if (component.pos.equals(pos) && component.width == width && component.height == height) {
+                    component.add(weight, templateName);
+                    return null;
+                }
+            }
+
+            ComponentBuilder component = new ComponentBuilder(pos, width, height, templateName);
+            this.components.add(component);
+            return component;
+        }
+
+        public FloorBuilder add(Door door) {
+            this.doors.add(door);
+            return this;
+        }
+
+        public FloorBuilder remove(Door door) {
+            this.doors.remove(door);
+            return this;
+        }
+    }
+
+    public static class ComponentBuilder {
         public Vec2b pos;
         public final byte width;
         public final byte height;
