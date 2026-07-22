@@ -3,6 +3,10 @@ package net.limit.cubliminal.client.screen.roomcreator;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.limit.cubliminal.client.screen.roomcreator.data.ComponentData;
+import net.limit.cubliminal.client.screen.roomcreator.data.FloorData;
+import net.limit.cubliminal.client.screen.roomcreator.data.RoomData;
+import net.limit.cubliminal.client.screen.roomcreator.widget.RoomPreviewWidget;
 import net.limit.cubliminal.level.Level;
 import net.limit.cubliminal.level.Levels;
 import net.limit.cubliminal.networking.c2s.SaveSelectionC2SPayload;
@@ -451,21 +455,21 @@ public class RoomCreatorScreen extends Screen {
                 public Entry(Identifier templateName) {
                     this.templateName = templateName;
                     this.button = ButtonWidget.builder(
-                            Util.make(() -> {
-                                String name;
-                                if (!fullNames) {
-                                    String[] subStrings = templateName.getPath().split("/");
-                                    name = subStrings[subStrings.length - 1];
-                                } else {
-                                    name = templateName.toString();
-                                }
+                                    Util.make(() -> {
+                                        String name;
+                                        if (!fullNames) {
+                                            String[] subStrings = templateName.getPath().split("/");
+                                            name = subStrings[subStrings.length - 1];
+                                        } else {
+                                            name = templateName.toString();
+                                        }
 
-                                return Text.literal(name);
-                            }),
-                            button -> {
+                                        return Text.literal(name);
+                                    }),
+                                    button -> {
 
-                            }
-                    ).tooltip(Tooltip.of(Text.literal(templateName.toString()).formatted(Formatting.GRAY)))
+                                    }
+                            ).tooltip(Tooltip.of(Text.literal(templateName.toString()).formatted(Formatting.GRAY)))
                             .size(TemplateScrollList.this.getRowWidth(), 20).build();
                 }
 
@@ -488,24 +492,275 @@ public class RoomCreatorScreen extends Screen {
             }
         }
     }
-
     @Environment(EnvType.CLIENT)
     class RoomBuilderTab extends GridScreenTab {
 
+        private static final int COLUMNS = 6;
+
+        private final RoomData roomData = new RoomData();
+        private FloorData selectedFloor;
+        private ComponentData selectedComponent;
         private Level level = Levels.LEVEL_0;
+
+        private RoomPreviewWidget previewWidget;
+        private TextFieldWidget roomNameWidget;
+        private TextFieldWidget boundsXWidget;
+        private TextFieldWidget boundsYWidget;
+        private TextFieldWidget boundsZWidget;
+        private TextWidget floorLabelWidget;
+
+        private TextFieldWidget componentWidthWidget;
+        private TextFieldWidget componentLengthWidget;
+        private TextFieldWidget componentRelXWidget;
+        private TextFieldWidget componentRelZWidget;
+        private TextFieldWidget newTemplateNameWidget;
+        private TextWidget templateListWidget;
 
         public RoomBuilderTab() {
             super(ROOM_BUILDER_TEXT);
+            this.selectedFloor = this.roomData.addFloor();
             this.init();
         }
 
         void init() {
-            GridWidget.Adder adder = this.grid.createAdder(2);
+            GridWidget.Adder adder = this.grid.setRowSpacing(4).setColumnSpacing(5).createAdder(COLUMNS);
+
+            adder.add(sectionHeader("Room Info"), COLUMNS);
 
             adder.add(CyclingButtonWidget.builder(Level::getTranslatableName)
                     .values(Levels.ALL)
-                    .build(0, 0, 100, 20, Text.literal("Level"), (button, value) -> this.level = value), 2);
-            
+                    .build(0, 0, 90, 20, Text.literal("Level"), (button, value) -> this.level = value));
+
+            this.roomNameWidget = new TextFieldWidget(textRenderer, 140, 20, Text.empty());
+            this.roomNameWidget.setPlaceholder(Text.literal("Room name").formatted(Formatting.GRAY));
+            this.roomNameWidget.setMaxLength(128);
+            adder.add(this.roomNameWidget, 3);
+
+            adder.add(new TextWidget(Text.literal("Bounds:"), textRenderer));
+            this.boundsXWidget = numberField();
+            adder.add(this.boundsXWidget);
+
+            this.boundsYWidget = numberField();
+            this.boundsZWidget = numberField();
+            this.boundsXWidget.setText("16");
+            this.boundsYWidget.setText("8");
+            this.boundsZWidget.setText("16");
+            adder.add(this.boundsYWidget);
+            adder.add(this.boundsZWidget);
+
+            // no doordata model yet, just placeholder
+            adder.add(new TextWidget(Text.literal("Doors:"), textRenderer));
+            ButtonWidget addDoorButton = ButtonWidget.builder(Text.literal("Add Door"), b -> {})
+                    .tooltip(Tooltip.of(Text.literal("Door placement isn't wired up yet").formatted(Formatting.GRAY)))
+                    .size(90, 20).build();
+            addDoorButton.active = false;
+            adder.add(addDoorButton);
+
+            adder.add(sectionHeader("Floor"), COLUMNS);
+
+            this.floorLabelWidget = new TextWidget(this.floorLabelText(), textRenderer);
+            adder.add(this.floorLabelWidget, 2);
+            adder.add(ButtonWidget.builder(Text.literal("<"), b -> this.cycleFloor(-1)).size(20, 20).build());
+            adder.add(ButtonWidget.builder(Text.literal(">"), b -> this.cycleFloor(1)).size(20, 20).build());
+            adder.add(ButtonWidget.builder(Text.literal("Add Floor"), b -> this.addFloor()).size(90, 20).build());
+            adder.add(ButtonWidget.builder(Text.literal("Remove Floor"), b -> this.removeFloor()).size(90, 20).build());
+
+            this.previewWidget = new RoomPreviewWidget(0, 0, 240, 120);
+            this.previewWidget.setSelectionListener(this::onComponentSelected);
+            this.previewWidget.setDragListener(this::syncFieldsFromComponent);
+            adder.add(this.previewWidget, 4);
+            adder.add(blank(), 2);
+
+            adder.add(sectionHeader("Components"), COLUMNS);
+
+            adder.add(ButtonWidget.builder(Text.literal("Add Component"), b -> this.addComponent()).size(100, 20).build(), 2);
+
+            adder.add(new TextWidget(Text.literal("Size X:"), textRenderer));
+            this.componentWidthWidget = numberField();
+            this.componentWidthWidget.setChangedListener(t -> this.applyComponentFields());
+            adder.add(this.componentWidthWidget);
+
+            adder.add(new TextWidget(Text.literal("Size Z:"), textRenderer));
+            this.componentLengthWidget = numberField();
+            this.componentLengthWidget.setChangedListener(t -> this.applyComponentFields());
+            adder.add(this.componentLengthWidget);
+
+            adder.add(new TextWidget(Text.literal("Rel X:"), textRenderer));
+            this.componentRelXWidget = numberField();
+            this.componentRelXWidget.setChangedListener(t -> this.applyComponentFields());
+            adder.add(this.componentRelXWidget);
+
+            adder.add(new TextWidget(Text.literal("Rel Z:"), textRenderer));
+            this.componentRelZWidget = numberField();
+            this.componentRelZWidget.setChangedListener(t -> this.applyComponentFields());
+            adder.add(this.componentRelZWidget);
+
+            this.newTemplateNameWidget = new TextFieldWidget(textRenderer, 120, 20, Text.empty());
+            this.newTemplateNameWidget.setPlaceholder(Text.literal("Template name").formatted(Formatting.GRAY));
+            adder.add(this.newTemplateNameWidget, 2);
+            adder.add(ButtonWidget.builder(Text.literal("Add Template"), b -> this.addTemplateName()).size(90, 20).build());
+
+            this.templateListWidget = new TextWidget(Text.empty(), textRenderer);
+            adder.add(this.templateListWidget, COLUMNS);
+
+            adder.add(ButtonWidget.builder(Text.literal("Delete Component"), b -> this.deleteSelectedComponent()).size(115, 20).build(), 2);
+            adder.add(ButtonWidget.builder(Text.literal("Save as Template"), b -> this.saveAsTemplate()).size(115, 20).build(), 2);
+            adder.add(ButtonWidget.builder(Text.literal("Save Room"), b -> this.saveRoom()).size(115, 20).build(), 2);
+
+            this.refreshFloor();
+            this.setComponentEditorEnabled(false);
+        }
+
+        private static TextWidget sectionHeader(String text) {
+            return new TextWidget(Text.literal(text).formatted(Formatting.BOLD, Formatting.YELLOW), MinecraftClient.getInstance().textRenderer)
+                    .alignCenter();
+        }
+
+        private static TextWidget blank() {
+            return new TextWidget(Text.empty(), MinecraftClient.getInstance().textRenderer);
+        }
+
+        private static TextFieldWidget numberField() {
+            TextFieldWidget field = new TextFieldWidget(MinecraftClient.getInstance().textRenderer, 50, 20, Text.empty());
+            field.setTextPredicate(RoomCreatorScreen::isStringInputValid);
+            return field;
+        }
+
+        private Text floorLabelText() {
+            int index = this.roomData.getFloors().indexOf(this.selectedFloor) + 1;
+            return Text.literal("Floor " + index + " / " + this.roomData.getFloors().size());
+        }
+
+        private void refreshFloor() {
+            this.previewWidget.setFloor(this.selectedFloor);
+            this.previewWidget.setBounds(
+                    parseOrDefault(this.boundsXWidget.getText(), 16),
+                    parseOrDefault(this.boundsZWidget.getText(), 16)
+            );
+            this.floorLabelWidget.setMessage(this.floorLabelText());
+        }
+
+        private void cycleFloor(int direction) {
+            List<FloorData> floors = this.roomData.getFloors();
+            int index = floors.indexOf(this.selectedFloor);
+            index = Math.floorMod(index + direction, floors.size());
+            this.selectedFloor = floors.get(index);
+            this.onComponentSelected(null);
+            this.refreshFloor();
+        }
+
+        private void addFloor() {
+            this.selectedFloor = this.roomData.addFloor();
+            this.onComponentSelected(null);
+            this.refreshFloor();
+        }
+
+        private void removeFloor() {
+            if (this.roomData.getFloors().size() <= 1) return;
+            this.roomData.removeFloor(this.selectedFloor);
+            this.selectedFloor = this.roomData.getFloors().get(0);
+            this.onComponentSelected(null);
+            this.refreshFloor();
+        }
+
+        private void addComponent() {
+            ComponentData component = this.selectedFloor.addComponent();
+            this.previewWidget.select(component);
+            this.onComponentSelected(component);
+        }
+
+        private void deleteSelectedComponent() {
+            if (this.selectedComponent == null) return;
+            this.selectedFloor.removeComponent(this.selectedComponent);
+            this.onComponentSelected(null);
+        }
+
+        private void onComponentSelected(ComponentData component) {
+            this.selectedComponent = component;
+            this.setComponentEditorEnabled(component != null);
+            this.syncFieldsFromComponent();
+        }
+
+        private void syncFieldsFromComponent() {
+            ComponentData c = this.selectedComponent;
+            if (c != null) {
+                this.componentWidthWidget.setText(Integer.toString(c.getWidth()));
+                this.componentLengthWidget.setText(Integer.toString(c.getLength()));
+                this.componentRelXWidget.setText(Integer.toString(c.getRelX()));
+                this.componentRelZWidget.setText(Integer.toString(c.getRelZ()));
+                this.templateListWidget.setMessage(Text.literal(String.join(", ", c.getTemplateNames())));
+            } else {
+                this.componentWidthWidget.setText("");
+                this.componentLengthWidget.setText("");
+                this.componentRelXWidget.setText("");
+                this.componentRelZWidget.setText("");
+                this.templateListWidget.setMessage(Text.empty());
+            }
+        }
+
+        private void setComponentEditorEnabled(boolean enabled) {
+            this.componentWidthWidget.setEditable(enabled);
+            this.componentLengthWidget.setEditable(enabled);
+            this.componentRelXWidget.setEditable(enabled);
+            this.componentRelZWidget.setEditable(enabled);
+            this.newTemplateNameWidget.setEditable(enabled);
+        }
+
+        private void addTemplateName() {
+            if (this.selectedComponent == null) return;
+            String name = this.newTemplateNameWidget.getText().trim();
+            if (!name.isBlank()) {
+                this.selectedComponent.getTemplateNames().add(name);
+                this.newTemplateNameWidget.setText("");
+                this.syncFieldsFromComponent();
+            }
+        }
+
+        private void applyComponentFields() {
+            if (this.selectedComponent == null) return;
+            this.selectedComponent.setWidth(Math.max(1, parseOrDefault(this.componentWidthWidget.getText(), this.selectedComponent.getWidth())));
+            this.selectedComponent.setLength(Math.max(1, parseOrDefault(this.componentLengthWidget.getText(), this.selectedComponent.getLength())));
+            this.selectedComponent.setRelX(Math.max(0, parseOrDefault(this.componentRelXWidget.getText(), this.selectedComponent.getRelX())));
+            this.selectedComponent.setRelZ(Math.max(0, parseOrDefault(this.componentRelZWidget.getText(), this.selectedComponent.getRelZ())));
+        }
+
+        private void saveRoom() {
+            this.applyComponentFields();
+            this.roomData.setName(this.roomNameWidget.getText());
+            this.roomData.setBoundingBox(
+                    parseOrDefault(this.boundsXWidget.getText(), 16),
+                    parseOrDefault(this.boundsYWidget.getText(), 8),
+                    parseOrDefault(this.boundsZWidget.getText(), 16)
+            );
+
+            if (this.roomData.getName().isBlank()) return;
+
+            // TODO: give either this.roomData or this.roomData.toJson() to the networking + codec
+            // `this.level` is available here if the payload needs it
+        }
+
+        private void saveAsTemplate() {
+            this.applyComponentFields();
+            this.roomData.setName(this.roomNameWidget.getText());
+            this.roomData.setBoundingBox(
+                    parseOrDefault(this.boundsXWidget.getText(), 16),
+                    parseOrDefault(this.boundsYWidget.getText(), 8),
+                    parseOrDefault(this.boundsZWidget.getText(), 16)
+            );
+
+            if (this.roomData.getName().isBlank()) return;
+
+            // TODO: same hand off as saveRoom(), but intended for a reusable room template store
+            // rather than a finalized per level room. give this to whatever endpoint/codec
+            // knows templates from saved rooms
+        }
+
+        private static int parseOrDefault(String text, int fallback) {
+            try {
+                return Integer.parseInt(text);
+            } catch (NumberFormatException e) {
+                return fallback;
+            }
         }
     }
 }
