@@ -42,7 +42,6 @@
     ],
     "width": 1,
     "height": 1,
-    "padding": 1,
-    "is_padding_below": true
+    "padding": 1
   }
 }

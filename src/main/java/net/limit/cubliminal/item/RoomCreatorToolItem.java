@@ -1,6 +1,6 @@
 package net.limit.cubliminal.item;
 
-import net.limit.cubliminal.client.screen.roomcreator.RoomCreatorDataManager;
+import net.limit.cubliminal.client.screen.roomcreator.data.RoomCreatorDataManager;
 import net.limit.cubliminal.init.CubliminalItems;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;

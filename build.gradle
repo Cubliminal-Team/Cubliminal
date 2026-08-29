@@ -99,6 +99,14 @@ publishing {
 	}
 }
 
+// Experimental
+repositories.configureEach { repo ->
+	if (repo instanceof MavenArtifactRepository && repo.url.toString().contains("maven.fabricmc.net")) {
+		// Change the URL directly on Loom's auto-generated repository
+		repo.setUrl(uri("https://maven2.fabricmc.net/"))
+	}
+}
+
 import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
 

@@ -45,7 +45,7 @@ public record CompositeRoom(List<Component> components, byte width, byte height,
 
     @Override
     public RoomType<?> type() {
-        return RoomType.COMPOUND_SET;
+        return RoomType.COMPOSITE;
     }
 
     @Override

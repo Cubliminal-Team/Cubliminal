@@ -16,6 +16,6 @@ public class S2CPackets implements IniterClient {
         ClientPlayNetworking.registerGlobalReceiver(NoClipSyncPayload.ID, NoClipSyncPayload::receive);
         ClientPlayNetworking.registerGlobalReceiver(SanitySyncPayload.ID, SanitySyncPayload::receive);
         ClientPlayNetworking.registerGlobalReceiver(WrittenDocScreenPayload.ID, WrittenDocScreenPayload::receive);
-        ClientPlayNetworking.registerGlobalReceiver(StructureTemplateListS2CPayload.ID, StructureTemplateListS2CPayload::receive);
+        ClientPlayNetworking.registerGlobalReceiver(StructureTemplateInfoS2CPayload.ID, StructureTemplateInfoS2CPayload::receive);
     }
 }

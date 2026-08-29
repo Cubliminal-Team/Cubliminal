@@ -5,7 +5,7 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.limit.cubliminal.Initer;
 import net.limit.cubliminal.networking.s2c.NoClipSyncPayload;
 import net.limit.cubliminal.networking.s2c.SanitySyncPayload;
-import net.limit.cubliminal.networking.s2c.StructureTemplateListS2CPayload;
+import net.limit.cubliminal.networking.s2c.StructureTemplateInfoS2CPayload;
 import net.limit.cubliminal.networking.s2c.WrittenDocScreenPayload;
 
 /**
@@ -22,8 +22,7 @@ public class C2SPackets implements Initer {
         PayloadTypeRegistry.playS2C().register(WrittenDocScreenPayload.ID, WrittenDocScreenPayload.CODEC);
         PayloadTypeRegistry.playC2S().register(DocUpdateC2SPayload.ID, DocUpdateC2SPayload.PACKET_CODEC);
         PayloadTypeRegistry.playC2S().register(SaveSelectionC2SPayload.ID, SaveSelectionC2SPayload.PACKET_CODEC);
-        PayloadTypeRegistry.playC2S().register(StructureTemplateInfoC2SPayload.ID, StructureTemplateInfoC2SPayload.PACKET_CODEC);
-        PayloadTypeRegistry.playS2C().register(StructureTemplateListS2CPayload.ID, StructureTemplateListS2CPayload.PACKET_CODEC);
+        PayloadTypeRegistry.playS2C().register(StructureTemplateInfoS2CPayload.ID, StructureTemplateInfoS2CPayload.PACKET_CODEC);
     }
 
     public static void registerGlobalReceivers() {
@@ -31,7 +30,6 @@ public class C2SPackets implements Initer {
         ServerPlayNetworking.registerGlobalReceiver(MultistructureBlockC2SPayload.ID, MultistructureBlockC2SPayload::receive);
         ServerPlayNetworking.registerGlobalReceiver(DocUpdateC2SPayload.ID, DocUpdateC2SPayload::receive);
         ServerPlayNetworking.registerGlobalReceiver(SaveSelectionC2SPayload.ID, SaveSelectionC2SPayload::receive);
-        ServerPlayNetworking.registerGlobalReceiver(StructureTemplateInfoC2SPayload.ID, StructureTemplateInfoC2SPayload::receive);
     }
 
     @Override

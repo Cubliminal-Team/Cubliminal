@@ -17,6 +17,7 @@ import net.limit.cubliminal.world.placement.MSTree;
 import net.limit.cubliminal.world.placement.PoissonDiskSampler;
 import net.limit.cubliminal.world.room.ConnectingRoom;
 import net.limit.cubliminal.world.room.Door;
+import net.limit.cubliminal.world.room.PaddingType;
 import net.limit.cubliminal.world.room.Room;
 import net.ludocrypt.limlib.api.world.LimlibHelper;
 import net.ludocrypt.limlib.api.world.maze.MazeComponent;
@@ -97,11 +98,12 @@ public class LevelOneMazeRegion extends MazeRegion<LevelOneMaze> {
 
     // Chooses a random floor where the room can be placed
     private void placeConnection(int x, int z, int width, int height, ConnectingRoom room, int floors, Random random) {
-        int validFloors = 1 + floors - room.getFloors() - room.padding();
+        PaddingType paddingType = room.paddingType();
+        int validFloors = 1 + floors - room.getFloors() - room.padding() * (paddingType.above + paddingType.below);
         if (validFloors > 0) {
-            int startFloor = room.isPaddingBelow()
+            int startFloor = paddingType.below == 1
                     ? room.padding() + random.nextInt(validFloors)
-                    : floors - room.padding() - room.getFloors() - random.nextInt(validFloors);
+                    : random.nextInt(validFloors);
             byte manipulation = (byte) random.nextInt(8);
             for (int dy = 0; dy < room.getFloors(); dy++) {
                 if (room.hasFloor(dy)) {

@@ -1,5 +1,5 @@
 {
-  "type": "cubliminal:compound_set",
+  "type": "cubliminal:composite",
   "components": [
     {
       "pos": [0,0],

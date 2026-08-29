@@ -14,7 +14,7 @@
     "PlayerEntityMixin",
     "ServerChunkManagerMixin",
     "ServerWorldMixin",
-    "StructureTemplateMixin"
+    "StructureTemplateManagerMixin"
   ],
   "client": [
     "client.BackgroundRendererMixin",

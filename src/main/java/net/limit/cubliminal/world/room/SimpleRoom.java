@@ -11,18 +11,18 @@ import net.ludocrypt.limlib.api.world.Manipulation;
 import java.util.ArrayList;
 import java.util.List;
 
-public record SingleRoom(String id, byte width, byte height, List<Door> doors) implements Room {
-    public static final MapCodec<SingleRoom> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            Codec.STRING.fieldOf("id").forGetter(SingleRoom::id),
-            Codec.BYTE.fieldOf("width").forGetter(SingleRoom::getWidth),
-            Codec.BYTE.fieldOf("height").forGetter(SingleRoom::getHeight),
-            Codec.STRING.fieldOf("doors").forGetter(SingleRoom::doorData)
-    ).apply(instance, SingleRoom::new));
+public record SimpleRoom(String id, byte width, byte height, List<Door> doors) implements Room {
+    public static final MapCodec<SimpleRoom> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            Codec.STRING.fieldOf("id").forGetter(SimpleRoom::id),
+            Codec.BYTE.fieldOf("width").forGetter(SimpleRoom::getWidth),
+            Codec.BYTE.fieldOf("height").forGetter(SimpleRoom::getHeight),
+            Codec.STRING.fieldOf("doors").forGetter(SimpleRoom::doorData)
+    ).apply(instance, SimpleRoom::new));
 
-    public SingleRoom(String id, byte width, byte height, String doorData) {
+    public SimpleRoom(String id, byte width, byte height, String doorData) {
         this(id, width, height, Room.unpackDoors(doorData, width, height));
         if (width < 1 || height < 1) {
-            throw new IllegalArgumentException("SingleRoom width: " + width + " and height: " + height + " must be set above 0");
+            throw new IllegalArgumentException("SimpleRoom width: " + width + " and height: " + height + " must be set above 0");
         }
     }
 
@@ -42,7 +42,7 @@ public record SingleRoom(String id, byte width, byte height, List<Door> doors) i
 
     @Override
     public RoomType<?> type() {
-        return RoomType.SINGLE_PIECE;
+        return RoomType.SIMPLE;
     }
 
     @Override

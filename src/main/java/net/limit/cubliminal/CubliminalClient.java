@@ -24,7 +24,7 @@ import net.limit.cubliminal.client.fog.FogSettings;
 import net.limit.cubliminal.client.entity.SeatRenderer;
 import net.limit.cubliminal.client.screen.documents.DocBlockEditScreen;
 import net.limit.cubliminal.client.screen.documents.DocBlockScreen;
-import net.limit.cubliminal.client.screen.roomcreator.RoomCreatorDataManager;
+import net.limit.cubliminal.client.screen.roomcreator.data.RoomCreatorDataManager;
 import net.limit.cubliminal.init.*;
 import net.limit.cubliminal.item.RoomCreatorToolItem;
 import net.minecraft.client.gui.screen.ingame.HandledScreens;

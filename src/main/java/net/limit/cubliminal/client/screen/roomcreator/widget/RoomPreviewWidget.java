@@ -1,7 +1,8 @@
 package net.limit.cubliminal.client.screen.roomcreator.widget;
 
-import net.limit.cubliminal.client.screen.roomcreator.data.ComponentData;
-import net.limit.cubliminal.client.screen.roomcreator.data.FloorData;
+import net.limit.cubliminal.client.screen.roomcreator.data.ComponentBuilder;
+import net.limit.cubliminal.client.screen.roomcreator.data.DoorBuilder;
+import net.limit.cubliminal.client.screen.roomcreator.data.FloorBuilder;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -25,30 +26,38 @@ public class RoomPreviewWidget extends ClickableWidget {
 
     private static final int LABEL_MARGIN = 12;
 
-    private FloorData floor;
-    private int boundsSizeX = 16;
-    private int boundsSizeZ = 16;
+    private FloorBuilder floor;
+    private int boundsSizeX = 3;
+    private int boundsSizeZ = 3;
     private float scale = 8.0f;
 
     private int originScreenX;
     private int originScreenZ;
 
-    private ComponentData selected;
-    private ComponentData dragging;
+    private ComponentBuilder selectedComponent;
+    private ComponentBuilder dragging;
+
+    private DoorBuilder selectedDoor;
+
     private int dragOffsetX;
     private int dragOffsetZ;
 
-    private Consumer<ComponentData> selectionListener = c -> {};
+    private Runnable selectionListener = () -> {};
     private Runnable dragListener = () -> {};
 
     public RoomPreviewWidget(int x, int y, int width, int height) {
         super(x, y, width, height, Text.empty());
     }
 
-    public void setFloor(FloorData floor) {
+    public ComponentBuilder getSelectedComponent() {
+        return this.selectedComponent;
+    }
+
+    public void setFloor(FloorBuilder floor) {
         this.floor = floor;
-        this.selected = null;
+        this.selectedComponent = null;
         this.dragging = null;
+        this.selectedDoor = null;
     }
 
     public void setBounds(int sizeX, int sizeZ) {
@@ -57,7 +66,7 @@ public class RoomPreviewWidget extends ClickableWidget {
         this.recalculateScale();
     }
 
-    public void setSelectionListener(Consumer<ComponentData> listener) {
+    public void setSelectionListener(Runnable listener) {
         this.selectionListener = listener;
     }
 
@@ -65,8 +74,9 @@ public class RoomPreviewWidget extends ClickableWidget {
         this.dragListener = listener;
     }
 
-    public void select(ComponentData component) {
-        this.selected = component;
+    public void select(ComponentBuilder component) {
+        this.selectedComponent = component;
+        this.selectionListener.run();
     }
 
     private void recalculateScale() {
@@ -98,7 +108,7 @@ public class RoomPreviewWidget extends ClickableWidget {
                 boxLeft + originMarkerSize / 2, boxBottom + originMarkerSize / 2, ORIGIN_COLOR);
 
         if (this.floor != null) {
-            for (ComponentData component : this.floor.getComponents()) {
+            for (ComponentBuilder component : this.floor.getComponents()) {
                 this.renderComponent(context, component);
             }
         }
@@ -109,19 +119,19 @@ public class RoomPreviewWidget extends ClickableWidget {
         int midX = (boxLeft + boxRight) / 2;
         int midZ = (boxTop + boxBottom) / 2;
 
-        context.drawText(textRenderer, "N", midX - textRenderer.getWidth("N") / 2, boxTop - LABEL_MARGIN + 1, LABEL_COLOR, false);
-        context.drawText(textRenderer, "S", midX - textRenderer.getWidth("S") / 2, boxBottom + 2, LABEL_COLOR, false);
-        context.drawText(textRenderer, "W", boxLeft - LABEL_MARGIN + 1, midZ - textRenderer.fontHeight / 2, LABEL_COLOR, false);
-        context.drawText(textRenderer, "E", boxRight + 2, midZ - textRenderer.fontHeight / 2, LABEL_COLOR, false);
+        context.drawText(textRenderer, "S", midX - textRenderer.getWidth("S") / 2, boxTop - LABEL_MARGIN + 1, LABEL_COLOR, false);
+        context.drawText(textRenderer, "N", midX - textRenderer.getWidth("N") / 2, boxBottom + 2, LABEL_COLOR, false);
+        context.drawText(textRenderer, "E", boxLeft - LABEL_MARGIN + 1, midZ - textRenderer.fontHeight / 2, LABEL_COLOR, false);
+        context.drawText(textRenderer, "W", boxRight + 2, midZ - textRenderer.fontHeight / 2, LABEL_COLOR, false);
     }
 
-    private void renderComponent(DrawContext context, ComponentData component) {
+    private void renderComponent(DrawContext context, ComponentBuilder component) {
         int x0 = this.originScreenX + Math.round(component.getRelX() * this.scale);
-        int x1 = x0 + Math.max(1, Math.round(component.getWidth() * this.scale));
+        int x1 = x0 + Math.max(1, Math.round(component.getSizeX() * this.scale));
         int zBottom = this.originScreenZ - Math.round(component.getRelZ() * this.scale);
-        int zTop = zBottom - Math.max(1, Math.round(component.getLength() * this.scale));
+        int zTop = zBottom - Math.max(1, Math.round(component.getSizeZ() * this.scale));
 
-        int fillColor = component == this.selected ? COMPONENT_SELECTED_FILL : COMPONENT_FILL;
+        int fillColor = component == this.selectedComponent ? COMPONENT_SELECTED_FILL : COMPONENT_FILL;
         context.fill(x0, zTop, x1, zBottom, fillColor);
         context.drawBorder(x0, zTop, x1 - x0, zBottom - zTop, COMPONENT_BORDER);
 
@@ -136,9 +146,8 @@ public class RoomPreviewWidget extends ClickableWidget {
             return false;
         }
 
-        ComponentData hit = this.componentAt(mouseX, mouseY);
-        this.selected = hit;
-        this.selectionListener.accept(hit);
+        ComponentBuilder hit = this.componentAt(mouseX, mouseY);
+        this.select(hit);
 
         if (hit != null) {
             this.dragging = hit;
@@ -155,8 +164,8 @@ public class RoomPreviewWidget extends ClickableWidget {
             return false;
         }
 
-        int newX = clamp(this.screenToBlockX(mouseX) - this.dragOffsetX, 0, this.boundsSizeX - this.dragging.getWidth());
-        int newZ = clamp(this.screenToBlockZ(mouseY) - this.dragOffsetZ, 0, this.boundsSizeZ - this.dragging.getLength());
+        int newX = clamp(this.screenToBlockX(mouseX) - this.dragOffsetX, 0, this.boundsSizeX - this.dragging.getSizeX());
+        int newZ = clamp(this.screenToBlockZ(mouseY) - this.dragOffsetZ, 0, this.boundsSizeZ - this.dragging.getSizeZ());
         this.dragging.setRelX(newX);
         this.dragging.setRelZ(newZ);
         this.dragListener.run();
@@ -174,16 +183,16 @@ public class RoomPreviewWidget extends ClickableWidget {
         super.onRelease(mouseX, mouseY);
     }
 
-    private ComponentData componentAt(double mouseX, double mouseY) {
+    private ComponentBuilder componentAt(double mouseX, double mouseY) {
         if (this.floor == null) return null;
         int blockX = this.screenToBlockX(mouseX);
         int blockZ = this.screenToBlockZ(mouseY);
 
-        List<ComponentData> components = this.floor.getComponents();
+        List<ComponentBuilder> components = this.floor.getComponents();
         for (int i = components.size() - 1; i >= 0; i--) {
-            ComponentData c = components.get(i);
-            if (blockX >= c.getRelX() && blockX < c.getRelX() + c.getWidth()
-                    && blockZ >= c.getRelZ() && blockZ < c.getRelZ() + c.getLength()) {
+            ComponentBuilder c = components.get(i);
+            if (blockX >= c.getRelX() && blockX < c.getRelX() + c.getSizeX()
+                    && blockZ >= c.getRelZ() && blockZ < c.getRelZ() + c.getSizeZ()) {
                 return c;
             }
         }

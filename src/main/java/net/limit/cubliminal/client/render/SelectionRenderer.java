@@ -17,7 +17,7 @@ import org.joml.Vector4f;
 @Environment(EnvType.CLIENT)
 public class SelectionRenderer {
 
-    public static void renderBox(Box box, WorldRenderContext ctx, Vector4f color, Vector3f axisCol) {
+    public static void renderBoxOld(Box box, WorldRenderContext ctx, Vector4f color, Vector3f axisCol) {
         VertexConsumerProvider vertexConsumerProvider = ctx.consumers();
         if (vertexConsumerProvider == null) return;
         VertexConsumer vertexConsumer = vertexConsumerProvider.getBuffer(RenderLayer.getLines());
@@ -45,7 +45,55 @@ public class SelectionRenderer {
         matrixStack.pop();
     }
 
+    public static void renderBox(Box box, WorldRenderContext ctx, Vector4f color, Vector3f axisCol) {
+        VertexConsumerProvider vertexConsumerProvider = ctx.consumers();
+        if (vertexConsumerProvider == null) return;
+        VertexConsumer vertexConsumer = vertexConsumerProvider.getBuffer(RenderLayer.getLines());
+
+        MatrixStack matrixStack = ctx.matrixStack();
+        if (matrixStack == null) return;
+
+        Vec3d cameraPos = ctx.camera().getPos();
+
+        VertexRendering.drawBox(
+                matrixStack,
+                vertexConsumer,
+                box.minX - cameraPos.x,
+                box.minY - cameraPos.y,
+                box.minZ - cameraPos.z,
+                box.maxX - cameraPos.x,
+                box.maxY - cameraPos.y,
+                box.maxZ - cameraPos.z,
+                color.x, color.y, color.z, color.w,
+                axisCol.x, axisCol.y, axisCol.z
+        );
+    }
+
     public static void renderBlockOutline(BlockPos pos, WorldRenderContext ctx, Vector4f color) {
+        VertexConsumerProvider vertexConsumerProvider = ctx.consumers();
+        if (vertexConsumerProvider == null) return;
+        VertexConsumer vertexConsumer = vertexConsumerProvider.getBuffer(RenderLayer.getLines());
+
+        MatrixStack matrixStack = ctx.matrixStack();
+        if (matrixStack == null) return;
+
+        Vec3d cameraPos = ctx.camera().getPos();
+
+        Box box = new Box(pos);
+        VertexRendering.drawBox(
+                matrixStack,
+                vertexConsumer,
+                box.minX - cameraPos.x,
+                box.minY - cameraPos.y,
+                box.minZ - cameraPos.z,
+                box.maxX - cameraPos.x,
+                box.maxY - cameraPos.y,
+                box.maxZ - cameraPos.z,
+                color.x, color.y, color.z, color.w
+        );
+    }
+
+    public static void renderBlockOutlineOld(BlockPos pos, WorldRenderContext ctx, Vector4f color) {
         VertexConsumerProvider vertexConsumerProvider = ctx.consumers();
         if (vertexConsumerProvider == null) return;
         VertexConsumer vertexConsumer = vertexConsumerProvider.getBuffer(RenderLayer.getLines());

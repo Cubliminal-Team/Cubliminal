@@ -1,11 +1,12 @@
-package net.limit.cubliminal.client.screen.roomcreator;
+package net.limit.cubliminal.client.screen.roomcreator.data;
 
+import com.mojang.datafixers.util.Pair;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.limit.cubliminal.client.render.SelectionRenderer;
 import net.limit.cubliminal.level.Level;
-import net.limit.cubliminal.networking.s2c.StructureTemplateListS2CPayload;
+import net.limit.cubliminal.networking.s2c.StructureTemplateInfoS2CPayload;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.packet.CustomPayload;
@@ -18,8 +19,9 @@ import net.minecraft.util.math.Vec3i;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 @Environment(EnvType.CLIENT)
@@ -37,9 +39,8 @@ public class RoomCreatorDataManager {
     private BlockPos corner2;
     private BlockBox placement;
     private BlockPos placementPos;
-    private RoomCreatorMode mode = RoomCreatorMode.SAVE_TEMPLATE;
 
-    private final List<Identifier> structureTemplates = new ArrayList<>();
+    private final Map<Identifier, Vec3i> structureTemplates = new HashMap<>();
 
 
     public boolean hasSelection() {
@@ -115,22 +116,14 @@ public class RoomCreatorDataManager {
     }
 
     public void processPacketUpdate(CustomPayload payload) {
-        if (payload instanceof StructureTemplateListS2CPayload(List<Identifier> templates)) {
+        if (payload instanceof StructureTemplateInfoS2CPayload(List<Pair<Identifier, Vec3i>> templateInfoList)) {
             this.structureTemplates.clear();
-            this.structureTemplates.addAll(templates);
+            templateInfoList.forEach(pair -> this.structureTemplates.put(pair.getFirst(), pair.getSecond()));
         }
     }
 
-    public List<Identifier> getStructureTemplates() {
+    public Map<Identifier, Vec3i> getStructureTemplates() {
         return this.structureTemplates;
-    }
-
-    public RoomCreatorMode mode() {
-        return this.mode;
-    }
-
-    public void setMode(RoomCreatorMode mode) {
-        this.mode = mode;
     }
 
     public BlockPos getStartPos() {
@@ -187,17 +180,9 @@ public class RoomCreatorDataManager {
 
     public void renderSelection(WorldRenderContext ctx) {
         if (this.shouldRender()) {
-            switch (this.mode) {
-                case SAVE_TEMPLATE -> {
-                    SelectionRenderer.renderBox(Box.from(this.selection), ctx, BOX_COLOR, AXIS_COLOR);
-                    SelectionRenderer.renderBlockOutline(this.corner1, ctx, CORNER_COLOR);
-                    SelectionRenderer.renderBlockOutline(this.corner2, ctx, CORNER_COLOR);
-                }
-                case LOAD_TEMPLATE -> {
-                    SelectionRenderer.renderBox(Box.from(this.placement), ctx, BOX_COLOR, AXIS_COLOR);
-                    SelectionRenderer.renderBlockOutline(this.placementPos, ctx, PLACEMENT_CORNER_COLOR);
-                }
-            }
+            SelectionRenderer.renderBox(Box.from(this.selection), ctx, BOX_COLOR, AXIS_COLOR);
+            SelectionRenderer.renderBlockOutline(this.corner1, ctx, CORNER_COLOR);
+            SelectionRenderer.renderBlockOutline(this.corner2, ctx, CORNER_COLOR);
         }
     }
 }

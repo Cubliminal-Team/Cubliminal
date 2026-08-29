@@ -1,5 +1,5 @@
 {
-  "type": "cubliminal:single_piece",
+  "type": "cubliminal:simple",
   "id": "room:medium",
   "width": 3,
   "height": 2,

@@ -152,6 +152,14 @@
   "item.cubliminal.room_creator_tool.set_corner": "Esquina %s seleccionada",
   "key.category.cubliminal": "Cubliminal",
   "key.cubliminal.open_room_creator_menu": "Abrir Menú de Creación de Habitaciones",
-  "level.cubliminal.level_0": "Nivel 0",
-  "level.cubliminal.level_1": "Nivel 1"
+  "gui.cubliminal.room_creator_screen": "Menú de Creación de Habitaciones",
+  "gui.cubliminal.close": "Cerrar",
+  "gui.cubliminal.create_selection": "Selección",
+  "gui.cubliminal.templates": "Templates",
+  "gui.cubliminal.room_builder": "Construir Habitación",
+  "gui.cubliminal.title.too_tall_warning": "TU ESTRUCTURA ES DEMASIADO ALTA!",
+  "gui.cubliminal.too_tall_warning": "Unless you stop other structures from generating above yours, it will often get cut during generation! It exceeds the maximum recommended height of %s blocks. Consider reducing its height to a maximum of %s blocks or divide it into several smaller structures.",
+  "gui.cubliminal.padding_type.above": "Arriba",
+  "gui.cubliminal.padding_type.below": "Abajo",
+  "gui.cubliminal.padding_type.above_and_below": "Arriba y Abajo"
 }
