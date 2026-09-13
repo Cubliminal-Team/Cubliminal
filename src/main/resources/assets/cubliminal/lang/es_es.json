@@ -157,7 +157,7 @@
   "gui.cubliminal.create_selection": "Selección",
   "gui.cubliminal.templates": "Templates",
   "gui.cubliminal.room_builder": "Construir Habitación",
-  "gui.cubliminal.title.too_tall_warning": "TU ESTRUCTURA ES DEMASIADO ALTA!",
+  "gui.cubliminal.title.too_tall_warning": "Tu template es demasiado alto!",
   "gui.cubliminal.too_tall_warning": "Unless you stop other structures from generating above yours, it will often get cut during generation! It exceeds the maximum recommended height of %s blocks. Consider reducing its height to a maximum of %s blocks or divide it into several smaller structures.",
   "gui.cubliminal.padding_type.above": "Arriba",
   "gui.cubliminal.padding_type.below": "Abajo",

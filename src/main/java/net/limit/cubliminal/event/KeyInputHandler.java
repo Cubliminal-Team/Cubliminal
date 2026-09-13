@@ -25,14 +25,14 @@ public class KeyInputHandler implements IniterClient {
 	@Override
 	public void init() {
 		ROOM_CREATION_MENU_KEY = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-				KEY_OPEN_ROOM_CREATOR_MENU, GLFW.GLFW_KEY_Z, KEY_CATEGORY_CUBLIMINAL
+				KEY_OPEN_ROOM_CREATOR_MENU, GLFW.GLFW_KEY_R, KEY_CATEGORY_CUBLIMINAL
 		));
 
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			ClientPlayerEntity player = client.player;
 			if (player == null) return;
 
-			if (player.isCreativeLevelTwoOp() && ROOM_CREATION_MENU_KEY.wasPressed()) {
+			if ((player.isCreativeLevelTwoOp() || player.isSpectator()) && ROOM_CREATION_MENU_KEY.wasPressed()) {
 				client.setScreen(new RoomCreatorScreen(client.currentScreen));
 			}
 

@@ -1,16 +1,22 @@
 package net.limit.cubliminal.client.screen.roomcreator;
 
 import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.JsonOps;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.limit.cubliminal.Cubliminal;
+import net.limit.cubliminal.client.screen.FixSuggestionScreen;
 import net.limit.cubliminal.client.screen.roomcreator.data.*;
 import net.limit.cubliminal.client.screen.roomcreator.widget.RoomPreviewWidget;
 import net.limit.cubliminal.client.screen.roomcreator.widget.TemplateSuggestorWidget;
+import net.limit.cubliminal.init.CubliminalStructures;
 import net.limit.cubliminal.level.Level;
 import net.limit.cubliminal.level.Levels;
 import net.limit.cubliminal.networking.c2s.SaveSelectionC2SPayload;
 import net.limit.cubliminal.world.room.PaddingType;
+import net.limit.cubliminal.world.room.Room;
+import net.limit.cubliminal.world.room.RoomType;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
@@ -25,12 +31,12 @@ import net.minecraft.client.gui.widget.*;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.Util;
+import net.minecraft.util.*;
 import net.minecraft.util.math.*;
 
+import java.io.*;
 import java.util.*;
+import java.util.List;
 import java.util.function.Function;
 
 @Environment(EnvType.CLIENT)
@@ -41,15 +47,14 @@ public class RoomCreatorScreen extends Screen {
     private static final Text ROOM_BUILDER_TEXT = Text.translatable("gui.cubliminal.room_builder");
     private static final Text REFRESH_TEXT = Text.translatable("gui.cubliminal.refresh");
     private static final Text CLOSE_TEXT = Text.translatable("gui.cubliminal.close");
-    private static final Text STRUCTURE_TOO_TALL_TITLE = Text.translatable("gui.cubliminal.title.too_tall_warning");
+    private static final Text STRUCTURE_TOO_TALL_TITLE = Text.translatable("gui.cubliminal.title.too_tall_warning").formatted(Formatting.BOLD, Formatting.RED);
     private static final Function<Integer, Text> STRUCTURE_TOO_TALL = height -> Text.translatable("gui.cubliminal.too_tall_warning", height, height);
 
     private static final Identifier TAB_HEADER_BACKGROUND_TEXTURE = Identifier.ofVanilla("textures/gui/tab_header_background.png");
-    public static final String SAVES_FOLDER_STRUCTURE = "structure/nbt/";
 
     private final Screen parent;
 
-    private static final RoomCreatorDataManager DATA_MANAGER = RoomCreatorDataManager.INSTANCE;
+    private final RoomCreatorDataManager dataManager = RoomCreatorDataManager.INSTANCE;
     private TabNavigationWidget tabNavigation;
     private final TabManager tabManager = new TabManager(this::addDrawableChild, this::remove);
     private final ThreePartsLayoutWidget layout = new ThreePartsLayoutWidget(this);
@@ -234,7 +239,7 @@ public class RoomCreatorScreen extends Screen {
         Identifier levelName = level.name;
         return Identifier.of(
                 levelName.getNamespace(),
-                 SAVES_FOLDER_STRUCTURE + levelName.getPath() + "/" + name
+                 CubliminalStructures.MOD_STRUCTURE_FILES_PATH + levelName.getPath() + "/" + name
         );
     }
 
@@ -313,39 +318,39 @@ public class RoomCreatorScreen extends Screen {
             ButtonWidget approximateButton = ButtonWidget
                     .builder(Text.literal("Approximate"), button -> this.approximateSelection())
                     .size(80, 20).build();
-            approximateButton.active = DATA_MANAGER.hasAllData();
+            approximateButton.active = dataManager.hasAllData();
             adder.add(approximateButton);
 
             ButtonWidget applyButton = ButtonWidget
                     .builder(Text.literal("Apply"), button -> this.applyChanges())
                     .size(80, 20).build();
-            applyButton.active = DATA_MANAGER.hasAllData();
+            applyButton.active = dataManager.hasAllData();
             adder.add(applyButton);
 
             ButtonWidget saveButton = ButtonWidget
                     .builder(Text.literal("Save"), button -> this.saveSelection())
                     .size(80, 20).build();
-            saveButton.active = DATA_MANAGER.hasAllData();
+            saveButton.active = dataManager.hasAllData();
             adder.add(saveButton);
 
             this.refresh();
         }
 
         void refresh() {
-            if (DATA_MANAGER.hasCorner1()) {
-                BlockPos corner1 = DATA_MANAGER.getCorner1();
+            if (dataManager.hasCorner1()) {
+                BlockPos corner1 = dataManager.getCorner1();
                 this.x_1.setText(Integer.toString(corner1.getX()));
                 this.y_1.setText(Integer.toString(corner1.getY()));
                 this.z_1.setText(Integer.toString(corner1.getZ()));
             }
-            if (DATA_MANAGER.hasCorner2()) {
-                BlockPos corner2 = DATA_MANAGER.getCorner2();
+            if (dataManager.hasCorner2()) {
+                BlockPos corner2 = dataManager.getCorner2();
                 this.x_2.setText(Integer.toString(corner2.getX()));
                 this.y_2.setText(Integer.toString(corner2.getY()));
                 this.z_2.setText(Integer.toString(corner2.getZ()));
             }
-            if (DATA_MANAGER.hasSelection()) {
-                BlockBox selection = DATA_MANAGER.getSelection();
+            if (dataManager.hasSelection()) {
+                BlockBox selection = dataManager.getSelection();
                 this.sizeX.setText(Integer.toString(selection.getBlockCountX()));
                 this.sizeY.setText(Integer.toString(selection.getBlockCountY()));
                 this.sizeZ.setText(Integer.toString(selection.getBlockCountZ()));
@@ -353,8 +358,8 @@ public class RoomCreatorScreen extends Screen {
         }
 
         void approximateSelection() {
-            if (DATA_MANAGER.hasAllData()) {
-                if (DATA_MANAGER.approximateSelection(this.level)) {
+            if (dataManager.hasAllData()) {
+                if (dataManager.approximateSelection(this.level)) {
                     NoticeScreen warningPopup = new NoticeScreen(
                             () -> client.setScreen(RoomCreatorScreen.this),
                             STRUCTURE_TOO_TALL_TITLE,
@@ -371,28 +376,28 @@ public class RoomCreatorScreen extends Screen {
         }
 
         void applyChanges() {
-            if (DATA_MANAGER.hasAllData()) {
-                BlockPos.Mutable corner1 = DATA_MANAGER.getCorner1().mutableCopy();
-                BlockPos.Mutable corner2 = DATA_MANAGER.getCorner2().mutableCopy();
+            if (dataManager.hasAllData()) {
+                BlockPos.Mutable corner1 = dataManager.getCorner1().mutableCopy();
+                BlockPos.Mutable corner2 = dataManager.getCorner2().mutableCopy();
                 if (isIntegerNumValid(this.x_1.getText())) corner1.setX(Integer.parseInt(this.x_1.getText()));
                 if (isIntegerNumValid(this.y_1.getText())) corner1.setY(Integer.parseInt(this.y_1.getText()));
                 if (isIntegerNumValid(this.z_1.getText())) corner1.setZ(Integer.parseInt(this.z_1.getText()));
                 if (isIntegerNumValid(this.x_2.getText())) corner2.setX(Integer.parseInt(this.x_2.getText()));
                 if (isIntegerNumValid(this.y_2.getText())) corner2.setY(Integer.parseInt(this.y_2.getText()));
                 if (isIntegerNumValid(this.z_2.getText())) corner2.setZ(Integer.parseInt(this.z_2.getText()));
-                DATA_MANAGER.setCorner1(corner1.toImmutable());
-                DATA_MANAGER.setCorner2(corner2.toImmutable());
+                dataManager.setCorner1(corner1.toImmutable());
+                dataManager.setCorner2(corner2.toImmutable());
 
                 this.refresh();
             }
         }
 
         void saveSelection() {
-            if (DATA_MANAGER.hasAllData() && !this.nameWidget.getText().isBlank()) {
+            if (dataManager.hasAllData() && !this.nameWidget.getText().isBlank()) {
                 ClientPlayNetworking.send(new SaveSelectionC2SPayload(
                         RoomCreatorScreen.getSaveFolderPath(this.nameWidget.getText(), this.level),
-                        DATA_MANAGER.getStartPos(),
-                        DATA_MANAGER.getSelectionDimensions(),
+                        dataManager.getStartPos(),
+                        dataManager.getSelectionDimensions(),
                         this.includeEntities
                 ));
 
@@ -463,13 +468,6 @@ public class RoomCreatorScreen extends Screen {
                         this.minecraftStructures = value;
                         this.refresh();
                     }), 4, 4);
-
-            this.grid.add(ButtonWidget.builder(
-                    Text.literal("Placement"),
-                    button -> {
-
-                    }
-            ).size(SEARCH_COLUMN_WIDTH, 20).build(), 5, 4);
         }
 
         void refresh() {
@@ -482,7 +480,7 @@ public class RoomCreatorScreen extends Screen {
 
         class TemplateScrollList extends ElementListWidget<TemplateScrollList.Entry> {
 
-            private final Map<Identifier, Vec3i> listedTemplates = new HashMap<>();
+            private final List<Pair<Identifier, Vec3i>> listedTemplates = new ArrayList<>();
 
             public TemplateScrollList(MinecraftClient client, int width, int height, int y) {
                 super(client, width, height, y, LIST_ITEM_HEIGHT);
@@ -500,19 +498,19 @@ public class RoomCreatorScreen extends Screen {
 
             void init() {
                 this.setScrollAmount(0);
-                this.listedTemplates.forEach((id, size) -> this.addEntry(new Entry(id, size)));
+                this.listedTemplates.forEach(pair -> this.addEntry(new Entry(pair.getFirst(), pair.getSecond())));
             }
 
             void updateTemplates() {
                 this.listedTemplates.clear();
-                this.listedTemplates.putAll(DATA_MANAGER.getStructureTemplates());
+                this.listedTemplates.addAll(dataManager.getStructureTemplates());
 
                 String filter = TemplatesTab.this.searchPatternWidget.getText();
                 if (!minecraftStructures) {
-                    this.listedTemplates.keySet().removeIf(id -> id.getNamespace().equals(Identifier.DEFAULT_NAMESPACE));
+                    this.listedTemplates.removeIf(pair -> pair.getFirst().getNamespace().equals(Identifier.DEFAULT_NAMESPACE));
                 }
                 if (!filter.isBlank()) {
-                    this.listedTemplates.keySet().removeIf(id -> !id.toString().contains(filter));
+                    this.listedTemplates.removeIf(pair -> !pair.getFirst().toString().contains(filter));
                 }
 
                 this.clearEntries();
@@ -522,6 +520,7 @@ public class RoomCreatorScreen extends Screen {
             class Entry extends ElementListWidget.Entry<Entry> {
 
                 private final ButtonWidget button;
+                private final TextWidget templateNameWidget;
 
                 private final Identifier templateName;
                 private Vec3i size;
@@ -529,30 +528,39 @@ public class RoomCreatorScreen extends Screen {
                 public Entry(Identifier templateName, Vec3i size) {
                     this.templateName = templateName;
                     this.size = size;
-                    this.button = ButtonWidget.builder(
-                                    Util.make(() -> {
-                                        String name;
-                                        if (!fullNames) {
-                                            String[] subStrings = templateName.getPath().split("/");
-                                            name = subStrings[subStrings.length - 1];
-                                        } else {
-                                            name = templateName.toString();
-                                        }
+                    this.button = ButtonWidget
+                            .builder(Text.empty(), button -> {})
+                            .tooltip(createTooltip(templateName.toString(), size))
+                            .size(TemplateScrollList.this.getRowWidth(), 20)
+                            .build();
 
-                                        return Text.literal(name);
-                                    }),
-                                    button -> {
+                    String widgetText = templateName.toString();
+                    if (!fullNames) {
+                        String[] subStrings = templateName.getPath().split("/");
+                        widgetText = subStrings[subStrings.length - 1];
+                    }
+                    int maxWidth = this.button.getWidth() - 10;
+                    String displayText = textRenderer.getWidth(widgetText) > maxWidth
+                            ? textRenderer.trimToWidth(widgetText, maxWidth - textRenderer.getWidth("...")) + "..."
+                            : widgetText;
+                    this.templateNameWidget = new TextWidget(Text.literal(displayText), textRenderer);
+                }
 
-                                    }
-                            ).tooltip(Tooltip.of(Text.literal(templateName.toString()).formatted(Formatting.GRAY)))
-                            .size(TemplateScrollList.this.getRowWidth(), 20).build();
+                static Tooltip createTooltip(String templateName, Vec3i size) {
+                    String description =
+                            "Size: [" + size.getX() + ", " + size.getY() + ", " + size.getZ() + "]" +
+                            "\n" +
+                            "'" + templateName + "'";
+                    return Tooltip.of(Text.literal(description).formatted(Formatting.GRAY));
                 }
 
                 @Override
                 public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-                    this.button.setX(x);
-                    this.button.setY(y);
+                    this.button.setPosition(x - 5, y);
                     this.button.render(context, mouseX, mouseY, tickDelta);
+                    this.templateNameWidget.setPosition(x, (int) (y + 0.5 * (this.button.getHeight() - this.templateNameWidget.getHeight())));
+                    this.templateNameWidget.alignLeft();
+                    this.templateNameWidget.renderWidget(context, mouseX, mouseY, tickDelta);
                 }
 
                 @Override
@@ -570,17 +578,23 @@ public class RoomCreatorScreen extends Screen {
     @Environment(EnvType.CLIENT)
     class RoomBuilderTab extends GridScreenTab {
 
-        private final RoomBuilder roomBuilder = new RoomBuilder();
+        private RoomBuilder roomBuilder = new RoomBuilder();
         private FloorBuilder selectedFloor;
         private ComponentBuilder selectedComponent;
+        private DoorBuilder selectedDoor;
 
         private final List<ClickableWidget> roomInfoWidgets = new ArrayList<>();
         private CyclingButtonWidget<Level> levelWidget;
+        private TextFieldWidget roomNameWidget;
         private TextWidget roomSizeText;
         private TextFieldWidget roomSizeXWidget;
         private TextFieldWidget roomSizeZWidget;
+        private CyclingButtonWidget<PaddingType> paddingTypeWidget;
+        private TextFieldWidget paddingCountWidget;
+        private CyclingButtonWidget<RoomType.Type> roomTypeWidget;
 
         private final List<ClickableWidget> floorEditorWidgets = new ArrayList<>();
+        private ButtonWidget deleteComponentButton2;
         private TextWidget componentSizeText;
         private TextFieldWidget componentSizeXWidget;
         private TextFieldWidget componentSizeZWidget;
@@ -590,10 +604,9 @@ public class RoomCreatorScreen extends Screen {
         private ComponentTemplateList templateListWidget;
         private TextFieldWidget templateNameWidget;
         private TemplateSuggestorWidget templateSuggestorWidget;
-        private TextWidget doorsHeader2;
+        private ButtonWidget addTemplateButton;
         private CyclingButtonWidget<Direction> doorDirectionWidget;
         private DoorIndexSlider doorIndexWidget;
-        private ButtonWidget addDoorButton2;
         private ButtonWidget deleteDoorButton2;
 
         private TextWidget floorLabelWidget;
@@ -628,11 +641,14 @@ public class RoomCreatorScreen extends Screen {
                     .build(0, 0, 120, 18, Text.literal("Level"), (b, l) -> this.setLevel(l));
             this.grid.add(this.levelWidget, 2, 1);
 
-            TextFieldWidget roomNameWidget = new TextFieldWidget(textRenderer, 120, 18, Text.empty());
-            roomNameWidget.setPlaceholder(Text.literal("Room name").formatted(Formatting.GRAY));
-            roomNameWidget.setTextPredicate(RoomCreatorScreen::isIdentifierInputValid);
-            roomNameWidget.setMaxLength(128);
-            this.grid.add(roomNameWidget, 2, 2);
+            this.roomNameWidget = new TextFieldWidget(textRenderer, 120, 18, Text.empty());
+            this.roomNameWidget.setPlaceholder(Text.literal("Room name").formatted(Formatting.GRAY));
+            this.roomNameWidget.setTextPredicate(RoomCreatorScreen::isIdentifierInputValid);
+            this.roomNameWidget.setChangedListener(s -> {
+                this.roomBuilder.setName(s);
+            });
+            this.roomNameWidget.setMaxLength(128);
+            this.grid.add(this.roomNameWidget, 2, 2);
 
             this.roomSizeText = new TextWidget(Text.literal("Size: (X, Z)"), textRenderer);
             this.roomSizeText.setHeight(16);
@@ -640,8 +656,10 @@ public class RoomCreatorScreen extends Screen {
             this.grid.add(this.roomSizeText, 3, 1);
 
             this.roomSizeXWidget = smallNumberField(1);
+            this.roomSizeXWidget.setText(Integer.toString(this.roomBuilder.getSizeX()));
             this.roomSizeXWidget.setChangedListener(t -> this.refreshFloor());
             this.roomSizeZWidget = smallNumberField(1);
+            this.roomSizeZWidget.setText(Integer.toString(this.roomBuilder.getSizeZ()));
             this.roomSizeZWidget.setChangedListener(t -> this.refreshFloor());
 
             GridWidget sizeBox = new GridWidget().setRowSpacing(0).setColumnSpacing(30);
@@ -649,70 +667,62 @@ public class RoomCreatorScreen extends Screen {
             sizeBox.add(this.roomSizeZWidget, 1, 2);
             this.grid.add(sizeBox, 3, 2);
 
-            CyclingButtonWidget<PaddingType> paddingTypeWidget = CyclingButtonWidget
+            this.paddingTypeWidget = CyclingButtonWidget
                     .<PaddingType>builder(type -> Text.translatable(type.translatableEntry()))
                     .values(PaddingType.values())
-                    .build(0, 0, 120, 18, Text.literal("Padding Type"));
-            this.grid.add(paddingTypeWidget, 4, 1);
+                    .build(0, 0, 120, 18, Text.literal("Padding Type"), (b, v) -> this.roomBuilder.setPaddingType(v));
+            this.grid.add(this.paddingTypeWidget, 4, 1);
 
-            TextFieldWidget paddingCountWidget = new TextFieldWidget(textRenderer, 120, 18, Text.empty());
-            paddingCountWidget.setPlaceholder(Text.literal("Padding Count").formatted(Formatting.GRAY));
-            paddingCountWidget.setTextPredicate(s -> isOptionalNumValid(s, 0));
-            this.grid.add(paddingCountWidget, 4, 2);
+            this.paddingCountWidget = new TextFieldWidget(textRenderer, 120, 18, Text.empty());
+            this.paddingCountWidget.setPlaceholder(Text.literal("Padding Count").formatted(Formatting.GRAY));
+            this.paddingCountWidget.setText(Integer.toString(this.roomBuilder.getPaddingCount()));
+            this.paddingCountWidget.setTextPredicate(s -> isOptionalNumValid(s, 0));
+            this.paddingCountWidget.setChangedListener(n -> this.roomBuilder.setPaddingCount(parseOrDefault(n, 0)));
+            this.grid.add(this.paddingCountWidget, 4, 2);
+
+            this.roomTypeWidget = CyclingButtonWidget
+                    .<RoomType.Type>builder(type -> Text.literal(type.toString()))
+                    .values(RoomType.Type.values())
+                    .build(0, 0, 243, 18, Text.literal("Room Type"), (b, v) -> this.roomBuilder.setRoomType(v));
+            this.grid.add(this.roomTypeWidget, 5, 1, 1, 2);
 
             ButtonWidget loadRoomButton = ButtonWidget
-                    .builder(Text.literal("Load"), b -> this.loadRoom())
+                    .builder(Text.literal("Load"), b -> this.openRoomSelectionWindow())
                     .size(120, 18).build();
-            this.grid.add(loadRoomButton, 5, 1);
+            this.grid.add(loadRoomButton, 6, 1);
 
             ButtonWidget saveRoomButton = ButtonWidget
                     .builder(Text.literal("Save"), b -> this.saveRoom())
                     .size(120, 18).build();
-            this.grid.add(saveRoomButton, 5, 2);
+            this.grid.add(saveRoomButton, 6, 2);
 
             Positioner bottomPositioner = this.grid.copyPositioner().alignBottom();
-            TextWidget componentsHeader = sectionHeader("Components");
-            this.grid.add(componentsHeader, 6, 1, 1, 2, bottomPositioner);
+            TextWidget componentsAndDoorsHeader = sectionHeader("Components and Doors");
+            this.grid.add(componentsAndDoorsHeader, 7, 1, 1, 2, bottomPositioner);
 
             ButtonWidget addComponentButton = ButtonWidget.builder(Text.literal("Add Component"), b -> this.addComponent())
                     .size(120, 18).build();
-            ButtonWidget deleteComponentButton = ButtonWidget.builder(Text.literal("Delete Component"), b -> this.deleteSelectedComponent())
-                    .size(120, 18).build();
-
-            this.grid.add(addComponentButton, 7, 1);
-            this.grid.add(deleteComponentButton, 7, 2);
-
-            TextWidget doorsHeader = sectionHeader("Doors");
-            this.grid.add(doorsHeader, 8, 1, 1, 2, bottomPositioner);
-
             ButtonWidget addDoorButton = ButtonWidget.builder(Text.literal("Add Door"), b -> this.addDoor())
-                    .tooltip(Tooltip.of(Text.literal("Door placement coming soon").formatted(Formatting.GRAY)))
                     .size(120, 18).build();
-            ButtonWidget deleteDoorButton = ButtonWidget.builder(Text.literal("Delete Door"), b -> this.deleteSelectedDoor())
-                    .size(120, 18).build();
-            addDoorButton.active = false;
-            deleteDoorButton.active = false;
 
-            this.grid.add(addDoorButton, 9, 1);
-            this.grid.add(deleteDoorButton, 9, 2);
+            this.grid.add(addComponentButton, 8, 1);
+            this.grid.add(addDoorButton, 8, 2);
 
             this.roomInfoWidgets.addAll(List.of(
                     roomInfoHeader,
                     this.levelWidget,
-                    roomNameWidget,
-                    roomSizeText,
+                    this.roomNameWidget,
+                    this.roomSizeText,
                     this.roomSizeXWidget,
                     this.roomSizeZWidget,
-                    paddingTypeWidget,
-                    paddingCountWidget,
+                    this.paddingTypeWidget,
+                    this.paddingCountWidget,
+                    this.roomTypeWidget,
                     loadRoomButton,
                     saveRoomButton,
-                    componentsHeader,
+                    componentsAndDoorsHeader,
                     addComponentButton,
-                    deleteComponentButton,
-                    doorsHeader,
-                    addDoorButton,
-                    deleteDoorButton
+                    addDoorButton
             ));
         }
 
@@ -722,11 +732,11 @@ public class RoomCreatorScreen extends Screen {
 
             ButtonWidget addComponentButton2 = ButtonWidget.builder(Text.literal("Add"), b -> this.addComponent())
                     .size(65, 18).build();
-            ButtonWidget deleteComponentButton2 = ButtonWidget.builder(Text.literal("Delete"), b -> this.deleteSelectedComponent())
+            this.deleteComponentButton2 = ButtonWidget.builder(Text.literal("Delete"), b -> this.deleteSelectedComponent())
                     .size(65, 18).build();
 
             this.grid.add(addComponentButton2, 2, 1);
-            this.grid.add(deleteComponentButton2, 2, 2);
+            this.grid.add(this.deleteComponentButton2, 2, 2);
 
             this.componentSizeText = new TextWidget(Text.literal("Size: (X, Z)"), textRenderer);
             this.componentSizeText.setHeight(16);
@@ -765,47 +775,45 @@ public class RoomCreatorScreen extends Screen {
             this.templateNameWidget.setTextPredicate(RoomCreatorScreen::isIdentifierInputValid);
             this.templateNameWidget.setMaxLength(128);
 
-            ButtonWidget addTemplateButton = ButtonWidget.builder(Text.literal("+"), b -> this.addTemplateName())
+            this.addTemplateButton = ButtonWidget.builder(Text.literal("+"), b -> this.addTemplateName())
                     .size(28, 18).build();
 
             DirectionalLayoutWidget templateRow = DirectionalLayoutWidget.horizontal().spacing(3);
             Positioner centered = templateRow.copyPositioner().alignVerticalCenter();
 
             templateRow.add(this.templateNameWidget, centered);
-            templateRow.add(addTemplateButton, centered);
+            templateRow.add(this.addTemplateButton, centered);
             this.grid.add(templateRow, 6, 1, 1, 2);
 
             Positioner bottomPositioner = this.grid.copyPositioner().alignBottom();
-            this.doorsHeader2 = sectionHeader("Doors");
-            this.grid.add(this.doorsHeader2, 7, 1, 1, 2, bottomPositioner);
+            TextWidget doorsHeader2 = sectionHeader("Doors");
+            this.grid.add(doorsHeader2, 7, 1, 1, 2, bottomPositioner);
 
             this.doorDirectionWidget = CyclingButtonWidget.<Direction>builder(dir -> Text.literal(dir.toString().toUpperCase()))
                     .values(Direction.Type.HORIZONTAL.stream().toList())
                     .omitKeyText()
-                    .build(0, 0, 65, 18, Text.empty(), (b, d) -> this.refreshDoors());
+                    .build(0, 0, 65, 18, Text.empty(), (b, d) -> this.applyDoorFields());
 
             this.doorIndexWidget = new DoorIndexSlider(0, 0, 65, 18, Text.empty(), 3, 0);
 
             this.grid.add(this.doorDirectionWidget, 8, 1);
             this.grid.add(this.doorIndexWidget, 8, 2);
 
-            this.addDoorButton2 = ButtonWidget.builder(Text.literal("Add"), b -> this.addDoor())
+            ButtonWidget addDoorButton2 = ButtonWidget.builder(Text.literal("Add"), b -> this.addDoor())
                     .size(65, 18).build();
             this.deleteDoorButton2 = ButtonWidget.builder(Text.literal("Delete"), b -> this.deleteSelectedDoor())
                     .size(65, 18).build();
-            this.addDoorButton2.active = false;
-            this.deleteDoorButton2.active = false;
 
-            this.grid.add(this.addDoorButton2, 9, 1);
+            this.grid.add(addDoorButton2, 9, 1);
             this.grid.add(this.deleteDoorButton2, 9, 2);
 
-            this.templateSuggestorWidget = new TemplateSuggestorWidget(this.templateNameWidget);
+            this.templateSuggestorWidget = new TemplateSuggestorWidget(this.levelWidget, this.templateNameWidget);
             this.templateNameWidget.setChangedListener(s -> this.templateSuggestorWidget.setTemplateName(s));
 
             this.floorEditorWidgets.addAll(List.of(
                     componentsHeader2,
                     addComponentButton2,
-                    deleteComponentButton2,
+                    this.deleteComponentButton2,
                     this.componentSizeText,
                     this.componentSizeXWidget,
                     this.componentSizeZWidget,
@@ -814,11 +822,11 @@ public class RoomCreatorScreen extends Screen {
                     this.componentRelZWidget,
                     this.templateListWidget,
                     this.templateNameWidget,
-                    addTemplateButton,
-                    this.doorsHeader2,
+                    this.addTemplateButton,
+                    doorsHeader2,
                     this.doorDirectionWidget,
                     this.doorIndexWidget,
-                    this.addDoorButton2,
+                    addDoorButton2,
                     this.deleteDoorButton2
             ));
         }
@@ -885,9 +893,10 @@ public class RoomCreatorScreen extends Screen {
         private void refreshDoors() {
             this.doorIndexWidget.setMaxSliderValue(
                     this.doorDirectionWidget.getValue().getAxis() == Direction.Axis.X
-                    ? this.roomBuilder.getSizeX()
-                    : this.roomBuilder.getSizeZ()
+                    ? this.roomBuilder.getSizeZ()
+                    : this.roomBuilder.getSizeX()
             );
+            this.selectedFloor.afterResizingRoom(this.roomBuilder.getSizeX(), this.roomBuilder.getSizeZ());
         }
 
         private void refreshFloor() {
@@ -899,6 +908,17 @@ public class RoomCreatorScreen extends Screen {
             this.floorLabelWidget.setMessage(this.floorLabelText());
 
             this.refreshDoors();
+        }
+
+        private void syncFieldsFromRoom(RoomBuilder room) {
+            this.roomNameWidget.setText(room.getName());
+            this.roomSizeXWidget.setText(Integer.toString(room.getSizeX()));
+            this.roomSizeZWidget.setText(Integer.toString(room.getSizeZ()));
+            this.paddingTypeWidget.setValue(room.getPaddingType());
+            this.paddingCountWidget.setText(Integer.toString(room.getPaddingCount()));
+            this.roomTypeWidget.setValue(room.getRoomType());
+            this.levelWidget.setValue(Levels.ALL[0]);
+            this.selectedFloor = room.getFloors().getFirst();
         }
 
         private void cycleFloor(int direction) {
@@ -935,33 +955,41 @@ public class RoomCreatorScreen extends Screen {
             addCellSizeTooltip(this.roomSizeText, level);
             addCellSizeTooltip(this.componentSizeText, level);
             addCellSizeTooltip(this.componentPosText, level);
+
+            this.refreshDoors();
             if (this.selectedComponent != null) {
                 this.templateSuggestorWidget.recalculateTemplateSize(level, this.selectedComponent);
             }
-            this.refreshDoors();
         }
 
         private void addComponent() {
             ComponentBuilder component = this.selectedFloor.addComponent();
-            this.previewWidget.select(component);
+            this.previewWidget.selectComponent(component);
         }
 
         private void deleteSelectedComponent() {
             if (this.selectedComponent == null) return;
             this.selectedFloor.removeComponent(this.selectedComponent);
-            this.previewWidget.select(null);
+            this.previewWidget.selectComponent(null);
         }
 
         private void onSelectedChange() {
             ComponentBuilder component = this.previewWidget.getSelectedComponent();
             this.selectedComponent = component;
-            this.setComponentEditorEnabled(component != null);
 
             if (component == null) {
                 this.templateSuggestorWidget.setVisible(false);
             }
 
+            DoorBuilder door = this.previewWidget.getSelectedDoor();
+            this.selectedDoor = door;
+
+            this.setComponentEditorEnabled(component != null || door != null);
+
             this.syncFieldsFromComponent();
+            this.syncFieldsFromDoor();
+
+            this.templateListWidget.setScrollAmount(0);
         }
 
         private void syncPosAfterDrag() {
@@ -984,6 +1012,14 @@ public class RoomCreatorScreen extends Screen {
                 int sizeZ = c.getSizeZ();
                 int relX = c.getRelX();
                 int relZ = c.getRelZ();
+                this.deleteComponentButton2.active = true;
+                this.componentSizeXWidget.active = true;
+                this.componentSizeZWidget.active = true;
+                this.componentRelXWidget.active = true;
+                this.componentRelZWidget.active = true;
+                this.templateListWidget.active = true;
+                this.templateNameWidget.active = true;
+                this.addTemplateButton.active = true;
                 this.componentSizeXWidget.setText(Integer.toString(sizeX));
                 this.componentSizeZWidget.setText(Integer.toString(sizeZ));
                 this.componentRelXWidget.setText(Integer.toString(relX));
@@ -995,15 +1031,73 @@ public class RoomCreatorScreen extends Screen {
                 this.componentRelXWidget.setText("");
                 this.componentRelZWidget.setText("");
                 this.templateListWidget.clear();
+                this.templateNameWidget.setText("");
+                this.deleteComponentButton2.active = false;
+                this.componentSizeXWidget.active = false;
+                this.componentSizeZWidget.active = false;
+                this.componentRelXWidget.active = false;
+                this.componentRelZWidget.active = false;
+                this.templateListWidget.active = false;
+                this.templateNameWidget.active = false;
+                this.addTemplateButton.active = false;
             }
         }
 
-        private void addDoor() {
+        private void applyComponentFields(boolean updateSuggestor) {
+            if (this.selectedComponent == null) return;
+            this.selectedComponent.setSizeX(Math.max(1, parseOrDefault(this.componentSizeXWidget.getText(), this.selectedComponent.getSizeX())));
+            this.selectedComponent.setSizeZ(Math.max(1, parseOrDefault(this.componentSizeZWidget.getText(), this.selectedComponent.getSizeZ())));
+            this.selectedComponent.setRelX(Math.max(0, parseOrDefault(this.componentRelXWidget.getText(), this.selectedComponent.getRelX())));
+            this.selectedComponent.setRelZ(Math.max(0, parseOrDefault(this.componentRelZWidget.getText(), this.selectedComponent.getRelZ())));
 
+            if (updateSuggestor) {
+                this.templateSuggestorWidget.recalculateTemplateSize(this.levelWidget.getValue(), this.selectedComponent);
+            }
+        }
+
+        private void syncFieldsFromDoor() {
+            DoorBuilder d = this.selectedDoor;
+            if (d != null) {
+                int index = d.getIndex();
+                Direction facing = d.getFacing();
+                this.doorIndexWidget.active = true;
+                this.doorDirectionWidget.active = true;
+                this.deleteDoorButton2.active = true;
+                this.doorIndexWidget.setSliderValue(index);
+                this.doorDirectionWidget.setValue(facing);
+            } else {
+                this.doorIndexWidget.setSliderValue(0);
+                this.doorDirectionWidget.setValue(Direction.NORTH);
+                this.doorIndexWidget.active = false;
+                this.doorDirectionWidget.active = false;
+                this.deleteDoorButton2.active = false;
+            }
+        }
+
+        private void applyDoorFields() {
+            if (this.selectedDoor == null) return;
+            this.doorIndexWidget.setMaxSliderValue(
+                    this.doorDirectionWidget.getValue().getAxis() == Direction.Axis.X
+                            ? this.roomBuilder.getSizeZ()
+                            : this.roomBuilder.getSizeX()
+            );
+            this.selectedDoor.recalculateData(
+                    this.roomBuilder.getSizeX(),
+                    this.roomBuilder.getSizeZ(),
+                    this.doorIndexWidget.getSliderValue(),
+                    this.doorDirectionWidget.getValue()
+            );
+        }
+
+        private void addDoor() {
+            DoorBuilder door = this.selectedFloor.addDoor();
+            this.previewWidget.selectDoor(door);
         }
 
         private void deleteSelectedDoor() {
-
+            if (this.selectedDoor == null) return;
+            this.selectedFloor.removeDoor(this.selectedDoor);
+            this.previewWidget.selectDoor(null);
         }
 
         private void setComponentEditorEnabled(boolean enabled) {
@@ -1031,24 +1125,71 @@ public class RoomCreatorScreen extends Screen {
             this.selectedComponent.remove(name);
         }
 
-        private void applyComponentFields(boolean updateSuggestor) {
-            if (this.selectedComponent == null) return;
-            this.selectedComponent.setSizeX(Math.max(1, parseOrDefault(this.componentSizeXWidget.getText(), this.selectedComponent.getSizeX())));
-            this.selectedComponent.setSizeZ(Math.max(1, parseOrDefault(this.componentSizeZWidget.getText(), this.selectedComponent.getSizeZ())));
-            this.selectedComponent.setRelX(Math.max(0, parseOrDefault(this.componentRelXWidget.getText(), this.selectedComponent.getRelX())));
-            this.selectedComponent.setRelZ(Math.max(0, parseOrDefault(this.componentRelZWidget.getText(), this.selectedComponent.getRelZ())));
+        private void openRoomSelectionWindow() {
+            dataManager.openRoomSelectionWindow(client).ifPresent(this::loadRoom);
+        }
 
-            if (updateSuggestor) {
-                this.templateSuggestorWidget.recalculateTemplateSize(this.levelWidget.getValue(), this.selectedComponent);
+        private void loadRoom(String fileLocation) {
+            File roomFile = new File(fileLocation);
+            String roomName = roomFile.getName().substring(0, roomFile.getName().length() - ".json".length());
+            this.loadRoomFromFile(roomFile).ifPresent(room -> {
+                 RoomBuilder builder = RoomBuilder.fromBuiltRoom(room, roomName);
+                 this.syncFieldsFromRoom(builder);
+                 this.roomBuilder = builder;
+                 this.refreshFloor();
+            });
+        }
+
+        private Optional<Room> loadRoomFromFile(File roomFile) {
+            try {
+                InputStream inputStream = new FileInputStream(roomFile);
+                Optional<Room> decodedResult;
+                try {
+                    InputStream fixedInputStream = new FixedBufferInputStream(inputStream);
+                    try (Reader reader = new InputStreamReader(fixedInputStream)) {
+                        decodedResult = Room.CODEC
+                                .parse(JsonOps.INSTANCE, JsonHelper.deserialize(reader))
+                                .resultOrPartial();
+                    } catch (Throwable var9) {
+                        try {
+                            fixedInputStream.close();
+                        } catch (Throwable var8) {
+                            var9.addSuppressed(var8);
+                        }
+                        throw var9;
+                    }
+                    fixedInputStream.close();
+                } catch (Throwable var10) {
+                    try {
+                        inputStream.close();
+                    } catch (Throwable var7) {
+                        var10.addSuppressed(var7);
+                    }
+
+                    throw var10;
+                }
+                inputStream.close();
+                return decodedResult;
+            } catch (FileNotFoundException var11) {
+                return Optional.empty();
+            } catch (Throwable var12) {
+                Cubliminal.LOGGER.error(var12.getMessage());
+                return Optional.empty();
             }
         }
 
-        private void loadRoom() {
-
-        }
-
         private void saveRoom() {
-
+            Level level = this.levelWidget.getValue();
+            List<Text> optionalFixes = this.roomBuilder.trySaveRoom(level);
+            if (!optionalFixes.isEmpty()) {
+                client.setScreen(new FixSuggestionScreen(
+                        () -> client.setScreen(RoomCreatorScreen.this),
+                        RoomBuilder.getUnableToConvertText(this.roomTypeWidget.getValue()),
+                        optionalFixes
+                ));
+            } else {
+                RoomCreatorScreen.this.close();
+            }
         }
 
         class ComponentTemplateList extends ElementListWidget<ComponentTemplateList.TemplateEntry> {
@@ -1113,15 +1254,14 @@ public class RoomCreatorScreen extends Screen {
                     int spacing = 3;
                     int nameWidth = totalWidth - weightWidth - deleteWidth - (spacing * 2);
 
-                    this.nameWidget = new TextWidget(Util.make(() -> {
-                        String[] subStrings = Identifier.of(templateName).getPath().split("/");
-                        return Text.literal(subStrings[subStrings.length - 1]);
-                    }), textRenderer);
+                    String[] splitName = Identifier.of(templateName).getPath().split("/");
+                    this.nameWidget = new TextWidget(Text.literal(splitName[splitName.length - 1]), textRenderer);
                     this.nameWidget.setTooltip(Tooltip.of(Text.literal(templateName).formatted(Formatting.GRAY)));
                     this.nameWidget.setDimensions(nameWidth, 16);
                     this.nameWidget.alignLeft();
 
-                    this.weightWidget = new TextFieldWidget(textRenderer, weightWidth, 16, Text.literal(Float.toString(weight)));
+                    this.weightWidget = new TextFieldWidget(textRenderer, weightWidth, 16, Text.empty());
+                    this.weightWidget.setText(Float.toString(weight));
                     this.weightWidget.setTextPredicate(RoomCreatorScreen::isOptionalPositiveFloatValid);
                     this.weightWidget.setChangedListener(this::updateWeight);
 
@@ -1134,13 +1274,7 @@ public class RoomCreatorScreen extends Screen {
 
                 private void updateWeight(String newValue) {
                     if (selectedComponent == null) return;
-                    ListIterator<Pair<Float, String>> listIterator = selectedComponent.getTemplates().getValues().listIterator();
-                    while (listIterator.hasNext()) {
-                        Pair<Float, String> pair = listIterator.next();
-                        if (pair.getSecond().equals(this.templateName)) {
-                            listIterator.set(Pair.of(parseFloatOrDefault(newValue, 0.0f), this.templateName));
-                        }
-                    }
+                    selectedComponent.setWeight(this.templateName, parseFloatOrDefault(newValue, 0.0f));
                 }
 
                 private void delete() {
@@ -1175,7 +1309,7 @@ public class RoomCreatorScreen extends Screen {
             }
         }
 
-        static class DoorIndexSlider extends SliderWidget {
+        class DoorIndexSlider extends SliderWidget {
             private int maxSliderValue;
 
             public DoorIndexSlider(int x, int y, int width, int height, Text text, int maxSliderValue, double value) {
@@ -1185,22 +1319,31 @@ public class RoomCreatorScreen extends Screen {
             }
 
             public void setMaxSliderValue(int max) {
-                int newValue = MathHelper.clamp(this.getSliderValue(), 0, max);
-                this.maxSliderValue = max;
+                int newValue = MathHelper.clamp(this.getSliderValue(), 0, max - 1);
+                this.maxSliderValue = max - 1;
                 this.value = (double) newValue / this.maxSliderValue;
+                this.updateMessage();
             }
 
             public int getSliderValue() {
                 return Math.round((float) this.value * this.maxSliderValue);
             }
 
-            @Override
-            protected void updateMessage() {
-                this.setMessage(Text.literal(Integer.toString(this.getSliderValue())));
+            public void setSliderValue(int value) {
+                int newValue = MathHelper.clamp(value, 0, this.maxSliderValue);
+                this.value = (double) newValue / this.maxSliderValue;
+                this.updateMessage();
             }
 
             @Override
-            protected void applyValue() {}
+            protected void updateMessage() {
+                this.setMessage(Text.literal(Integer.toString(this.getSliderValue() + 1)));
+            }
+
+            @Override
+            protected void applyValue() {
+                applyDoorFields();
+            }
         }
     }
 }

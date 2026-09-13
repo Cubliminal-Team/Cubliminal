@@ -1,6 +1,7 @@
 package net.limit.cubliminal.level;
 
 import net.limit.cubliminal.Cubliminal;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 
 public class Levels {
@@ -13,4 +14,11 @@ public class Levels {
     };
 
     public static final BlockPos MANILA_ROOM = new BlockPos(7,  LEVEL_0.min_y + LEVEL_0.layer_height * LEVEL_0.layer_count + 3, 3);
+
+    public static boolean existsLevel(Identifier levelId) {
+        for (Level level : ALL) {
+            if (level.name.equals(levelId)) return true;
+        }
+        return false;
+    }
 }

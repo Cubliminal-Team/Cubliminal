@@ -11,16 +11,19 @@ import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.text.Text;
 
 import java.util.List;
-import java.util.function.Consumer;
 
 public class RoomPreviewWidget extends ClickableWidget {
 
     private static final int BOUNDS_FILL = 0x30E8E85A;
     private static final int BOUNDS_BORDER = 0xFFE8E85A;
-    private static final int ORIGIN_COLOR = 0xFF4CAF50;
+    private static final int SELECTED_ELEMENT_BORDER = 0xFFFFFFFF;
     private static final int COMPONENT_FILL = 0x8000A2FF;
-    private static final int COMPONENT_SELECTED_FILL = 0xC0FFA500;
-    private static final int COMPONENT_BORDER = 0xFFFFFFFF;
+    private static final int COMPONENT_SELECTED_FILL = 0xC000D9FF;
+    private static final int COMPONENT_BORDER = 0xFFABE7FF;
+    private static final int DOOR_FILL = 0x8095FF00;
+    private static final int DOOR_SELECTED_FILL = 0xC026FF00;
+    private static final int DOOR_BORDER = 0xFF9FFF8A;
+    private static final int WIDGET_MARKER_COLOR = 0xFFFFFF55;
     private static final int RELATIVE_MARKER_COLOR = 0xFF9B30FF;
     private static final int LABEL_COLOR = 0xFFDDDDDD;
 
@@ -53,6 +56,10 @@ public class RoomPreviewWidget extends ClickableWidget {
         return this.selectedComponent;
     }
 
+    public DoorBuilder getSelectedDoor() {
+        return this.selectedDoor;
+    }
+
     public void setFloor(FloorBuilder floor) {
         this.floor = floor;
         this.selectedComponent = null;
@@ -74,8 +81,16 @@ public class RoomPreviewWidget extends ClickableWidget {
         this.dragListener = listener;
     }
 
-    public void select(ComponentBuilder component) {
+    public void selectComponent(ComponentBuilder component) {
         this.selectedComponent = component;
+        this.selectedDoor = null;
+        this.selectionListener.run();
+    }
+
+    public void selectDoor(DoorBuilder door) {
+        this.selectedDoor = door;
+        this.selectedComponent = null;
+        this.dragging = null;
         this.selectionListener.run();
     }
 
@@ -103,13 +118,16 @@ public class RoomPreviewWidget extends ClickableWidget {
 
         this.renderCompassLabels(context, boxLeft, boxTop, boxRight, boxBottom);
 
-        int originMarkerSize = Math.max(4, (int) (this.scale / 2));
-        context.fill(boxLeft - originMarkerSize / 2, boxBottom - originMarkerSize / 2,
-                boxLeft + originMarkerSize / 2, boxBottom + originMarkerSize / 2, ORIGIN_COLOR);
+        int originMarkerSize = Math.max(3, (int) (this.scale / 3));
+        context.fill(boxLeft - originMarkerSize / 2, boxTop - originMarkerSize / 2,
+                boxLeft + originMarkerSize / 2, boxTop + originMarkerSize / 2, WIDGET_MARKER_COLOR);
 
         if (this.floor != null) {
             for (ComponentBuilder component : this.floor.getComponents()) {
                 this.renderComponent(context, component);
+            }
+            for (DoorBuilder door : this.floor.getDoors()) {
+                this.renderDoor(context, door);
             }
         }
     }
@@ -119,25 +137,36 @@ public class RoomPreviewWidget extends ClickableWidget {
         int midX = (boxLeft + boxRight) / 2;
         int midZ = (boxTop + boxBottom) / 2;
 
-        context.drawText(textRenderer, "S", midX - textRenderer.getWidth("S") / 2, boxTop - LABEL_MARGIN + 1, LABEL_COLOR, false);
-        context.drawText(textRenderer, "N", midX - textRenderer.getWidth("N") / 2, boxBottom + 2, LABEL_COLOR, false);
-        context.drawText(textRenderer, "E", boxLeft - LABEL_MARGIN + 1, midZ - textRenderer.fontHeight / 2, LABEL_COLOR, false);
-        context.drawText(textRenderer, "W", boxRight + 2, midZ - textRenderer.fontHeight / 2, LABEL_COLOR, false);
+        context.drawText(textRenderer, "N", midX - textRenderer.getWidth("S") / 2, boxTop - LABEL_MARGIN + 1, LABEL_COLOR, false);
+        context.drawText(textRenderer, "S", midX - textRenderer.getWidth("N") / 2, boxBottom + 2, LABEL_COLOR, false);
+        context.drawText(textRenderer, "W", boxLeft - LABEL_MARGIN + 1, midZ - textRenderer.fontHeight / 2, LABEL_COLOR, false);
+        context.drawText(textRenderer, "E", boxRight + 2, midZ - textRenderer.fontHeight / 2, LABEL_COLOR, false);
     }
 
     private void renderComponent(DrawContext context, ComponentBuilder component) {
         int x0 = this.originScreenX + Math.round(component.getRelX() * this.scale);
-        int x1 = x0 + Math.max(1, Math.round(component.getSizeX() * this.scale));
-        int zBottom = this.originScreenZ - Math.round(component.getRelZ() * this.scale);
-        int zTop = zBottom - Math.max(1, Math.round(component.getSizeZ() * this.scale));
+        int x1 = this.originScreenX + Math.round((component.getRelX() + component.getSizeX()) * this.scale);
+        int zTop = this.originScreenZ - Math.round(this.boundsSizeZ * this.scale) + Math.round(component.getRelZ() * this.scale);
+        int zBottom = this.originScreenZ - Math.round(this.boundsSizeZ * this.scale) + Math.round((component.getRelZ() + component.getSizeZ()) * this.scale);
 
         int fillColor = component == this.selectedComponent ? COMPONENT_SELECTED_FILL : COMPONENT_FILL;
         context.fill(x0, zTop, x1, zBottom, fillColor);
-        context.drawBorder(x0, zTop, x1 - x0, zBottom - zTop, COMPONENT_BORDER);
+        context.drawBorder(x0, zTop, x1 - x0, zBottom - zTop, component == this.selectedComponent ? SELECTED_ELEMENT_BORDER : COMPONENT_BORDER);
 
-        int markerSize = Math.max(3, (int) (this.scale / 3));
-        context.fill(x0 - markerSize / 2, zBottom - markerSize / 2,
-                x0 + markerSize / 2, zBottom + markerSize / 2, RELATIVE_MARKER_COLOR);
+        int markerSize = Math.max(2, (int) (this.scale / 4));
+        context.fill(x0 - markerSize / 2, zTop - markerSize / 2,
+                x0 + markerSize / 2, zTop + markerSize / 2, RELATIVE_MARKER_COLOR);
+    }
+
+    private void renderDoor(DrawContext context, DoorBuilder door) {
+        int x0 = this.originScreenX + Math.round(door.minX() * this.scale);
+        int x1 = this.originScreenX + Math.round((door.minX() + door.sizeX()) * this.scale);
+        int zTop = this.originScreenZ - Math.round(this.boundsSizeZ * this.scale) + Math.round(door.minZ() * this.scale);
+        int zBottom = this.originScreenZ - Math.round(this.boundsSizeZ * this.scale) + Math.round((door.minZ() + door.sizeZ()) * this.scale);
+
+        int fillColor = door == this.selectedDoor ? DOOR_SELECTED_FILL : DOOR_FILL;
+        context.fill(x0, zTop, x1, zBottom, fillColor);
+        context.drawBorder(x0, zTop, x1 - x0, zBottom - zTop, door == this.selectedDoor ? SELECTED_ELEMENT_BORDER : DOOR_BORDER);
     }
 
     @Override
@@ -146,13 +175,18 @@ public class RoomPreviewWidget extends ClickableWidget {
             return false;
         }
 
-        ComponentBuilder hit = this.componentAt(mouseX, mouseY);
-        this.select(hit);
+        DoorBuilder hitDoor = this.doorAt(mouseX, mouseY);
+        this.selectDoor(hitDoor);
 
-        if (hit != null) {
-            this.dragging = hit;
-            this.dragOffsetX = this.screenToBlockX(mouseX) - hit.getRelX();
-            this.dragOffsetZ = this.screenToBlockZ(mouseY) - hit.getRelZ();
+        if (hitDoor == null) {
+            ComponentBuilder hitComponent = this.componentAt(mouseX, mouseY);
+            this.selectComponent(hitComponent);
+
+            if (hitComponent != null) {
+                this.dragging = hitComponent;
+                this.dragOffsetX = this.screenToBlockX(mouseX) - hitComponent.getRelX();
+                this.dragOffsetZ = this.screenToBlockZ(mouseY) - hitComponent.getRelZ();
+            }
         }
 
         return true;
@@ -199,12 +233,28 @@ public class RoomPreviewWidget extends ClickableWidget {
         return null;
     }
 
+    private DoorBuilder doorAt(double mouseX, double mouseY) {
+        if (this.floor == null) return null;
+        double blockX = ((mouseX - this.originScreenX) / this.scale);
+        double blockZ = this.boundsSizeZ - (this.originScreenZ - mouseY) / this.scale;
+
+        List<DoorBuilder> doors = this.floor.getDoors();
+        for (int i = doors.size() - 1; i >= 0; i--) {
+            DoorBuilder d = doors.get(i);
+            if (blockX >= d.minX() && blockX < d.minX() + d.sizeX()
+                    && blockZ >= d.minZ() && blockZ < d.minZ() + d.sizeZ()) {
+                return d;
+            }
+        }
+        return null;
+    }
+
     private int screenToBlockX(double mouseX) {
         return (int) ((mouseX - this.originScreenX) / this.scale);
     }
 
     private int screenToBlockZ(double mouseY) {
-        return (int) ((this.originScreenZ - mouseY) / this.scale);
+        return this.boundsSizeZ - 1 - (int) ((this.originScreenZ - mouseY) / this.scale);
     }
 
     private static int clamp(int value, int min, int max) {

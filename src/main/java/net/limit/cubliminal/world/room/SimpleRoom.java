@@ -11,29 +11,29 @@ import net.ludocrypt.limlib.api.world.Manipulation;
 import java.util.ArrayList;
 import java.util.List;
 
-public record SimpleRoom(String id, byte width, byte height, List<Door> doors) implements Room {
+public record SimpleRoom(String template, byte sizeX, byte sizeZ, List<Door> doors) implements Room {
     public static final MapCodec<SimpleRoom> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            Codec.STRING.fieldOf("id").forGetter(SimpleRoom::id),
-            Codec.BYTE.fieldOf("width").forGetter(SimpleRoom::getWidth),
-            Codec.BYTE.fieldOf("height").forGetter(SimpleRoom::getHeight),
+            Codec.STRING.fieldOf("template").forGetter(SimpleRoom::template),
+            Codec.BYTE.fieldOf("size_x").forGetter(SimpleRoom::getSizeX),
+            Codec.BYTE.fieldOf("size_z").forGetter(SimpleRoom::getSizeZ),
             Codec.STRING.fieldOf("doors").forGetter(SimpleRoom::doorData)
     ).apply(instance, SimpleRoom::new));
 
-    public SimpleRoom(String id, byte width, byte height, String doorData) {
-        this(id, width, height, Room.unpackDoors(doorData, width, height));
-        if (width < 1 || height < 1) {
-            throw new IllegalArgumentException("SimpleRoom width: " + width + " and height: " + height + " must be set above 0");
+    public SimpleRoom(String id, byte sizeX, byte sizeZ, String doorData) {
+        this(id, sizeX, sizeZ, Room.unpackDoors(doorData, sizeX, sizeZ));
+        if (sizeX < 1 || sizeZ < 1) {
+            throw new IllegalArgumentException("SimpleRoom size X: " + sizeX + " and size Z: " + sizeZ + " must be set above 0");
         }
     }
 
     @Override
-    public byte getWidth() {
-        return this.width;
+    public byte getSizeX() {
+        return this.sizeX;
     }
 
     @Override
-    public byte getHeight() {
-        return this.height;
+    public byte getSizeZ() {
+        return this.sizeZ;
     }
 
     public String doorData() {
@@ -46,8 +46,8 @@ public record SimpleRoom(String id, byte width, byte height, List<Door> doors) i
     }
 
     @Override
-    public List<Door> place(SpecialMaze maze, int x, int y, Vec2b roomDimensions, byte packedManipulation) {
-        maze.withState(x, y, RoomCellState.of(random -> this.id, packedManipulation));
+    public List<Door> place(SpecialMaze maze, int x, int z, Vec2b roomDimensions, byte packedManipulation) {
+        maze.withState(x, z, RoomCellState.of(random -> this.template, packedManipulation));
         Manipulation manipulation = Manipulation.unpack(packedManipulation);
         PosTransformation translation = Room.posTransformation(roomDimensions, manipulation);
         RotTransformation rotation = Room.rotTransformation(manipulation);

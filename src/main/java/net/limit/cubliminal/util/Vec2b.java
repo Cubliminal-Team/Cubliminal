@@ -45,7 +45,7 @@ public record Vec2b(byte x, byte y) {
         return new Vec2b(x - vec.x(), y - vec.y());
     }
 
-    public Vec2b mult(int scalar) {
+    public Vec2b mul(int scalar) {
         return new Vec2b(x * scalar, y * scalar);
     }
 

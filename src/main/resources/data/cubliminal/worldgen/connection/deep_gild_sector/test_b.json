@@ -1,0 +1,9 @@
+{
+  "room": "connecting/example_2",
+  "placement": {
+    "spacing": 12,
+    "separation": 4,
+    "salt": 23363237,
+    "type": "cubliminal:random_spread"
+  }
+}

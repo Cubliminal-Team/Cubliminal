@@ -1,7 +1,7 @@
 {
   "type": "cubliminal:simple",
-  "id": "room:small",
-  "width": 1,
-  "height": 1,
+  "template": "room:small",
+  "size_x": 1,
+  "size_z": 1,
   "doors": "w_1:s_1"
 }

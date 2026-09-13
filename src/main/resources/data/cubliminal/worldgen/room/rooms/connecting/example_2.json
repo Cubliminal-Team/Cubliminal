@@ -1,0 +1,35 @@
+{
+  "type": "cubliminal:connecting",
+  "floors": [
+    {
+      "floor": 0,
+      "components": [
+        {
+          "pos": [0,0],
+          "size_x": 1,
+          "size_z": 1,
+          "templates": {
+            "connection:test_connection_0": 1.0
+          }
+        }
+      ],
+      "doors": "s_1"
+    },
+    {
+      "floor": 1,
+      "components": [
+        {
+          "pos": [0,0],
+          "size_x": 1,
+          "size_z": 1,
+          "templates": {
+            "connection:test_connection_1": 1.0
+          }
+        }
+      ],
+      "doors": "e_1"
+    }
+  ],
+  "size_x": 1,
+  "size_z": 1
+}

@@ -4,24 +4,32 @@ import com.mojang.datafixers.util.Pair;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
+import net.limit.cubliminal.Cubliminal;
 import net.limit.cubliminal.client.render.SelectionRenderer;
 import net.limit.cubliminal.level.Level;
 import net.limit.cubliminal.networking.s2c.StructureTemplateInfoS2CPayload;
+import net.limit.cubliminal.world.room.Room;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.WorldSavePath;
 import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3i;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
+import org.lwjgl.PointerBuffer;
+import org.lwjgl.system.MemoryStack;
+import org.lwjgl.util.tinyfd.TinyFileDialogs;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.*;
 import java.util.function.Function;
 
 @Environment(EnvType.CLIENT)
@@ -32,15 +40,14 @@ public class RoomCreatorDataManager {
     private static final Vector4f BOX_COLOR = new Vector4f(1.0f, 0.85f, 0.4f, 1.0f);
     private static final Vector3f AXIS_COLOR = new Vector3f(0.2f, 0.2f, 0.2f);
     private static final Vector4f CORNER_COLOR = new Vector4f(0.25f, 1, 0.95f, 0.5f);
-    private static final Vector4f PLACEMENT_CORNER_COLOR = new Vector4f(0.98f, 0.87f, 0.2f, 0.5f);
 
     private BlockBox selection;
     private BlockPos corner1;
     private BlockPos corner2;
-    private BlockBox placement;
-    private BlockPos placementPos;
 
-    private final Map<Identifier, Vec3i> structureTemplates = new HashMap<>();
+    private Path lastRoomSelectionWindowPath;
+
+    private final List<Pair<Identifier, Vec3i>> structureTemplates = new ArrayList<>();
 
 
     public boolean hasSelection() {
@@ -91,38 +98,17 @@ public class RoomCreatorDataManager {
         player.sendMessage(SELECTED_CORNER_TEXT.apply(2), true);
     }
 
-    public boolean hasPlacementPos() {
-        return this.placementPos != null;
-    }
-
-    public BlockPos getPlacementPos() {
-        return this.placementPos;
-    }
-
-    public void setPlacementPos(BlockPos pos) {
-        this.placementPos = pos;
-    }
-
-    public boolean hasPlacement() {
-        return this.placement != null;
-    }
-
-    public BlockBox getPlacement() {
-        return this.placement;
-    }
-
-    public void setPlacement(BlockBox placement) {
-        this.placement = placement;
-    }
-
     public void processPacketUpdate(CustomPayload payload) {
         if (payload instanceof StructureTemplateInfoS2CPayload(List<Pair<Identifier, Vec3i>> templateInfoList)) {
             this.structureTemplates.clear();
-            templateInfoList.forEach(pair -> this.structureTemplates.put(pair.getFirst(), pair.getSecond()));
+            this.structureTemplates.addAll(templateInfoList);
+            this.structureTemplates.sort(Comparator.comparing(
+                    pair -> pair.getFirst().toString().replaceAll("[^a-zA-Z0-9]", "").toLowerCase()
+            ));
         }
     }
 
-    public Map<Identifier, Vec3i> getStructureTemplates() {
+    public List<Pair<Identifier, Vec3i>> getStructureTemplates() {
         return this.structureTemplates;
     }
 
@@ -174,8 +160,47 @@ public class RoomCreatorDataManager {
         }
     }
 
+    public Optional<String> openRoomSelectionWindow(MinecraftClient client) {
+        Path path;
+        if (this.lastRoomSelectionWindowPath != null) {
+            path = this.lastRoomSelectionWindowPath;
+        } else {
+            path = client.isIntegratedServerRunning()
+                    ? client.getServer().getSavePath(WorldSavePath.ROOT).resolve(Room.GENERATED_ROOMS).normalize()
+                    : client.getResourcePackDir().getParent().resolve("saves");
+        }
+
+        try (MemoryStack stack = MemoryStack.stackPush()) {
+            PointerBuffer filters = stack.mallocPointer(1);
+            filters.put(stack.UTF8("*.json"));
+            filters.flip();
+
+            Files.createDirectories(path);
+
+            String selectedPath = TinyFileDialogs.tinyfd_openFileDialog(
+                    "Select Room JSON",
+                    path.toAbsolutePath() + File.separator,
+                    filters,
+                    "JSON Files (*.json)",
+                    false
+            );
+
+            if (selectedPath != null) {
+                this.lastRoomSelectionWindowPath = Path.of(selectedPath).getParent();
+                return Optional.of(selectedPath);
+            } else {
+                return Optional.empty();
+            }
+        } catch (IOException e) {
+            Cubliminal.LOGGER.error(e.getMessage());
+        }
+
+        return Optional.empty();
+    }
+
     public boolean shouldRender() {
-        return this.hasAllData() && MinecraftClient.getInstance().player.isCreativeLevelTwoOp();
+        PlayerEntity player = MinecraftClient.getInstance().player;
+        return this.hasAllData() && (player.isCreativeLevelTwoOp() || player.isSpectator());
     }
 
     public void renderSelection(WorldRenderContext ctx) {

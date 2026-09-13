@@ -21,8 +21,8 @@ public class LevelOneMaze extends SpecialMaze {
     private List<Edge2D> mst;
     private SetMultimap<Vec2i, Door.Instance> doors;
 
-    public LevelOneMaze(int width, int height, boolean[] filter, float bias, boolean simple, Random random) {
-        super(width, height);
+    public LevelOneMaze(int mazeSizeX, int mazeSizeZ, boolean[] filter, float bias, boolean simple, Random random) {
+        super(mazeSizeX, mazeSizeZ);
         this.filter = filter;
         this.bias = bias;
         this.simple = simple;

@@ -1,0 +1,37 @@
+{
+  "type": "cubliminal:connecting",
+  "floors": [
+    {
+      "floor": 0,
+      "components": [
+        {
+          "pos": [0,0],
+          "size_x": 1,
+          "size_z": 1,
+          "templates": {
+            "connection:corridor_connection_1_0": 1.0
+          }
+        }
+      ],
+      "doors": "n_1"
+    },
+    {
+      "floor": 1,
+      "components": [
+        {
+          "pos": [0,0],
+          "size_x": 1,
+          "size_z": 1,
+          "templates": {
+            "connection:corridor_connection_1_1": 1.0
+          }
+        }
+      ],
+      "doors": "w_1"
+    }
+  ],
+  "size_x": 1,
+  "size_z": 1,
+  "padding": 1,
+  "padding_type": "below"
+}

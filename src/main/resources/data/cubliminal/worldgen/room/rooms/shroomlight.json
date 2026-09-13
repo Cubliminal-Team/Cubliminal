@@ -1,0 +1,7 @@
+{
+  "template": "room:shroomlight",
+  "size_x": 1,
+  "size_z": 1,
+  "doors": "s_1",
+  "type": "cubliminal:simple"
+}

@@ -64,7 +64,7 @@ public class LevelOneChunkGenerator extends AbstractNbtChunkGenerator implements
 		this.layerHeight = level.layer_height;
 		this.spacingZ = level.spacing_z;
 		this.layerCount = level.layer_count;
-		this.poissonDiskSampler = new PoissonDiskSampler(level.maze_width, level.maze_height, 30);
+		this.poissonDiskSampler = new PoissonDiskSampler(level.maze_size_x, level.maze_size_z, 30);
 	}
 
 	public static NbtGroup createGroup() {
@@ -93,7 +93,7 @@ public class LevelOneChunkGenerator extends AbstractNbtChunkGenerator implements
 				.with("parking", 1, 10)
 				.with("ramp", "n_1", "n_2", "n_3", "s_1", "s_2", "s_3", "w_1", "w_2", "w_3", "e_1", "e_2", "e_3")
 				.with("entrance")
-				.with("room", "room_1_0", "room_2_0", "room_2_1", "room_3_0", "room_3_1", "small", "medium", "pk_0", "pk_1", "pk_2", "pk_3")
+				.with("room", "room_1_0", "room_2_0", "room_2_1", "room_3_0", "room_3_1", "small", "medium", "pk_0", "pk_1", "pk_2", "pk_3", "shroomlight")
 				.with("connection", "test_connection_0", "test_connection_1", "corridor_connection_1_0", "corridor_connection_1_1")
 				.build();
 	}
@@ -103,11 +103,11 @@ public class LevelOneChunkGenerator extends AbstractNbtChunkGenerator implements
 		return CODEC;
 	}
 
-	public LevelOneMazeRegion createRegion(ChunkRegion region, BlockPos regionPos, int width, int height, Random random) {
+	public LevelOneMazeRegion createRegion(ChunkRegion region, BlockPos regionPos, int mazeSizeX, int mazeSizeZ, Random random) {
         LevelOneMazeRegion mazeRegion = new LevelOneMazeRegion(layerHeight, layerCount);
 		mazeRegion.generateMazes(
-				biomeSource, poissonDiskSampler, region, regionPos, width, layerCount,
-				height, spacingX, spacingZ, level.maze_seed_modifier, random
+				biomeSource, poissonDiskSampler, region, regionPos, mazeSizeX, layerCount,
+				mazeSizeZ, spacingX, spacingZ, level.maze_seed_modifier, random
 		);
 		return mazeRegion;
 	}

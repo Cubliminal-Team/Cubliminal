@@ -3,32 +3,32 @@
   "components": [
     {
       "pos": [2,0],
-      "width": 2,
-      "height": 2,
-      "structures": {
+      "size_x": 2,
+      "size_z": 2,
+      "templates": {
         "room:room_2_0": 0.5,
         "room:room_2_1": 0.5
       }
     },
     {
       "pos": [0,0],
-      "width": 1,
-      "height": 2,
-      "structures": {
+      "size_x": 2,
+      "size_z": 1,
+      "templates": {
         "room:room_1_0": 1.0
       }
     },
     {
       "pos": [1,2],
-      "width": 1,
-      "height": 3,
-      "structures": {
+      "size_x": 3,
+      "size_z": 1,
+      "templates": {
         "room:room_3_0": 0.5,
         "room:room_3_1": 0.7
       }
     }
   ],
-  "width": 3,
-  "height": 4,
+  "size_x": 4,
+  "size_z": 3,
   "doors": "n_0_1:w_1:e_1:s_0_0_1"
 }

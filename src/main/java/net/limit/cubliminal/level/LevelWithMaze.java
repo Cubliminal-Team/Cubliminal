@@ -17,13 +17,13 @@ public class LevelWithMaze extends Level {
             Codec.intRange(0, Integer.MAX_VALUE).optionalFieldOf("layer_height", 16).forGetter(level -> level.layer_height),
             Codec.intRange(1, Integer.MAX_VALUE).optionalFieldOf("spacing_x", 16).forGetter(level -> level.spacing_x),
             Codec.intRange(1, Integer.MAX_VALUE).optionalFieldOf("spacing_z", 16).forGetter(level -> level.spacing_z),
-            Codec.intRange(1, Integer.MAX_VALUE).optionalFieldOf("maze_width", 4).forGetter(level -> level.maze_width),
-            Codec.intRange(1, Integer.MAX_VALUE).optionalFieldOf("maze_height", 4).forGetter(level -> level.maze_height),
+            Codec.intRange(1, Integer.MAX_VALUE).optionalFieldOf("maze_size_x", 4).forGetter(level -> level.maze_size_x),
+            Codec.intRange(1, Integer.MAX_VALUE).optionalFieldOf("maze_size_z", 4).forGetter(level -> level.maze_size_z),
             Codec.LONG.optionalFieldOf("maze_seed_modifier", 0L).forGetter(level -> level.maze_seed_modifier)
     ).apply(instance, instance.stable(LevelWithMaze::new)));
 
-    public final int maze_width;
-    public final int maze_height;
+    public final int maze_size_x;
+    public final int maze_size_z;
     public final long maze_seed_modifier;
 
     /**
@@ -35,22 +35,22 @@ public class LevelWithMaze extends Level {
      * @param layer_height Per layer height in blocks. One layer refers to a sheet of tiled cells.
      * @param spacing_x How many blocks a cell occupies in the X axis.
      * @param spacing_z How many blocks a cell occupies in the Z axis.
-     * @param maze_width How many cells tiled horizontally in the Z axis takes up the maze.
-     * @param maze_height How many cells tiled horizontally in the X axis takes up the maze.
+     * @param maze_size_x How many cells tiled horizontally in the Z axis takes up the maze.
+     * @param maze_size_z How many cells tiled horizontally in the X axis takes up the maze.
      * @param maze_seed_modifier A number that slightly modifies the pseudorandom number sequence.
      */
     public LevelWithMaze(Identifier name, int world_height, int min_y, int max_layer_count, int layer_height,
-                         int spacing_x, int spacing_z, int maze_width, int maze_height, long maze_seed_modifier) {
+                         int spacing_x, int spacing_z, int maze_size_x, int maze_size_z, long maze_seed_modifier) {
         super(name, world_height, min_y, max_layer_count, layer_height, spacing_x, spacing_z);
-        if (maze_width > 0) {
-            this.maze_width = maze_width;
+        if (maze_size_x > 0) {
+            this.maze_size_x = maze_size_x;
         } else {
-            throw new IllegalStateException("Maze width should always greater than 0");
+            throw new IllegalStateException("Maze size X should always greater than 0");
         }
-        if (maze_height > 0) {
-            this.maze_height = maze_height;
+        if (maze_size_z > 0) {
+            this.maze_size_z = maze_size_z;
         } else {
-            throw new IllegalStateException("Maze width should always greater than 0");
+            throw new IllegalStateException("Maze size Z should always greater than 0");
         }
         this.maze_seed_modifier = maze_seed_modifier;
     }

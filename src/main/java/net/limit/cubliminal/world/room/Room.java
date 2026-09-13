@@ -6,10 +6,16 @@ import net.limit.cubliminal.util.MazeUtil;
 import net.limit.cubliminal.world.maze.SpecialMaze;
 import net.limit.cubliminal.util.Vec2b;
 import net.ludocrypt.limlib.api.world.Manipulation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.BlockRotation;
+import net.minecraft.util.InvalidIdentifierException;
+import net.minecraft.util.PathUtil;
+import net.minecraft.util.WorldSavePath;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
 
+import java.nio.file.InvalidPathException;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.function.BiFunction;
 
@@ -22,11 +28,31 @@ public interface Room {
 
     Room DEFAULT = new SimpleRoom("default", (byte) 1, (byte) 1, "");
 
-    byte getWidth();
+    String GENERATED_ROOMS = "generated_rooms";
 
-    byte getHeight();
+    byte getSizeX();
+
+    byte getSizeZ();
 
     RoomType<?> type();
+
+    static Path getRoomPath(MinecraftServer server, String name, String extension) {
+        if (name.contains("//")) {
+            throw new InvalidIdentifierException("Invalid resource path: " + name);
+        } else {
+            try {
+                Path generatedPath = server.getSavePath(WorldSavePath.ROOT).resolve(Room.GENERATED_ROOMS).normalize();
+                Path roomPath = PathUtil.getResourcePath(generatedPath, name, extension);
+                if (roomPath.startsWith(generatedPath) && PathUtil.isNormal(roomPath) && PathUtil.isAllowedName(roomPath)) {
+                    return roomPath;
+                } else {
+                    throw new InvalidIdentifierException("Invalid resource path: " + roomPath);
+                }
+            } catch (InvalidPathException e) {
+                throw new InvalidIdentifierException("Invalid resource path: " + name, e);
+            }
+        }
+    }
 
     static String packDoors(List<Door> doors) {
         if (doors == null || doors.isEmpty()) return "";
@@ -56,7 +82,7 @@ public interface Room {
      * It is read from left to right, and leftmost data represent doors closest to the west-north relative coordinate.
      * Redundant data will be ignored e.g. non-existent walls.
      **/
-    static List<Door> unpackDoors(String doorData, byte width, byte height) {
+    static List<Door> unpackDoors(String doorData, byte sizeX, byte sizeZ) {
         String[] rawData = doorData.split(":");
         List<Door> doors = new ArrayList<>();
         for (String wall : rawData) {
@@ -66,12 +92,12 @@ public interface Room {
                     String[] wallData = wall.split("_");
                     byte dir = MazeUtil.ordinal(MazeUtil.getDirection(direction));
                     for (int n = 1; n < wallData.length; n++) {
-                        if (wallData[n].equals("1") && isDoorValid(dir, n, width, height)) {
+                        if (wallData[n].equals("1") && isDoorValid(dir, n, sizeX, sizeZ)) {
                             Door door = switch (dir) {
-                                case 0 -> new Door(new Vec2b((byte) (height - 1), (byte) (n - 1)), dir);
+                                case 0 -> new Door(new Vec2b((byte) (sizeX - 1), (byte) (n - 1)), dir);
                                 case 1 -> new Door(new Vec2b((byte) 0, (byte) (n - 1)), dir);
                                 case 2 -> new Door(new Vec2b((byte) (n - 1), (byte) 0), dir);
-                                default -> new Door(new Vec2b((byte) (n - 1), (byte) (width - 1)), dir);
+                                default -> new Door(new Vec2b((byte) (n - 1), (byte) (sizeZ - 1)), dir);
                             };
                             doors.add(door);
                         }
@@ -82,14 +108,14 @@ public interface Room {
         return List.copyOf(doors);
     }
 
-    static boolean isDoorValid(byte dir, int index, byte width, byte height) {
+    static boolean isDoorValid(byte dir, int index, byte sizeX, byte sizeZ) {
         return switch (dir) {
-            case 0, 1 -> index <= width;
-            default -> index <= height;
+            case 0, 1 -> index <= sizeZ;
+            default -> index <= sizeX;
         };
     }
 
-    List<Door> place(SpecialMaze maze, int x, int y, Vec2b roomDimensions, byte packedManipulation);
+    List<Door> place(SpecialMaze maze, int x, int z, Vec2b roomDimensions, byte packedManipulation);
 
     static PosTransformation posTransformation(Vec2b roomDimensions, Manipulation manipulation) {
         PosTransformation rotation = switch (manipulation.getRotation()) {
@@ -153,37 +179,36 @@ public interface Room {
     }
 
     default Instance newInstance(Random random) {
-        return new Instance(this, this.getWidth(), this.getHeight(), (byte) random.nextInt(8));
+        return new Instance(this, this.getSizeX(), this.getSizeZ(), (byte) random.nextInt(8));
     }
 
     default Instance newInstance(Manipulation manipulation) {
-        return new Instance(this, this.getWidth(), this.getHeight(), manipulation.pack());
+        return new Instance(this, this.getSizeX(), this.getSizeZ(), manipulation.pack());
     }
 
-    record Instance(Room parent, byte width, byte height, byte packedManipulation) {
+    record Instance(Room parent, byte sizeX, byte sizeZ, byte packedManipulation) {
 
-        public Instance(Room parent, byte width, byte height, byte packedManipulation) {
+        public Instance(Room parent, byte sizeX, byte sizeZ, byte packedManipulation) {
             this.parent = parent;
-            this.width = switch (Manipulation.unpack(packedManipulation).getRotation()) {
+            this.sizeZ = switch (Manipulation.unpack(packedManipulation).getRotation()) {
                 case CLOCKWISE_90, COUNTERCLOCKWISE_90 -> {
-                    this.height = width;
-                    yield height;
+                    this.sizeX = sizeZ;
+                    yield sizeX;
                 }
                 default -> {
-                    this.height = height;
-                    yield width;
+                    this.sizeX = sizeX;
+                    yield sizeZ;
                 }
             };
             this.packedManipulation = packedManipulation;
         }
 
-        // We invert width and height from the usual order because manipulations are done with a vector like this
-        public List<Door> place(SpecialMaze maze, int x, int y) {
-            return this.parent.place(maze, x, y, new Vec2b(height, width), packedManipulation);
+        public List<Door> place(SpecialMaze maze, int x, int z) {
+            return this.parent.place(maze, x, z, new Vec2b(sizeX, sizeZ), packedManipulation);
         }
 
-        public boolean shouldGenerate(int x, int z, int mazeWidth, int mazeHeight) {
-            return x > 0 && x + height < mazeWidth && z > 0 && z + width < mazeHeight;
+        public boolean shouldGenerate(int x, int z, int mazeSizeX, int mazeSizeZ) {
+            return x > 0 && x + sizeX < mazeSizeX && z > 0 && z + sizeZ < mazeSizeZ;
         }
     }
 }

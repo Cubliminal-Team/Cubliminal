@@ -10,6 +10,8 @@ import net.minecraft.registry.Registry;
 import net.minecraft.world.gen.structure.StructureType;
 
 public class CubliminalStructures implements Initer {
+    public static final String MOD_STRUCTURE_FILES_PATH = "structure/nbt/";
+
     public static StructureType<GridAlignedStructure> GRID_ALIGNED_STRUCTURES;
 
     @Override

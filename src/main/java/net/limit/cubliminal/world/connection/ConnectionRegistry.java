@@ -9,6 +9,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
 import net.fabricmc.fabric.api.resource.SimpleResourceReloadListener;
 import net.limit.cubliminal.Cubliminal;
+import net.limit.cubliminal.world.room.Room;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.resource.Resource;
@@ -21,8 +22,10 @@ import org.apache.commons.io.FilenameUtils;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.nio.file.NoSuchFileException;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
@@ -41,8 +44,8 @@ public class ConnectionRegistry implements SimpleResourceReloadListener<Object2O
                     Identifier id = Identifier.of(resourceId.getNamespace(), FilenameUtils.getBaseName(resourceId.getPath()));
                     data.computeIfAbsent(id, key -> {
                         RegistryKey<Biome> biome = RegistryKey.of(RegistryKeys.BIOME, biomeId(resourceId));
-                        DataResult<Connection> connection = Connection.CODEC.codec().parse(JsonOps.INSTANCE, JsonHelper.deserialize(reader));
-                        return Pair.of(biome, connection.getOrThrow());
+                        var rawConnection = Connection.CODEC.parse(JsonOps.INSTANCE, JsonHelper.deserialize(reader)).getOrThrow();
+                        return Pair.of(biome, new Connection(decodeRoom(resourceManager, rawConnection.getFirst()), rawConnection.getSecond()));
                     });
                 } catch (IOException e) {
                     Cubliminal.LOGGER.error("Couldn't parse json file in: {}", resourceId);
@@ -51,6 +54,25 @@ public class ConnectionRegistry implements SimpleResourceReloadListener<Object2O
 
             return data;
         });
+    }
+
+    private static Room decodeRoom(ResourceManager resourceManager, String resourceId) {
+        Identifier path = Cubliminal.id("worldgen/room/rooms/" + resourceId + ".json");
+        Optional<Resource> resourceOptional = resourceManager.getResource(path);
+        if (resourceOptional.isPresent()) {
+            Resource resource = resourceOptional.get();
+            try (Reader reader = resource.getReader()) {
+                DataResult<Room> decodedRoom = Room.CODEC.parse(JsonOps.INSTANCE, JsonHelper.deserialize(reader));
+                return decodedRoom.getOrThrow();
+            } catch (IOException e) {
+                Cubliminal.LOGGER.error("Couldn't decode room definition in {}", path);
+            }
+        } else {
+            Cubliminal.LOGGER.error("Couldn't find room json file in {}", path);
+            throw new RuntimeException(new NoSuchFileException(resourceId));
+        }
+
+        return null;
     }
 
     @Override

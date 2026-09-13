@@ -42,27 +42,27 @@ public class LevelOneMazeRegion extends MazeRegion<LevelOneMaze> {
 
     @SuppressWarnings("unchecked")
     public void generateMazes(LevelOneBiomeSource biomeSource, PoissonDiskSampler sampler, ChunkRegion region,
-                              BlockPos regionPos, int width, int floors, int height, int thicknessX,
-                              int thicknessZ, long seedModifier, Random random) {
+                              BlockPos regionPos, int mazeSizeX, int floors, int mazeSizeZ, int spacingX,
+                              int spacingZ, long seedModifier, Random random) {
 
         // Generate connections and cache biomes + valid room positions
-        this.biomeGrid = new RegistryEntry[width * height];
-        this.validRoomPos = new ArrayList<>(width * height);
+        this.biomeGrid = new RegistryEntry[mazeSizeX * mazeSizeZ];
+        this.validRoomPos = new ArrayList<>(mazeSizeX * mazeSizeZ);
         this.connectionCache = new Int2ObjectOpenHashMap<>(floors);
 
-        for (int x = 0; x < width; x++) {
-            for (int z = 0; z < height; z++) {
-                BlockPos inWorldPos = new BlockPos(x * thicknessX + regionPos.getX(), regionPos.getY(), z * thicknessZ + regionPos.getZ());
+        for (int x = 0; x < mazeSizeX; x++) {
+            for (int z = 0; z < mazeSizeZ; z++) {
+                BlockPos inWorldPos = new BlockPos(x * spacingX + regionPos.getX(), regionPos.getY(), z * spacingZ + regionPos.getZ());
                 RegistryEntry<Biome> biome = biomeSource.calcBiome(inWorldPos);
 
                 // Cache biome
-                biomeGrid[z * width + x] = biome;
+                biomeGrid[z * mazeSizeX + x] = biome;
                 if (biome.isIn(CubliminalBiomes.DEEP_LEVEL_ONE)) {
                     validRoomPos.add(new Vec2i(x, z));
                 }
 
                 // Generate if it's not touching a border
-                if (x > 0 && x < width - 1 && z > 0 && z < height - 1) {
+                if (x > 0 && x < mazeSizeX - 1 && z > 0 && z < mazeSizeZ - 1) {
                     int finalX = x;
                     int finalZ = z;
                     biome.getKey().ifPresent(key -> {
@@ -70,9 +70,9 @@ public class LevelOneMazeRegion extends MazeRegion<LevelOneMaze> {
                             ConnectionRegistry.getMappings(key).forEach(connection -> {
                                 // Minecraft-like structure placement
                                 if (connection.placement().shouldGenerate(Cubliminal.SERVER.getSeed(),
-                                        Math.floorDiv(inWorldPos.getX(), thicknessX),
-                                        Math.floorDiv(inWorldPos.getZ(), thicknessZ))) {
-                                    this.placeConnection(finalX, finalZ, width, height, connection.room(), floors, random);
+                                        Math.floorDiv(inWorldPos.getX(), spacingX),
+                                        Math.floorDiv(inWorldPos.getZ(), spacingZ))) {
+                                    this.placeConnection(finalX, finalZ, mazeSizeX, mazeSizeZ, connection.room(), floors, random);
                                 }
                             });
                         }
@@ -86,8 +86,8 @@ public class LevelOneMazeRegion extends MazeRegion<LevelOneMaze> {
             BlockPos mazePos = regionPos.add(0, floor * layerHeight, 0);
             Random mazeRandom = Random.create(LimlibHelper.blockSeed(mazePos) + seedModifier + region.getSeed());
             floorStorage[floor] = floor % 2 == 0
-                    ? this.generateHalls(sampler, floor, mazePos, width, height, thicknessX, thicknessZ, mazeRandom)
-                    : this.generateCorridors(sampler, floor, mazePos, width, height, thicknessX, thicknessZ, mazeRandom);
+                    ? this.generateHalls(sampler, floor, mazePos, mazeSizeX, mazeSizeZ, spacingX, spacingZ, mazeRandom)
+                    : this.generateCorridors(sampler, floor, mazePos, mazeSizeX, mazeSizeZ, spacingX, spacingZ, mazeRandom);
         }
 
         // Nullify unused variables
@@ -97,32 +97,41 @@ public class LevelOneMazeRegion extends MazeRegion<LevelOneMaze> {
     }
 
     // Chooses a random floor where the room can be placed
-    private void placeConnection(int x, int z, int width, int height, ConnectingRoom room, int floors, Random random) {
-        PaddingType paddingType = room.paddingType();
-        int validFloors = 1 + floors - room.getFloors() - room.padding() * (paddingType.above + paddingType.below);
-        if (validFloors > 0) {
-            int startFloor = paddingType.below == 1
-                    ? room.padding() + random.nextInt(validFloors)
-                    : random.nextInt(validFloors);
-            byte manipulation = (byte) random.nextInt(8);
-            for (int dy = 0; dy < room.getFloors(); dy++) {
-                if (room.hasFloor(dy)) {
-                    Room.Instance instance = room.getInstance(dy, manipulation);
-                    if (instance.shouldGenerate(x, z, width, height)) {
-                        connectionCache
-                                .computeIfAbsent(startFloor + dy, k -> new Object2ObjectArrayMap<>(2))
-                                .putIfAbsent(new Vec2i(x, z), instance);
+    private void placeConnection(int x, int z, int mazeSizeX, int mazeSizeZ, Room room, int floors, Random random) {
+        if (room instanceof ConnectingRoom con) {
+            PaddingType paddingType = con.paddingType();
+            int validFloors = 1 + floors - con.getFloors() - con.padding() * (paddingType.above + paddingType.below);
+            if (validFloors > 0) {
+                int startFloor = paddingType.below == 1
+                        ? con.padding() + random.nextInt(validFloors)
+                        : random.nextInt(validFloors);
+                byte manipulation = (byte) random.nextInt(8);
+                for (int dy = 0; dy < con.getFloors(); dy++) {
+                    if (con.hasFloor(dy)) {
+                        Room.Instance instance = con.getInstance(dy, manipulation);
+                        if (instance.shouldGenerate(x, z, mazeSizeX, mazeSizeZ)) {
+                            connectionCache
+                                    .computeIfAbsent(startFloor + dy, k -> new Object2ObjectArrayMap<>(2))
+                                    .putIfAbsent(new Vec2i(x, z), instance);
+                        }
                     }
                 }
+            }
+        } else {
+            Room.Instance instance = room.newInstance(random);
+            if (instance.shouldGenerate(x, z, mazeSizeX, mazeSizeZ)) {
+                connectionCache
+                        .computeIfAbsent(random.nextInt(floors), k -> new Object2ObjectArrayMap<>(2))
+                        .putIfAbsent(new Vec2i(x, z), instance);
             }
         }
     }
 
-    private LevelOneMaze generateCorridors(PoissonDiskSampler sampler, int floor, BlockPos mazePos, int width,
-                                           int height, int thicknessX, int thicknessZ, Random random) {
+    private LevelOneMaze generateCorridors(PoissonDiskSampler sampler, int floor, BlockPos mazePos, int mazeSizeX,
+                                           int mazeSizeZ, int spacingX, int spacingZ, Random random) {
 
-        // Cache previously generated structures
-        boolean[] roomCache = new boolean[width * height];
+        // Cache previously generated rooms
+        boolean[] roomCache = new boolean[mazeSizeX * mazeSizeZ];
         List<Vec2i> cachedPositions = new ArrayList<>(2);
         List<Room.Instance> cachedRooms = new ArrayList<>(2);
         if (connectionCache.containsKey(floor)) {
@@ -130,9 +139,9 @@ public class LevelOneMazeRegion extends MazeRegion<LevelOneMaze> {
             cachedPositions.addAll(cache.keySet());
             cachedRooms.addAll(cache.values());
             cache.forEach((cell, room) -> {
-                for (int row = 0; row < room.height(); row++) {
-                    for (int column = 0; column < room.width(); column++) {
-                        roomCache[(column + cell.y()) * width + row + cell.x()] = true;
+                for (int x = 0; x < room.sizeX(); x++) {
+                    for (int z = 0; z < room.sizeZ(); z++) {
+                        roomCache[(z + cell.y()) * mazeSizeX + x + cell.x()] = true;
                     }
                 }
             });
@@ -144,7 +153,7 @@ public class LevelOneMazeRegion extends MazeRegion<LevelOneMaze> {
         roomPositions.addAll(cachedPositions);
         roomInstances.addAll(cachedRooms);
         SetMultimap<Vec2i, Door.Instance> doors = LinkedHashMultimap.create();
-        LevelOneMaze maze = new LevelOneMaze(width, height, roomCache, 0.2f, true, random);
+        LevelOneMaze maze = new LevelOneMaze(mazeSizeX, mazeSizeZ, roomCache, 0.2f, true, random);
 
         // Mark room origin cells for generation and add their doors' positions as nodes
         if (roomInstances.size() == roomPositions.size()) {
@@ -163,7 +172,7 @@ public class LevelOneMazeRegion extends MazeRegion<LevelOneMaze> {
         }
 
         // Add connections to other mazes in form of doors
-        List<Vec2i> connections = this.addConnections(mazePos, width, height, thicknessX, thicknessZ, 4);
+        List<Vec2i> connections = this.addConnections(mazePos, mazeSizeX, mazeSizeZ, spacingX, spacingZ, 4);
         for (int i = 0; i < connections.size(); ++i) {
             Vec2i entryPos = connections.get(i);
             if (maze.fits(entryPos)) {
@@ -178,11 +187,11 @@ public class LevelOneMazeRegion extends MazeRegion<LevelOneMaze> {
         return maze;
     }
 
-    private LevelOneMaze generateHalls(PoissonDiskSampler sampler, int floor, BlockPos mazePos, int width,
-                                       int height, int thicknessX, int thicknessZ, Random random) {
+    private LevelOneMaze generateHalls(PoissonDiskSampler sampler, int floor, BlockPos mazePos, int mazeSizeX,
+                                       int mazeSizeZ, int spacingX, int spacingZ, Random random) {
 
-        // Cache previously generated structures
-        boolean[] roomCache = new boolean[width * height];
+        // Cache previously generated templates
+        boolean[] roomCache = new boolean[mazeSizeX * mazeSizeZ];
         List<Vec2i> cachedPositions = new ArrayList<>(2);
         List<Room.Instance> cachedRooms = new ArrayList<>(2);
         if (connectionCache.containsKey(floor)) {
@@ -190,9 +199,9 @@ public class LevelOneMazeRegion extends MazeRegion<LevelOneMaze> {
             cachedPositions.addAll(cache.keySet());
             cachedRooms.addAll(cache.values());
             cache.forEach((cell, room) -> {
-                for (int row = 0; row < room.height(); row++) {
-                    for (int column = 0; column < room.width(); column++) {
-                        roomCache[(column + cell.y()) * width + row + cell.x()] = true;
+                for (int x = 0; x < room.sizeX(); x++) {
+                    for (int z = 0; z < room.sizeZ(); z++) {
+                        roomCache[(z + cell.y()) * mazeSizeX + x + cell.x()] = true;
                     }
                 }
             });
@@ -206,7 +215,7 @@ public class LevelOneMazeRegion extends MazeRegion<LevelOneMaze> {
         roomInstances.addAll(cachedRooms);
         ObjectLinkedOpenHashSet<Vector2D> nodes = new ObjectLinkedOpenHashSet<>();
         SetMultimap<Vec2i, Door.Instance> doors = LinkedHashMultimap.create();
-        LevelOneMaze maze = new LevelOneMaze(width, height, roomCache, 0.2f, false, random);
+        LevelOneMaze maze = new LevelOneMaze(mazeSizeX, mazeSizeZ, roomCache, 0.2f, false, random);
 
         // Mark room origin cells for generation and add their doors' positions as nodes
         if (roomInstances.size() == roomPositions.size()) {
@@ -227,7 +236,7 @@ public class LevelOneMazeRegion extends MazeRegion<LevelOneMaze> {
         }
 
         // Add connections to other mazes in form of doors
-        List<Vector2D> connections = this.addConnections(mazePos, width, height, thicknessX, thicknessZ);
+        List<Vector2D> connections = this.addConnections(mazePos, mazeSizeX, mazeSizeZ, spacingX, spacingZ);
         for (int i = 0; i < connections.size(); ++i) {
             MazeComponent.Face face = MazeComponent.Face.values()[i];
             Vector2D vec = connections.get(i);
@@ -252,39 +261,39 @@ public class LevelOneMazeRegion extends MazeRegion<LevelOneMaze> {
         return maze;
     }
 
-    private List<Vector2D> addConnections(BlockPos mazePos, int width, int height, int thicknessX, int thicknessZ) {
+    private List<Vector2D> addConnections(BlockPos mazePos, int mazeSizeX, int mazeSizeZ, int spacingX, int spacingZ) {
         long seed = Cubliminal.SERVER.getSeed();
-        Random randomUp = Random.create(LimlibHelper.blockSeed(mazePos.add(height * thicknessZ - 1, 0, 0)) + seed);
-        Random randomDown = Random.create(LimlibHelper.blockSeed(mazePos.add(-1, 0, 0)) + seed);
-        Random randomLeft = Random.create(LimlibHelper.blockSeed(mazePos) + seed);
-        Random randomRight = Random.create(LimlibHelper.blockSeed(mazePos.add(0, 0, width * thicknessX)) + seed);
+        Random eastRandom = Random.create(LimlibHelper.blockSeed(mazePos.add(mazeSizeX * spacingX - 1, 0, 0)) + seed);
+        Random westRandom = Random.create(LimlibHelper.blockSeed(mazePos.add(-1, 0, 0)) + seed);
+        Random northRandom = Random.create(LimlibHelper.blockSeed(mazePos) + seed);
+        Random southRandom = Random.create(LimlibHelper.blockSeed(mazePos.add(0, 0, mazeSizeZ * spacingZ)) + seed);
         List<Vector2D> connections = new ArrayList<>();
         // East
-        connections.add(new Vector2D(width - 1, randomUp.nextInt(height)));
+        connections.add(new Vector2D(mazeSizeX - 1, eastRandom.nextInt(mazeSizeZ)));
         // West
-        connections.add(new Vector2D(0, randomDown.nextInt(height)));
+        connections.add(new Vector2D(0, westRandom.nextInt(mazeSizeZ)));
         // North
-        connections.add(new Vector2D(randomLeft.nextInt(width), 0));
+        connections.add(new Vector2D(northRandom.nextInt(mazeSizeX), 0));
         // South
-        connections.add(new Vector2D(randomRight.nextInt(width), height - 1));
+        connections.add(new Vector2D(southRandom.nextInt(mazeSizeX), mazeSizeZ - 1));
         return connections;
     }
 
-    private List<Vec2i> addConnections(BlockPos mazePos, int width, int height, int thicknessX, int thicknessZ, int a) {
+    private List<Vec2i> addConnections(BlockPos mazePos, int mazeSizeX, int mazeSizeZ, int spacingX, int spacingZ, int a) {
         long seed = Cubliminal.SERVER.getSeed();
-        Random randomUp = Random.create(LimlibHelper.blockSeed(mazePos.add(height * thicknessZ - 1, 0, 0)) + seed);
-        Random randomDown = Random.create(LimlibHelper.blockSeed(mazePos.add(-1, 0, 0)) + seed);
-        Random randomLeft = Random.create(LimlibHelper.blockSeed(mazePos) + seed);
-        Random randomRight = Random.create(LimlibHelper.blockSeed(mazePos.add(0, 0, width * thicknessX)) + seed);
+        Random eastRandom = Random.create(LimlibHelper.blockSeed(mazePos.add(mazeSizeX * spacingX - 1, 0, 0)) + seed);
+        Random westRandom = Random.create(LimlibHelper.blockSeed(mazePos.add(-1, 0, 0)) + seed);
+        Random northRandom = Random.create(LimlibHelper.blockSeed(mazePos) + seed);
+        Random southRandom = Random.create(LimlibHelper.blockSeed(mazePos.add(0, 0, mazeSizeZ * spacingZ)) + seed);
         List<Vec2i> connections = new ArrayList<>();
         // East
-        connections.add(new Vec2i(width - 1, randomUp.nextBetween(-a, height + a - 1)));
+        connections.add(new Vec2i(mazeSizeX - 1, eastRandom.nextBetween(-a, mazeSizeZ + a - 1)));
         // West
-        connections.add(new Vec2i(0, randomDown.nextBetween(-a, height + a - 1)));
+        connections.add(new Vec2i(0, westRandom.nextBetween(-a, mazeSizeZ + a - 1)));
         // North
-        connections.add(new Vec2i(randomLeft.nextBetween(-a, width + a - 1), 0));
+        connections.add(new Vec2i(northRandom.nextBetween(-a, mazeSizeX + a - 1), 0));
         // South
-        connections.add(new Vec2i(randomRight.nextBetween(-a, width + a - 1), height - 1));
+        connections.add(new Vec2i(southRandom.nextBetween(-a, mazeSizeX + a - 1), mazeSizeZ - 1));
         return connections;
     }
 }

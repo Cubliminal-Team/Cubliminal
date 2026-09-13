@@ -14,29 +14,29 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiFunction;
 
-public record CompositeRoom(List<Component> components, byte width, byte height, List<Door> doors) implements Room {
+public record CompositeRoom(List<Component> components, byte sizeX, byte sizeZ, List<Door> doors) implements Room {
     public static final MapCodec<CompositeRoom> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             Component.CODEC.listOf().fieldOf("components").forGetter(CompositeRoom::components),
-            Codec.BYTE.fieldOf("width").forGetter(CompositeRoom::getWidth),
-            Codec.BYTE.fieldOf("height").forGetter(CompositeRoom::getHeight),
+            Codec.BYTE.fieldOf("size_x").forGetter(CompositeRoom::getSizeX),
+            Codec.BYTE.fieldOf("size_z").forGetter(CompositeRoom::getSizeZ),
             Codec.STRING.fieldOf("doors").forGetter(CompositeRoom::doorData)
     ).apply(instance, CompositeRoom::new));
 
-    public CompositeRoom(List<Component> components, byte width, byte height, String doorData) {
-        this(List.copyOf(components), width, height, Room.unpackDoors(doorData, width, height));
-        if (width < 1 || height < 1) {
-            throw new IllegalArgumentException("Room width: " + width + " and height: " + height + " must be set above 0");
+    public CompositeRoom(List<Component> components, byte sizeX, byte sizeZ, String doorData) {
+        this(List.copyOf(components), sizeX, sizeZ, Room.unpackDoors(doorData, sizeX, sizeZ));
+        if (sizeX < 1 || sizeZ < 1) {
+            throw new IllegalArgumentException("Room size X: " + sizeX + " and size Z: " + sizeZ + " must be set above 0");
         }
     }
 
     @Override
-    public byte getWidth() {
-        return this.width;
+    public byte getSizeX() {
+        return this.sizeX;
     }
 
     @Override
-    public byte getHeight() {
-        return this.height;
+    public byte getSizeZ() {
+        return this.sizeZ;
     }
 
     public String doorData() {
@@ -49,12 +49,12 @@ public record CompositeRoom(List<Component> components, byte width, byte height,
     }
 
     @Override
-    public List<Door> place(SpecialMaze maze, int x, int y, Vec2b roomDimensions, byte packedManipulation) {
+    public List<Door> place(SpecialMaze maze, int x, int z, Vec2b roomDimensions, byte packedManipulation) {
         Manipulation manipulation = Manipulation.unpack(packedManipulation);
         BiFunction<Vec2b, Vec2b, Vec2b> transformation = Room.cornerTransformation(roomDimensions, manipulation);
         this.components.forEach(component -> {
-            Vec2b transformed = transformation.apply(component.pos(), new Vec2b(component.height(), component.width()));
-            maze.withState(x + transformed.x(), y + transformed.y(), RoomCellState.of(component::get, packedManipulation));
+            Vec2b transformed = transformation.apply(component.pos(), new Vec2b(component.sizeX(), component.sizeZ()));
+            maze.withState(x + transformed.x(), z + transformed.y(), RoomCellState.of(component::get, packedManipulation));
         });
         PosTransformation translation = Room.posTransformation(roomDimensions, manipulation);
         RotTransformation rotation = Room.rotTransformation(manipulation);
@@ -63,32 +63,32 @@ public record CompositeRoom(List<Component> components, byte width, byte height,
         return transformed;
     }
 
-    public record Component(Vec2b pos, byte width, byte height, WeightedHolderSet<String> structures) {
+    public record Component(Vec2b pos, byte sizeX, byte sizeZ, WeightedHolderSet<String> templates) {
         public static Codec<Component> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 Vec2b.CODEC.fieldOf("pos").forGetter(Component::pos),
-                Codec.BYTE.fieldOf("width").forGetter(Component::width),
-                Codec.BYTE.fieldOf("height").forGetter(Component::height),
-                WeightedHolderSet.createHashCodec(Codec.STRING).fieldOf("structures").forGetter(Component::structures)
+                Codec.BYTE.fieldOf("size_x").forGetter(Component::sizeX),
+                Codec.BYTE.fieldOf("size_z").forGetter(Component::sizeZ),
+                WeightedHolderSet.createHashCodec(Codec.STRING).fieldOf("templates").forGetter(Component::templates)
         ).apply(instance, Component::new));
 
-        public Component(Vec2b pos, byte width, byte height, WeightedHolderSet<String> structures) {
+        public Component(Vec2b pos, byte sizeX, byte sizeZ, WeightedHolderSet<String> templates) {
             if (pos.x() < 0 || pos.y() < 0) {
                 throw new IllegalArgumentException("Room's relative position X: " + pos.x() + " and Z: " + pos.y() + " must be 0 or positive");
             }
             this.pos = pos;
-            if (width < 1 || height < 1) {
-                throw new IllegalArgumentException("Room width: " + width + " and height: " + height + " must be set above 0");
+            if (sizeX < 1 || sizeZ < 1) {
+                throw new IllegalArgumentException("Room size X: " + sizeX + " and size Z: " + sizeZ + " must be set above 0");
             }
-            this.width = width;
-            this.height = height;
-            if (structures.getValues().isEmpty()) {
-                throw new IllegalArgumentException("No structures were found in the holder set");
+            this.sizeX = sizeX;
+            this.sizeZ = sizeZ;
+            if (templates.getValues().isEmpty()) {
+                throw new IllegalArgumentException("No templates were found in the holder set");
             }
-            this.structures = structures;
+            this.templates = templates;
         }
 
         public String get(Random random) {
-            return this.structures.random(random);
+            return this.templates.random(random);
         }
 
     }

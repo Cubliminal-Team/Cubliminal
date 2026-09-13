@@ -4,13 +4,13 @@ import net.ludocrypt.limlib.api.world.maze.DepthLikeMaze;
 
 public abstract class SpecialMaze extends DepthLikeMaze {
 
-    public SpecialMaze(int width, int height) {
-        super(width, height);
+    public SpecialMaze(int mazeSizeX, int mazeSizeZ) {
+        super(mazeSizeX, mazeSizeZ);
     }
 
-    public void withState(int x, int y, CellState cellState) {
+    public void withState(int x, int z, CellState cellState) {
         if (cellState instanceof SpecialCellState) {
-            this.maze[y * this.width + x] = cellState;
+            this.maze[z * this.width + x] = cellState;
         }
     }
 

@@ -1,5 +1,12 @@
 package net.limit.cubliminal.client.screen.roomcreator.data;
 
+import net.limit.cubliminal.Cubliminal;
+import net.limit.cubliminal.world.room.CompositeRoom;
+import net.limit.cubliminal.world.room.ConnectingRoom;
+import net.limit.cubliminal.world.room.Door;
+import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +24,10 @@ public class FloorBuilder {
         return component;
     }
 
+    public void addComponent(CompositeRoom.Component component, List<Identifier> modTemplates) {
+        this.components.add(ComponentBuilder.fromBuiltComponent(component, modTemplates));
+    }
+
     public void removeComponent(ComponentBuilder component) {
         this.components.remove(component);
     }
@@ -27,7 +38,42 @@ public class FloorBuilder {
         return door;
     }
 
+    public void addDoor(Door door) {
+        this.doors.add(DoorBuilder.fromBuiltDoor(door));
+    }
+
     public void removeDoor(DoorBuilder door) {
         this.doors.remove(door);
+    }
+
+    public void afterResizingRoom(int roomSizeX, int roomSizeZ) {
+        this.doors.forEach(door -> door.afterResizingRoom(roomSizeX, roomSizeZ));
+    }
+
+    public List<Door> buildDoors() {
+        return this.doors.stream().map(DoorBuilder::build).distinct().toList();
+    }
+
+    @Nullable
+    public ConnectingRoom.FloorData build() {
+        List<CompositeRoom.Component> builtComponents = new ArrayList<>();
+        for (ComponentBuilder component : this.components) {
+            if (!component.getTemplates().getValues().isEmpty()) {
+                builtComponents.add(component.build());
+            }
+        }
+
+        return builtComponents.isEmpty() ? null : new ConnectingRoom.FloorData(builtComponents, this.buildDoors());
+    }
+
+    public static FloorBuilder fromBuiltFloor(List<CompositeRoom.Component> components, List<Door> doors) {
+        FloorBuilder builder = new FloorBuilder();
+        List<Identifier> modTemplates = new ArrayList<>();
+        RoomCreatorDataManager.INSTANCE.getStructureTemplates().forEach(pair -> {
+            if (pair.getFirst().getNamespace().equals(Cubliminal.MOD_ID)) modTemplates.add(pair.getFirst());
+        });
+        components.forEach(component -> builder.addComponent(component, modTemplates));
+        doors.forEach(builder::addDoor);
+        return builder;
     }
 }

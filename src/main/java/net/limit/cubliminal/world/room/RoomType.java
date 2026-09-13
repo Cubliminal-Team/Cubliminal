@@ -10,11 +10,12 @@ import net.minecraft.util.InvalidIdentifierException;
 
 public record RoomType<R extends Room>(MapCodec<R> codec) {
     public static final Registry<RoomType<?>> REGISTRY = new SimpleRegistry<>(
-            RegistryKey.ofRegistry(Cubliminal.id("room_type")), Lifecycle.stable());
+            RegistryKey.ofRegistry(Cubliminal.id("room_type")), Lifecycle.stable()
+    );
 
     public static final RoomType<SimpleRoom> SIMPLE = register("simple", new RoomType<>(SimpleRoom.CODEC));
     public static final RoomType<CompositeRoom> COMPOSITE = register("composite", new RoomType<>(CompositeRoom.CODEC));
-    public static final RoomType<ConnectingRoom> CONNECTION = register("connection", new RoomType<>(ConnectingRoom.CODEC));
+    public static final RoomType<ConnectingRoom> CONNECTING = register("connecting", new RoomType<>(ConnectingRoom.CODEC));
 
     public static <R extends Room> RoomType<R> register(String id, RoomType<R> roomType) {
         return Registry.register(REGISTRY, Cubliminal.id(id), roomType);
@@ -46,6 +47,14 @@ public record RoomType<R extends Room>(MapCodec<R> codec) {
             }
 
             throw new InvalidIdentifierException("Room type: " + name + " doesn't exist");
+        }
+
+        public RoomType<?> getTypeCodecHolder() {
+            return switch (this) {
+                case SIMPLE -> RoomType.SIMPLE;
+                case COMPOSITE -> RoomType.COMPOSITE;
+                case CONNECTING -> RoomType.CONNECTING;
+            };
         }
     }
 }

@@ -8,17 +8,18 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.ChunkRegion;
 
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
-public record MazeRegionGenerator<M extends MazeComponent, R extends MazeRegion<M>>
-        (HashMap<BlockPos, R> mazeRegions, int width, int height,
-         int spacingX, int layerHeight, int spacingZ, long seedModifier) {
+public record MazeRegionGenerator<M extends MazeComponent, R extends MazeRegion<M>>(
+        ConcurrentHashMap<BlockPos, R> mazeRegions, int mazeSizeX, int mazeSizeZ,
+        int spacingX, int layerHeight, int spacingZ, long seedModifier
+) {
 
     public static <M extends MazeComponent, R extends MazeRegion<M>> MazeRegionGenerator<M, R> create(LevelWithMaze level) {
         return new MazeRegionGenerator<>(
-                new HashMap<>(15),
-                level.maze_width,
-                level.maze_height,
+                new ConcurrentHashMap<>(15),
+                level.maze_size_x,
+                level.maze_size_z,
                 level.spacing_x,
                 level.layer_height,
                 level.spacing_z,
@@ -39,14 +40,14 @@ public record MazeRegionGenerator<M extends MazeComponent, R extends MazeRegion<
                 if (Math.floorMod(inZ, spacingZ) != 0) continue;
 
                 BlockPos regionPos = new BlockPos(
-                        inX - Math.floorMod(inX, width * spacingX),
+                        inX - Math.floorMod(inX, mazeSizeX * spacingX),
                         posY - Math.floorMod(posY, layerHeight * layerCount),
-                        inZ - Math.floorMod(inZ, height * spacingZ)
+                        inZ - Math.floorMod(inZ, mazeSizeZ * spacingZ)
                 );
 
                 R mazeRegion = mazeRegions.computeIfAbsent(regionPos, posx -> regionCreator
                         .newRegion(
-                                region, posx, width, height,
+                                region, posx, mazeSizeX, mazeSizeZ,
                                 Random.create(LimlibHelper.blockSeed(posx) + seedModifier + region.getSeed())
                         )
                 );
@@ -58,15 +59,15 @@ public record MazeRegionGenerator<M extends MazeComponent, R extends MazeRegion<
 
     public BlockPos toRegionPos(BlockPos inPos) {
         return new BlockPos(
-                inPos.getX() - Math.floorMod(inPos.getX(), width * spacingX),
+                inPos.getX() - Math.floorMod(inPos.getX(), mazeSizeX * spacingX),
                 inPos.getY(),
-                inPos.getZ() - Math.floorMod(inPos.getZ(), height * spacingZ)
+                inPos.getZ() - Math.floorMod(inPos.getZ(), mazeSizeZ * spacingZ)
         );
     }
 
     @FunctionalInterface
     public interface RegionCreator<M extends MazeComponent, R extends MazeRegion<M>> {
-        R newRegion(ChunkRegion region, BlockPos regionPos, int width, int height, Random random);
+        R newRegion(ChunkRegion region, BlockPos regionPos, int mazeSizeX, int mazeSizeZ, Random random);
     }
 
     @FunctionalInterface

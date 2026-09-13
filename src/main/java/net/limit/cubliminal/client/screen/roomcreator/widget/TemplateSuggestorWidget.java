@@ -8,19 +8,21 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
+import net.minecraft.client.gui.widget.CyclingButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3i;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 public class TemplateSuggestorWidget extends ClickableWidget {
 
+    private final CyclingButtonWidget<Level> levelWidget;
     private final TextFieldWidget templateNameWidget;
     private final List<Identifier> templatesWithSameSize = new ArrayList<>();
     private final List<Identifier> suggestedTemplates = new ArrayList<>();
@@ -31,7 +33,7 @@ public class TemplateSuggestorWidget extends ClickableWidget {
     private int inWindowIndex;
     private int selection;
 
-    public TemplateSuggestorWidget(TextFieldWidget templateNameWidget) {
+    public TemplateSuggestorWidget(CyclingButtonWidget<Level> levelWidget, TextFieldWidget templateNameWidget) {
         super(
                 templateNameWidget.getX() - (templateNameWidget.drawsBackground() ? 0 : 1),
                 templateNameWidget.getY() + templateNameWidget.getHeight() + (templateNameWidget.drawsBackground() ? 1 : 0),
@@ -39,6 +41,7 @@ public class TemplateSuggestorWidget extends ClickableWidget {
                 0,
                 Text.empty()
         );
+        this.levelWidget = levelWidget;
         this.templateNameWidget = templateNameWidget;
     }
 
@@ -201,8 +204,10 @@ public class TemplateSuggestorWidget extends ClickableWidget {
         this.oldSizeZ = newSizeZ;
 
         this.templatesWithSameSize.clear();
-        RoomCreatorDataManager.INSTANCE.getStructureTemplates().forEach((id, size) -> {
-            if (size.getX() == newSizeX && size.getZ() == newSizeZ) {
+        RoomCreatorDataManager.INSTANCE.getStructureTemplates().forEach(pair -> {
+            Identifier id = pair.getFirst();
+            Vec3i size = pair.getSecond();
+            if (size.getX() == newSizeX && size.getZ() == newSizeZ && id.toString().contains(this.getLevelStructuresPath())) {
                 this.templatesWithSameSize.add(id);
             }
         });
@@ -218,19 +223,17 @@ public class TemplateSuggestorWidget extends ClickableWidget {
             this.templateNameWidget.setSuggestion(null);
         } else {
             this.templatesWithSameSize.forEach(id -> {
-                if (id.getPath().startsWith(newName) || id.toString().startsWith(newName)) {
+                if (id.toString().contains(newName)) {
                     this.suggestedTemplates.add(id);
                 }
             });
 
             this.select(0);
         }
+    }
 
-        if (!this.suggestedTemplates.isEmpty()) {
-            this.suggestedTemplates.sort(Comparator.comparing(
-                    id -> id.toString().replaceAll("[^a-zA-Z0-9]", "").toLowerCase()
-            ));
-        }
+    private String getLevelStructuresPath() {
+        return "nbt/" + this.levelWidget.getValue().name.getPath();
     }
 
     private void addNameSuggestion() {
@@ -239,8 +242,8 @@ public class TemplateSuggestorWidget extends ClickableWidget {
 
         String suffix = getSuggestionSuffix(currentText, suggestedText);
         if (suffix != null) {
-            TextRenderer font = MinecraftClient.getInstance().textRenderer;
-            int currentWidth = font.getWidth(currentText);
+            TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
+            int currentWidth = textRenderer.getWidth(currentText);
 
             int availableWidth = (this.templateNameWidget.getWidth() - 8) - currentWidth;
 
@@ -249,10 +252,10 @@ public class TemplateSuggestorWidget extends ClickableWidget {
                 return;
             }
 
-            if (font.getWidth(suffix) > availableWidth) {
-                int ellipsisWidth = font.getWidth("...");
+            if (textRenderer.getWidth(suffix) > availableWidth) {
+                int ellipsisWidth = textRenderer.getWidth("...");
                 if (availableWidth > ellipsisWidth) {
-                    suffix = font.trimToWidth(suffix, availableWidth - ellipsisWidth) + "...";
+                    suffix = textRenderer.trimToWidth(suffix, availableWidth - ellipsisWidth) + "...";
                 } else {
                     suffix = null;
                 }
