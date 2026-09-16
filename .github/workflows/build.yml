@@ -35,3 +35,11 @@ jobs:
         with:
           name: Artifacts
           path: build/libs/
+      - name: Notify Discord
+        if: success()
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        run: |
+          curl -H "Content-Type: application/json" \
+               -d "{\"content\":\"🔨 **New Minecraft mod build!**\nCommit: \`${GITHUB_SHA::7}\`\nDownload: https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}\"}" \
+               "$DISCORD_WEBHOOK"
