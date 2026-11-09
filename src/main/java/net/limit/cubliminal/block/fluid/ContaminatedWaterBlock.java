@@ -3,9 +3,7 @@ package net.limit.cubliminal.block.fluid;
 import net.limit.cubliminal.block.custom.template.BlockVariantHolder;
 import net.limit.cubliminal.init.CubliminalFluids;
 import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.fluid.FlowableFluid;
@@ -20,7 +18,6 @@ public class ContaminatedWaterBlock extends CustomFluidBlock implements BlockVar
 
     @Override
     protected StatusEffectInstance[] applyEffectsToEntities() {
-        // This gives an entity the poison and nausea effects when they interact with the fluid.
         return new StatusEffectInstance[]{
                 new StatusEffectInstance(StatusEffects.NAUSEA, 600, 1),
                 new StatusEffectInstance(StatusEffects.POISON, 300, 1)

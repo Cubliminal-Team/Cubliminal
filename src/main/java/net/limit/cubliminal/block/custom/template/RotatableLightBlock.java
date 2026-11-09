@@ -2,7 +2,7 @@ package net.limit.cubliminal.block.custom.template;
 
 import com.mojang.serialization.MapCodec;
 import net.limit.cubliminal.access.ServerWorldAccessor;
-import net.limit.cubliminal.event.backrooms.BlackoutManager;
+import net.limit.cubliminal.event.blackout.BlackoutManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.HorizontalFacingBlock;

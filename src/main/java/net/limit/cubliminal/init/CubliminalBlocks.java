@@ -14,6 +14,7 @@ import net.limit.cubliminal.block.fluid.CustomFluidBlock;
 import net.limit.cubliminal.block.fluid.FluidBlockFactory;
 import net.limit.cubliminal.item.AlmondWaterItem;
 import net.limit.cubliminal.item.CanItem;
+import net.limit.cubliminal.item.SocketItem;
 import net.limit.cubliminal.item.WrittenDocumentItem;
 import net.minecraft.block.*;
 import net.minecraft.block.piston.PistonBehavior;
@@ -25,7 +26,6 @@ import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.fluid.FlowableFluid;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
-import net.minecraft.item.OperatorOnlyBlockItem;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
@@ -35,7 +35,6 @@ import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.DyeColor;
-import net.minecraft.util.Rarity;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.function.BiFunction;
@@ -186,9 +185,6 @@ public class CubliminalBlocks implements Initer {
 	public static final BlockSoundGroup PAPER = new BlockSoundGroup(1.0f, 1.0f, CubliminalSounds.PAPER_BREAK, CubliminalSounds.PAPER_STEP, CubliminalSounds.PAPER_PLACE, CubliminalSounds.PAPER_HIT, CubliminalSounds.PAPER_FALL);
 
 	//region Blocks
-	public static final Block MULTISTRUCTURE_BLOCK = register("multistructure_block", MultiStructureBlock::new,
-			AbstractBlock.Settings.copy(Blocks.STRUCTURE_BLOCK), OperatorOnlyBlockItem::new, new Item.Settings().rarity(Rarity.EPIC));
-
 	public static final Block YELLOW_WALLPAPERS = register("yellow_wallpapers", Block::new,
 			AbstractBlock.Settings.create()
 					.mapColor(MapColor.TERRACOTTA_YELLOW)
@@ -217,7 +213,7 @@ public class CubliminalBlocks implements Initer {
 					.sounds(BlockSoundGroup.BASALT)
 					.strength(2, 6));
 
-    public static final Block BOTTOM_YELLOW_WALLPAPERS = register("bottom_yellow_wallpapers", BlockWithSocket::new,
+    public static final Block BOTTOM_YELLOW_WALLPAPERS = register("bottom_yellow_wallpapers", Block::new,
             AbstractBlock.Settings.create()
 					.mapColor(MapColor.TERRACOTTA_YELLOW)
 					.sounds(BlockSoundGroup.BASALT)
@@ -348,6 +344,14 @@ public class CubliminalBlocks implements Initer {
 					.requiresTool())
 			.needsAttachment()
 			.voxelShapes(4.5, 4, 0, 11.5, 12.5, 0.5));
+
+	public static final Block BLOCK_WITH_SOCKET = register("block_with_socket", BlockWithSocket::new,
+			AbstractBlock.Settings.create()
+					.mapColor(MapColor.WHITE_GRAY)
+					.strength(0.5f)
+					.solid()
+					.sounds(BlockSoundGroup.CALCITE),
+			SocketItem::new, new Item.Settings());
 
 	public static final Block ALMOND_WATER_CAN = register("almond_water_can", CanBlock::new,
 			AbstractBlock.Settings.create()
@@ -517,12 +521,6 @@ public class CubliminalBlocks implements Initer {
 					.requiresTool()
 					.slipperiness(0.87f));
 
-	public static final Block WHITER_CONCRETE = register("whiter_concrete", Block::new,
-			AbstractBlock.Settings.create()
-					.mapColor(MapColor.WHITE)
-					.strength(3.5f, 6.0f)
-					.requiresTool());
-
 	public static final Block WHITE_BRICKS = register("white_bricks", Block::new,
 			AbstractBlock.Settings.create()
 					.mapColor(MapColor.WHITE)
@@ -606,18 +604,6 @@ public class CubliminalBlocks implements Initer {
 	public static final Block CEILING_PIPE = register("ceiling_pipe", CeilingPipeBlock::new,
 			AbstractBlock.Settings.copy(SMALL_HANGING_PIPE));
 
-	public static final Block LETTER_F = registerBlock("letter_f", new RotatableBlock(
-			AbstractBlock.Settings.create()
-					.registryKey(key("letter_f"))
-					.pistonBehavior(PistonBehavior.DESTROY)
-					.breakInstantly()
-					.sounds(BlockSoundGroup.INTENTIONALLY_EMPTY)
-					.nonOpaque()
-					.noCollision()
-					.noBlockBreakParticles())
-			.voxelShapes(0, 0, 0, 16, 16, 0.1)
-			.notSolid());
-
 	public static final Block VENTILATION_DUCT = register("ventilation_duct", VentilationDuctBlock::new,
 			AbstractBlock.Settings.create()
 					.mapColor(MapColor.LIGHT_GRAY)
@@ -655,29 +641,25 @@ public class CubliminalBlocks implements Initer {
 					.requiresTool(), 0.15f, FUSED_WALL_LIGHT_BULB.getDefaultState())
 			.voxelShapes(3.5, 3.5, 0, 12.5, 12.5, 7.5));
 
-	public static final Block CHAIN_BLOCK = register("chain_block", Block::new,
-			AbstractBlock.Settings.copy(Blocks.IRON_BARS)
-					.registryKey(key("chain_block"))
-					.sounds(BlockSoundGroup.CHAIN)
-					.requiresTool()
-					.nonOpaque());
+	public static final Block STEEL_GRATE = register("steel_grate", GrateBlock::new,
+			AbstractBlock.Settings.copy(Blocks.COPPER_GRATE)
+					.registryKey(key("steel_grate"))
+					.mapColor(MapColor.GRAY));
 
-	public static final Block CHAIN_SLAB = register("chain_slab", TransparentSlabBlock::new, AbstractBlock.Settings.copy(CHAIN_BLOCK));
+	public static final Block STEEL_GRATE_SLAB = register("steel_grate_slab", TransparentSlabBlock::new, AbstractBlock.Settings.copy(STEEL_GRATE));
 
-	public static final Block CHAIN_STAIRS = register("chain_stairs", StairsBlock::new,
-			AbstractBlock.Settings.copy(CHAIN_BLOCK), CHAIN_BLOCK.getDefaultState());
+	public static final Block STEEL_GRATE_STAIRS = register("steel_grate_stairs", StairsBlock::new,
+			AbstractBlock.Settings.copy(STEEL_GRATE), STEEL_GRATE.getDefaultState());
 
-	public static final Block CHAIN_WALL = registerBlock("chain_wall", new TransparentBoardBlock(
-			AbstractBlock.Settings.copy(CHAIN_BLOCK).registryKey(key("chain_wall")))
+	public static final Block FLAT_STEEL_GRATE = registerBlock("flat_steel_grate", new TransparentBoardBlock(
+			AbstractBlock.Settings.copy(STEEL_GRATE)
+					.registryKey(key("flat_steel_grate")))
 			.voxelShapes(2));
 
-	public static final Block RED_CHAIN_WALL = registerBlock("red_chain_wall", new BoardBlock(
-			AbstractBlock.Settings.copy(Blocks.IRON_BARS)
-					.registryKey(key("red_chain_wall"))
-					.mapColor(MapColor.RED)
-					.sounds(BlockSoundGroup.CHAIN)
-					.requiresTool()
-					.nonOpaque())
+	public static final Block FLAT_RED_STEEL_GRATE = registerBlock("flat_red_steel_grate", new TransparentBoardBlock(
+			AbstractBlock.Settings.copy(STEEL_GRATE)
+					.registryKey(key("flat_red_steel_grate"))
+					.mapColor(MapColor.TERRACOTTA_RED))
 			.voxelShapes(2));
 
 	public static final Block WOODEN_CRATE = register("wooden_crate", WoodenCrateBlock::new, AbstractBlock.Settings.copy(Blocks.BARREL));
@@ -701,19 +683,19 @@ public class CubliminalBlocks implements Initer {
 					.requiresTool())
 			.voxelShapes(7, 0, 0, 9, 16, 1));
 
-	public static final Block WHITE_METAL_PANE = registerBlock("white_metal_pane", new BoardBlock(
+	public static final Block CORRUGATED_IRON = registerBlock("corrugated_iron", new BoardBlock(
 			AbstractBlock.Settings.create()
-					.registryKey(key("white_metal_pane"))
-					.mapColor(MapColor.WHITE)
+					.registryKey(key("corrugated_iron"))
+					.mapColor(MapColor.STONE_GRAY)
 					.strength(5, 6)
 					.sounds(BlockSoundGroup.METAL)
 					.requiresTool())
 			.voxelShapes(2));
 
-	public static final Block GRAY_METAL_PANE = registerBlock("gray_metal_pane", new BoardBlock(
+	public static final Block CORRUGATED_STEEL = registerBlock("corrugated_steel", new BoardBlock(
 			AbstractBlock.Settings.create()
-					.registryKey(key("gray_metal_pane"))
-					.mapColor(MapColor.STONE_GRAY)
+					.registryKey(key("corrugated_steel"))
+					.mapColor(MapColor.GRAY)
 					.strength(5, 6)
 					.sounds(BlockSoundGroup.METAL)
 					.requiresTool())
@@ -764,7 +746,7 @@ public class CubliminalBlocks implements Initer {
 					.nonOpaque()
 					.requiresTool());
 
-	public static final Block WOODEN_PLANK = registerBlock("wooden_plank", new BoardBlock(
+	public static final Block WOODEN_PLANK = registerBlock("wooden_plank", new RandomizedBoardBlock(
 			AbstractBlock.Settings.create()
 					.registryKey(key("wooden_plank"))
 					.mapColor(MapColor.BROWN)
@@ -772,7 +754,7 @@ public class CubliminalBlocks implements Initer {
 					.sounds(BlockSoundGroup.WOOD)
 					.burnable()
 					.nonOpaque())
-			.voxelShapes(3), BlockItem::new, new Item.Settings().attributeModifiers(
+			.voxelShapes(2), BlockItem::new, new Item.Settings().attributeModifiers(
 					AttributeModifiersComponent.builder()
 							.add(EntityAttributes.ATTACK_DAMAGE,
 									new EntityAttributeModifier(BASE_ATTACK_DAMAGE_MODIFIER_ID, 2.0d,

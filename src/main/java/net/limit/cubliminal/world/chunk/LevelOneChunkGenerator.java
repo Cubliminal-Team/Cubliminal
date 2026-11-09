@@ -13,6 +13,7 @@ import net.limit.cubliminal.level.Levels;
 import net.limit.cubliminal.world.biome.source.LevelOneBiomeSource;
 import net.limit.cubliminal.world.maze.*;
 import net.limit.cubliminal.world.placement.PoissonDiskSampler;
+import net.ludocrypt.limlib.api.world.LimlibHelper;
 import net.ludocrypt.limlib.api.world.Manipulation;
 import net.ludocrypt.limlib.api.world.NbtGroup;
 import net.ludocrypt.limlib.api.world.chunk.AbstractNbtChunkGenerator;
@@ -28,6 +29,7 @@ import net.minecraft.util.collection.BoundedRegionArray;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.ChunkRegion;
+import net.minecraft.world.StructureWorldAccess;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.AbstractChunkHolder;
 import net.minecraft.world.chunk.Chunk;
@@ -95,6 +97,12 @@ public class LevelOneChunkGenerator extends AbstractNbtChunkGenerator implements
 				.with("entrance")
 				.with("room", "room_1_0", "room_2_0", "room_2_1", "room_3_0", "room_3_1", "small", "medium", "pk_0", "pk_1", "pk_2", "pk_3", "shroomlight")
 				.with("connection", "test_connection_0", "test_connection_1", "corridor_connection_1_0", "corridor_connection_1_1")
+				.with("c_n_i", 1, 15)
+				.with("c_n_l", 1, 15)
+				.with("c_n_f", 1, 15)
+				.with("c_n_t", 1, 15)
+				.with("c_n_n", 1, 15)
+				.with("room/corridors", "bookshelf_0", "bookshelf_1", "bookshelf_2", "tent_cauldrons", "tent_cyan", "tent_gray", "tent_smoker")
 				.build();
 	}
 
@@ -122,6 +130,8 @@ public class LevelOneChunkGenerator extends AbstractNbtChunkGenerator implements
 			if (type != MazePiece.E) {
 				RegistryKey<Biome> biome = biomeSource.calcBiome(placementPos).getKey().orElseThrow();
 				if (biome.equals(CubliminalBiomes.HABITABLE_CORRIDORS_BIOME)) {
+					//generateNbt(region, placementPos, nbtGroup.pick("c_n_" + type.getAsLetter(), random), piece.getSecond());
+					/*
 					float r = random.nextFloat();
 					if (r > 0.3) {
 						generateNbt(region, placementPos, nbtGroup.pick("corridor_" + type.getAsLetter() + "_normal", random), piece.getSecond());
@@ -132,7 +142,9 @@ public class LevelOneChunkGenerator extends AbstractNbtChunkGenerator implements
 					} else {
 						generateNbt(region, placementPos, nbtGroup.pick("corridor_" + type.getAsLetter() + "_variated", random), piece.getSecond());
 					}
+					 */
 				} else {
+					if (true) return;
 					if (type == MazePiece.I) {
 						generateNbt(region, placementPos, random.nextFloat() < 0.1
 										? this.nbtGroup.pick("i_aquila", random)
@@ -147,14 +159,12 @@ public class LevelOneChunkGenerator extends AbstractNbtChunkGenerator implements
 	}
 
 	@Override
-	public CompletableFuture<Chunk> populateNoise(ChunkRegion region, ChunkGenerationContext context,
-												  BoundedRegionArray<AbstractChunkHolder> chunks, Chunk chunk) {
+	public void buildSurface(ChunkRegion region, StructureAccessor structureManager, NoiseConfig randomState, Chunk chunk) {
 		BlockPos startPos = chunk.getPos().getStartPos();
 		int startX = startPos.getX();
 		int startY = startPos.getY();
 		int startZ = startPos.getZ();
-        // Fill air gaps
-		/*
+		// Fill air gaps
 		Random chunkRandom = Random.create(LimlibHelper.blockSeed(startX, startY, startZ));
 		BlockPos.Mutable mutable = startPos.mutableCopy();
 		for (int dy = 0; dy < this.getWorldHeight(); dy++) {
@@ -167,31 +177,20 @@ public class LevelOneChunkGenerator extends AbstractNbtChunkGenerator implements
 				}
 			}
 		}
+	}
 
-		// Indestructible floor
-		for (int layer = 0; layer < layerCount; layer++) {
-			mutable.setY(startY + layer * layerHeight);
-			for (int dx = 0; dx < 16; dx++) {
-				mutable.setX(startX + dx);
-				for (int dz = 0; dz < 16; dz++) {
-					mutable.setZ(startZ + dz);
-					region.setBlockState(mutable, CubliminalBlocks.GABBRO.getDefaultState(), Block.FORCE_STATE, 0);
-				}
-			}
-		}
-		mutable.setY(this.getWorldHeight() - 1);
-		for (int dx = 0; dx < 16; dx++) {
-			mutable.setX(startX + dx);
-			for (int dz = 0; dz < 16; dz++) {
-				mutable.setZ(startZ + dz);
-				region.setBlockState(mutable, CubliminalBlocks.GABBRO.getDefaultState(), Block.FORCE_STATE, 0);
-			}
-		}
+	@Override
+	public void generateFeatures(StructureWorldAccess world, Chunk chunk, StructureAccessor structureAccessor) {
 
-		 */
+		BlockPos startPos = chunk.getPos().getStartPos();
+		this.mazeGenerator.generateMazeRegion(startPos, (ChunkRegion) world, layerCount, this::createRegion, this::decorateMaze);
 
-		this.mazeGenerator.generateMazeRegion(startPos, region, layerCount, this::createRegion, this::decorateMaze);
+		super.generateFeatures(world, chunk, structureAccessor);
+	}
 
+	@Override
+	public CompletableFuture<Chunk> populateNoise(ChunkRegion region, ChunkGenerationContext context,
+												  BoundedRegionArray<AbstractChunkHolder> chunks, Chunk chunk) {
 		return CompletableFuture.completedFuture(chunk);
 	}
 
@@ -205,9 +204,7 @@ public class LevelOneChunkGenerator extends AbstractNbtChunkGenerator implements
 
 	@Override
 	protected void modifyStructure(ChunkRegion region, BlockPos pos, BlockState state, Optional<NbtCompound> blockEntityNbt, int update) {
-		if (state.isAir()) {
-			return;
-		}
+		if (state.isAir()) return;
 
 		super.modifyStructure(region, pos, state, blockEntityNbt, update);
 
@@ -220,10 +217,6 @@ public class LevelOneChunkGenerator extends AbstractNbtChunkGenerator implements
 		} else if (state.isOf(CubliminalBlocks.WET_GRAY_ASPHALT)) {
 			if (blockSeed(region, pos).nextFloat() > 0.3) {
 				region.setBlockState(pos, CubliminalBlocks.GRAY_ASPHALT.getDefaultState(), Block.FORCE_STATE);
-			}
-		} else if (state.isOf(Blocks.DIORITE)) {
-			if (blockSeed(region, pos).nextFloat() > 0.7) {
-				region.setBlockState(pos, CubliminalBlocks.WHITE_BRICKS.getDefaultState(), Block.FORCE_STATE);
 			}
 		} else if (state.isOf(CubliminalBlocks.WOODEN_PLANK)) {
 			if (blockSeed(region, pos).nextFloat() > 0.5) {

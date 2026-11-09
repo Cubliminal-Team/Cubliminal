@@ -1,5 +1,6 @@
 package net.limit.cubliminal.block.custom;
 
+import com.mojang.serialization.MapCodec;
 import net.limit.cubliminal.block.custom.template.SeatBlock;
 import net.minecraft.block.*;
 import net.minecraft.entity.Entity;
@@ -10,8 +11,6 @@ import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.EnumProperty;
 import net.minecraft.state.property.Properties;
-import net.minecraft.util.BlockMirror;
-import net.minecraft.util.BlockRotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
@@ -20,6 +19,7 @@ import net.minecraft.world.BlockView;
 import org.jetbrains.annotations.Nullable;
 
 public class ChairBlock extends SeatBlock implements Waterloggable {
+    public static final MapCodec<ChairBlock> CODEC = ChairBlock.createCodec(ChairBlock::new);
     public static final EnumProperty<Direction> FACING = HorizontalFacingBlock.FACING;
     public static final BooleanProperty WATERLOGGED = Properties.WATERLOGGED;
 
@@ -54,22 +54,22 @@ public class ChairBlock extends SeatBlock implements Waterloggable {
 
     public ChairBlock(Settings settings) {
         super(settings);
-        this.setDefaultState(this.getDefaultState().with(FACING, Direction.NORTH).with(WATERLOGGED, false));
+        this.setDefaultState(this.getDefaultState().with(WATERLOGGED, false));
     }
 
     @Override
-    public float setPassengerYaw(BlockState state, Entity entity) {
+    protected MapCodec<? extends HorizontalFacingBlock> getCodec() {
+        return CODEC;
+    }
+
+    @Override
+    public float getPassengerYaw(BlockState state, Entity entity) {
         return state.get(FACING).asRotation();
     }
 
     @Override
     public float seatHeight(BlockState state) {
         return 0.7f;
-    }
-
-    @Override
-    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        builder.add(FACING, WATERLOGGED);
     }
 
     @Override
@@ -82,25 +82,20 @@ public class ChairBlock extends SeatBlock implements Waterloggable {
         };
     }
 
-    @Override
-    public BlockState rotate(BlockState state, BlockRotation rotation) {
-        return state.with(FACING, rotation.rotate(state.get(FACING)));
-    }
-
-    @Override
-    public BlockState mirror(BlockState state, BlockMirror mirror) {
-        return state.rotate(mirror.getRotation(state.get(FACING)));
-    }
-
     @Nullable
     @Override
     public BlockState getPlacementState(ItemPlacementContext ctx) {
-        return this.getDefaultState().with(FACING, ctx.getHorizontalPlayerFacing().getOpposite())
-                .with(WATERLOGGED, ctx.getWorld().getFluidState(ctx.getBlockPos()).getFluid() == Fluids.WATER);
+        return super.getPlacementState(ctx).with(WATERLOGGED, ctx.getWorld().getFluidState(ctx.getBlockPos()).getFluid() == Fluids.WATER);
     }
 
     @Override
     public FluidState getFluidState(BlockState state) {
         return state.get(WATERLOGGED) ? Fluids.WATER.getStill(false) : super.getFluidState(state);
+    }
+
+    @Override
+    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
+        super.appendProperties(builder);
+        builder.add(WATERLOGGED);
     }
 }

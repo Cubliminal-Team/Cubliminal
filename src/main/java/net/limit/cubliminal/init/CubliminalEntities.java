@@ -32,7 +32,7 @@ public class CubliminalEntities implements Initer {
             Registries.ENTITY_TYPE,
             SMILER_KEY,
             EntityType.Builder.create(SmilerEntity::new, SpawnGroup.MONSTER)
-                    .dimensions(1f, 2f)
+                    .dimensions(1.5f, 1.95f)
                     .build(SMILER_KEY)
     );
 

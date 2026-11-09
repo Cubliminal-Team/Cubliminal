@@ -1,10 +1,7 @@
 package net.limit.cubliminal.access;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.limit.cubliminal.block.entity.MultiStructureBlockEntity;
-import net.limit.cubliminal.event.backrooms.NoclipEngine;
-import net.limit.cubliminal.event.backrooms.SanityManager;
+import net.limit.cubliminal.event.noclip.NoclipEngine;
+import net.limit.cubliminal.event.sanity.SanityManager;
 
 public interface PEAccessor {
 
@@ -12,6 +9,4 @@ public interface PEAccessor {
 
 	SanityManager getSanityManager();
 
-	@Environment(EnvType.CLIENT)
-	void openUSBlockScreen(MultiStructureBlockEntity blockEntity);
 }

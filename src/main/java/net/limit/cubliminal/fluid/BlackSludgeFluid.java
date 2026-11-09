@@ -23,7 +23,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
-public class BlackSludgeFluid extends BackroomsFlowableFluid {
+public class BlackSludgeFluid extends CustomFlowableFluid {
 
     public BlackSludgeFluid() {
         super(SoundEvents.BLOCK_HONEY_BLOCK_SLIDE, SoundCategory.BLOCKS);

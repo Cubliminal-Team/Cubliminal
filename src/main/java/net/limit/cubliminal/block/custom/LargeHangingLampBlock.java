@@ -15,6 +15,7 @@ import net.minecraft.util.math.random.Random;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.ChunkRegion;
+import net.minecraft.world.World;
 import net.minecraft.world.WorldView;
 import net.minecraft.world.tick.ScheduledTickView;
 import org.jetbrains.annotations.Nullable;
@@ -55,21 +56,53 @@ public class LargeHangingLampBlock extends RotatableLightBlock implements BlockV
         BlockState state = super.getPlacementState(ctx);
         if (state != null) {
             Direction facing = state.get(FACING);
-            BlockState neighbor = ctx.getWorld().getBlockState(ctx.getBlockPos().offset(facing));
-            return state.with(CONNECTED, this.connectsTo(facing, neighbor));
+            BlockPos pos = ctx.getBlockPos();
+            World world = ctx.getWorld();
+            BlockState neighbor = world.getBlockState(pos.offset(facing));
+
+            boolean useInitialFacing = this.connectsTo(facing, neighbor);
+            if (!useInitialFacing) {
+                for (Direction dir : Direction.Type.HORIZONTAL) {
+                    if (this.connectsTo(dir, world.getBlockState(pos.offset(dir)))) {
+                        return state.with(FACING, dir).with(CONNECTED, true);
+                    }
+                }
+            }
+
+            return state.with(CONNECTED, useInitialFacing);
         }
-        return state;
+
+        return null;
     }
 
     @Override
     protected BlockState getStateForNeighborUpdate(BlockState state, WorldView world, ScheduledTickView tickView, BlockPos pos, Direction direction, BlockPos neighborPos, BlockState neighborState, Random random) {
         Direction facing = state.get(FACING);
-        BlockState neighbor = world.getBlockState(pos.offset(facing));
-        return state.with(CONNECTED, this.connectsTo(facing, neighbor));
+        boolean findAdjacentLamp = false;
+        if (!state.get(CONNECTED)) {
+            if (this.connectsTo(direction, neighborState)) {
+                return state.with(FACING, direction).with(CONNECTED, true);
+            } else {
+                findAdjacentLamp = true;
+            }
+        } else if (!this.connectsTo(facing, world.getBlockState(pos.offset(facing)))) {
+            findAdjacentLamp = true;
+        }
+
+        if (findAdjacentLamp) {
+            for (Direction dir : Direction.Type.HORIZONTAL) {
+                if (this.connectsTo(dir, world.getBlockState(pos.offset(dir)))) {
+                    return state.with(FACING, dir).with(CONNECTED, true);
+                }
+            }
+            return state.with(CONNECTED, false);
+        } else {
+            return state;
+        }
     }
 
     private boolean connectsTo(Direction facing, BlockState state) {
-        return state.getBlock() instanceof LargeHangingLampBlock && state.get(FACING).getOpposite().equals(facing);
+        return state.getBlock() instanceof LargeHangingLampBlock && facing.getAxis().isHorizontal() && (!state.get(CONNECTED) || state.get(FACING).getOpposite() == facing);
     }
 
     @Override
@@ -80,7 +113,7 @@ public class LargeHangingLampBlock extends RotatableLightBlock implements BlockV
 
     @Override
     public void changeToVariant(ChunkRegion region, BlockState prevState, BlockPos pos, Random random) {
-        if (random.nextFloat() > 0.7) {
+        if (random.nextFloat() > 0.8) {
             region.setBlockState(pos, CubliminalBlocks.FUSED_LARGE_HANGING_LAMP
                     .getDefaultState()
                     .with(CONNECTED, prevState.get(CONNECTED))

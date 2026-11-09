@@ -9,6 +9,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
@@ -76,7 +77,7 @@ public class SeatEntity extends Entity {
     @Override
     protected void addPassenger(Entity passenger) {
         BlockState state = this.getBlockStateAtPos();
-        if (state.getBlock() instanceof SeatBlock seatBlock) passenger.setYaw(seatBlock.setPassengerYaw(state, passenger));
+        if (state.getBlock() instanceof SeatBlock seatBlock) passenger.setYaw(seatBlock.getPassengerYaw(state, passenger));
         super.addPassenger(passenger);
     }
 
@@ -96,6 +97,11 @@ public class SeatEntity extends Entity {
 
     @Override
     public void onPassengerLookAround(Entity passenger) {
-        super.onPassengerLookAround(passenger);
+        passenger.setBodyYaw(this.getYaw());
+        float f = MathHelper.wrapDegrees(passenger.getYaw() - this.getYaw());
+        float g = MathHelper.clamp(f, -105.0F, 105.0F);
+        passenger.prevYaw += g - f;
+        passenger.setYaw(passenger.getYaw() + g - f);
+        passenger.setHeadYaw(passenger.getYaw());
     }
 }

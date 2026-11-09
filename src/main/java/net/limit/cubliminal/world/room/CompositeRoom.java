@@ -81,7 +81,7 @@ public record CompositeRoom(List<Component> components, byte sizeX, byte sizeZ, 
             }
             this.sizeX = sizeX;
             this.sizeZ = sizeZ;
-            if (templates.getValues().isEmpty()) {
+            if (templates.isEmpty()) {
                 throw new IllegalArgumentException("No templates were found in the holder set");
             }
             this.templates = templates;

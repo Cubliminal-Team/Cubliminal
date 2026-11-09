@@ -4,8 +4,6 @@ import com.mojang.authlib.GameProfile;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.limit.cubliminal.access.PEAccessor;
-import net.limit.cubliminal.block.entity.MultiStructureBlockEntity;
-import net.limit.cubliminal.client.screen.MultistructureBlockScreen;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.input.Input;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
@@ -48,10 +46,5 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
 	@ModifyArg(method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/math/MathHelper;clamp(III)I", ordinal = 0), index = 0)
 	private int onSubmerged(int perTick) {
 		return this.getNoclipEngine().isClipping() ? perTick + (this.isSpectator() ? 0 : 10 - 1) : perTick;
-	}
-
-	@Override
-	public void openUSBlockScreen(MultiStructureBlockEntity blockEntity) {
-		this.client.setScreen(new MultistructureBlockScreen(blockEntity));
 	}
 }

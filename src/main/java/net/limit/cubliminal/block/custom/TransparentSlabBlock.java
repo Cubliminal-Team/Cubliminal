@@ -17,7 +17,7 @@ public class TransparentSlabBlock extends SlabBlock {
     protected boolean isSideInvisible(BlockState state, BlockState stateFrom, Direction direction) {
         if (stateFrom.isOf(this)) {
             SlabType t1 = state.get(TYPE);
-            SlabType t2 = state.get(TYPE);
+            SlabType t2 = stateFrom.get(TYPE);
             return switch (direction) {
                 case DOWN -> t1 != SlabType.BOTTOM && t2 != SlabType.TOP;
                 case UP -> t1 != SlabType.TOP && t2 != SlabType.BOTTOM;

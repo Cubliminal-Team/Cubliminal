@@ -66,9 +66,7 @@ public class CustomFluidBlock extends FluidBlock {
      * @param living The living entity to apply the effects onto.
      */
     private void setEffectsOnEntities(StatusEffectInstance[] effects, LivingEntity living){
-        // Loops through every effect.
-        for (StatusEffectInstance effect : effects){
-            // Apply the interation of effect to the living entity.
+        for (StatusEffectInstance effect : effects) {
             living.addStatusEffect(effect);
         }
     }
@@ -87,15 +85,12 @@ public class CustomFluidBlock extends FluidBlock {
     @Override
     public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity) {
         super.onEntityCollision(state, world, pos, entity);
-        // Checks to see if the entity is a living entity.
-        if (entity instanceof LivingEntity living){
-            // Ensures only players not in creative gets the effects.
-            if (entity instanceof PlayerEntity player){
-                if (!player.isCreative()){
+        if (entity instanceof LivingEntity living) {
+            if (entity instanceof PlayerEntity player) {
+                if (!player.isCreative()) {
                     setEffectsOnEntities(applyEffectsToEntities(), living);
                 }
             } else {
-                // Otherwise, apply effects on all other entities.
                 setEffectsOnEntities(applyEffectsToEntities(), living);
             }
         }
@@ -318,7 +313,7 @@ public class CustomFluidBlock extends FluidBlock {
         }
 
         /**
-         * Remove all of the default particles.
+         * Remove all the default particles.
          * @return The container
          */
         public FluidSplashParticleManager removeDefaultParticles(){

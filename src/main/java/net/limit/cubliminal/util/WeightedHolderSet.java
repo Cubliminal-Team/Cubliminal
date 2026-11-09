@@ -39,6 +39,10 @@ public class WeightedHolderSet<T> {
         return this.values.size();
     }
 
+    public boolean isEmpty() {
+        return this.values.isEmpty();
+    }
+
     public List<Pair<Float, T>> getValues() {
         return this.values;
     }
@@ -50,7 +54,15 @@ public class WeightedHolderSet<T> {
     }
 
     public void remove(T value) {
-        this.values.removeIf(pair -> pair.getSecond().equals(value));
+        this.values.removeIf(pair -> {
+            if (pair.getSecond().equals(value)) {
+                this.totalWeight -= pair.getFirst();
+                return true;
+            } else {
+                return false;
+            }
+        });
+        validateWeight((float) this.totalWeight);
     }
 
     public void clear() {

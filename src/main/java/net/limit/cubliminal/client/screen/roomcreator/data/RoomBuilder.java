@@ -154,7 +154,7 @@ public class RoomBuilder {
                     return optionalFixes;
                 }
 
-                if (component.getTemplates().getValues().isEmpty()) {
+                if (component.getTemplates().isEmpty()) {
                     optionalFixes.add("Add one Template Name to the Component");
                     return optionalFixes;
                 } else if (component.getTemplates().size() > 1) {

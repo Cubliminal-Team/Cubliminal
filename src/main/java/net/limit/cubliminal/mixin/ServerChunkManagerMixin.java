@@ -1,7 +1,7 @@
 package net.limit.cubliminal.mixin;
 
 import net.limit.cubliminal.access.ServerWorldAccessor;
-import net.limit.cubliminal.event.backrooms.BlackoutManager;
+import net.limit.cubliminal.event.blackout.BlackoutManager;
 import net.minecraft.server.world.ServerChunkManager;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.profiler.Profiler;

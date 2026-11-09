@@ -58,7 +58,7 @@ public class FloorBuilder {
     public ConnectingRoom.FloorData build() {
         List<CompositeRoom.Component> builtComponents = new ArrayList<>();
         for (ComponentBuilder component : this.components) {
-            if (!component.getTemplates().getValues().isEmpty()) {
+            if (!component.getTemplates().isEmpty()) {
                 builtComponents.add(component.build());
             }
         }

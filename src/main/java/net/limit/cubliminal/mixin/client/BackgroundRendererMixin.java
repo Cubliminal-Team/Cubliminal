@@ -9,7 +9,7 @@ import net.limit.cubliminal.client.fog.FogManager;
 import net.limit.cubliminal.client.fog.FogSettings;
 import net.limit.cubliminal.client.util.CameraBackroomFluid;
 import net.limit.cubliminal.config.CubliminalConfig;
-import net.limit.cubliminal.fluid.BackroomsFlowableFluid;
+import net.limit.cubliminal.fluid.CustomFlowableFluid;
 import net.limit.cubliminal.util.ColorManager;
 import net.minecraft.block.enums.CameraSubmersionType;
 import net.minecraft.client.MinecraftClient;
@@ -69,7 +69,7 @@ public abstract class BackgroundRendererMixin {
     private static void onApplyFog(Camera camera, BackgroundRenderer.FogType fogType, Vector4f color, float viewDistance, boolean thickenFog, float tickDelta, CallbackInfoReturnable<Fog> cir) {
         if (CameraBackroomFluid.isSubmergedInBackroomFluid(camera)){
             FluidState fluidState = CameraBackroomFluid.getFluidState();
-            if (fluidState.getFluid() instanceof BackroomsFlowableFluid backroomFluid){
+            if (fluidState.getFluid() instanceof CustomFlowableFluid backroomFluid){
                 CustomFluidBlock.Settings settings = backroomFluid.getFluidBlock().getFluidSettings();
                 ColorManager fluidColor = settings.getColor();
                 Fog fog = new Fog(

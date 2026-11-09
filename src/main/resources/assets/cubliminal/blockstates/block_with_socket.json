@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=west": {
+      "model": "cubliminal:block/socket_overlay",
+      "y": -90
+    },
+    "facing=north": {
+      "model": "cubliminal:block/socket_overlay"
+    },
+    "facing=south": {
+      "model": "cubliminal:block/socket_overlay",
+      "y": 180
+    },
+    "facing=east": {
+      "model": "cubliminal:block/socket_overlay",
+      "y": 90
+    }
+  }
+}

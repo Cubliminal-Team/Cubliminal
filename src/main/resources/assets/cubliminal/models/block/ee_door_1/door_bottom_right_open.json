@@ -1,7 +1,0 @@
-{
-  "parent": "minecraft:block/door_bottom_right_open",
-  "textures": {
-    "bottom": "cubliminal:block/lvl_1_door_bottom",
-    "top": "cubliminal:block/lvl_1_door_top"
-  }
-}

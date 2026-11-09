@@ -1,0 +1,22 @@
+{
+	"textures": {
+		"grate": "cubliminal:block/steel_grate",
+		"edge": "cubliminal:block/corrugated_steel",
+		"particle": "#grate"
+	},
+	"elements": [
+		{
+			"from": [0, 0, 14],
+			"to": [16, 16, 16],
+			"rotation": {"angle": 0, "axis": "y", "origin": [0, 0, 14]},
+			"faces": {
+				"north": {"uv": [0, 0, 16, 16], "texture": "#grate", "cullface": "north"},
+				"east": {"uv": [0, 0, 2, 16], "texture": "#edge", "cullface": "east"},
+				"south": {"uv": [0, 0, 16, 16], "texture": "#grate"},
+				"west": {"uv": [0, 0, 2, 16], "texture": "#edge", "cullface": "west"},
+				"up": {"uv": [0, 16, 2, 0], "rotation": 90, "texture": "#edge", "cullface": "up"},
+				"down": {"uv": [0, 16, 2, 0], "rotation": 90, "texture": "#edge", "cullface": "down"}
+			}
+		}
+	]
+}

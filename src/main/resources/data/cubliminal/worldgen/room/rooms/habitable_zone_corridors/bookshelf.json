@@ -1,0 +1,21 @@
+{
+  "components": [
+    {
+      "pos": [
+        0,
+        0
+      ],
+      "size_x": 1,
+      "size_z": 1,
+      "templates": {
+        "room:corridors/bookshelf_0": 0.1,
+        "room:corridors/bookshelf_1": 0.3,
+        "room:corridors/bookshelf_2": 0.3
+      }
+    }
+  ],
+  "size_x": 1,
+  "size_z": 1,
+  "doors": "e_1:w_1",
+  "type": "cubliminal:composite"
+}

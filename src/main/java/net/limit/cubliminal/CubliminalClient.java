@@ -14,12 +14,12 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.event.client.player.ClientPlayerBlockBreakEvents;
 import net.limit.cubliminal.access.GameRendererAccessor;
 import net.limit.cubliminal.block.fluid.CustomFluidBlock;
+import net.limit.cubliminal.client.block.SocketBlockRenderer;
 import net.limit.cubliminal.client.block.WrittenDocumentRenderer;
 import net.limit.cubliminal.client.hud.SanityBarHudOverlay;
 import net.limit.cubliminal.client.particle.CubliminalParticleManager;
 import net.limit.cubliminal.client.block.FluxCapacitorRenderer;
 import net.limit.cubliminal.client.block.ManilaGatewayRenderer;
-import net.limit.cubliminal.client.block.MultitructureBlockRenderer;
 import net.limit.cubliminal.client.fog.FogSettings;
 import net.limit.cubliminal.client.entity.SeatRenderer;
 import net.limit.cubliminal.client.screen.documents.DocBlockEditScreen;
@@ -45,32 +45,32 @@ public class CubliminalClient implements ClientModInitializer {
 				CubliminalBlocks.MOLD_SPROUTS,
 				CubliminalBlocks.JUMBLED_DOCUMENTS,
 				CubliminalBlocks.WRITTEN_DOCUMENT,
-				CubliminalBlocks.LETTER_F,
 				CubliminalBlocks.FLUX_CAPACITOR,
 				CubliminalBlocks.WALL_LIGHT_BULB,
 				CubliminalBlocks.FUSED_WALL_LIGHT_BULB,
 				CubliminalBlocks.SMOKE_DETECTOR,
 				CubliminalBlocks.VENTILATION_DUCT,
 				CubliminalBlocks.VENTILATION_PIPE,
-				CubliminalBlocks.CHAIN_WALL,
-				CubliminalBlocks.CHAIN_BLOCK,
-				CubliminalBlocks.CHAIN_SLAB,
-				CubliminalBlocks.CHAIN_STAIRS,
-				CubliminalBlocks.RED_CHAIN_WALL,
+				CubliminalBlocks.FLAT_STEEL_GRATE,
+				CubliminalBlocks.STEEL_GRATE,
+				CubliminalBlocks.STEEL_GRATE_SLAB,
+				CubliminalBlocks.STEEL_GRATE_STAIRS,
+				CubliminalBlocks.FLAT_RED_STEEL_GRATE,
 				CubliminalBlocks.WOODEN_PLANK
 		);
-		//BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getCutoutMipped());
+
 		BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getTranslucent(),
 				CubliminalBlocks.THE_LOBBY_GATEWAY_BLOCK,
 				CubliminalBlocks.EXIT_SIGN,
 				CubliminalBlocks.EXIT_SIGN_2,
-				CubliminalBlocks.CONTROL_BOX
+				CubliminalBlocks.CONTROL_BOX,
+				CubliminalBlocks.BLOCK_WITH_SOCKET
 		);
 
 		BlockEntityRendererFactories.register(CubliminalBlockEntities.THE_LOBBY_GATEWAY_BLOCK_ENTITY, ManilaGatewayRenderer::new);
 		BlockEntityRendererFactories.register(CubliminalBlockEntities.FLUX_CAPACITOR_BLOCK_ENTITY, FluxCapacitorRenderer::new);
-		BlockEntityRendererFactories.register(CubliminalBlockEntities.MULTISTRUCTURE_BLOCK_ENTITY, MultitructureBlockRenderer::new);
 		BlockEntityRendererFactories.register(CubliminalBlockEntities.WRITTEN_DOCUMENT_BLOCK_ENTITY, WrittenDocumentRenderer::new);
+		BlockEntityRendererFactories.register(CubliminalBlockEntities.SOCKET_BLOCK_ENTITY, SocketBlockRenderer::new);
 
 		EntityRendererRegistry.register(CubliminalEntities.SEAT_ENTITY, SeatRenderer::new);
 

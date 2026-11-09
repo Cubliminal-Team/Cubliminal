@@ -3,12 +3,14 @@ package net.limit.cubliminal.mixin;
 import com.llamalad7.mixinextras.sugar.Local;
 import net.limit.cubliminal.access.ServerWorldAccessor;
 import net.limit.cubliminal.block.custom.template.BlackoutListener;
-import net.limit.cubliminal.event.backrooms.BlackoutManager;
+import net.limit.cubliminal.event.blackout.BlackoutManager;
+import net.limit.cubliminal.event.entity.smiler.SmilerEventHandler;
 import net.limit.cubliminal.init.CubliminalRegistrar;
 import net.minecraft.block.BlockState;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.WorldGenerationProgressListener;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -34,6 +36,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executor;
+import java.util.function.BooleanSupplier;
 
 @Mixin(ServerWorld.class)
 public abstract class ServerWorldMixin implements ServerWorldAccessor {
@@ -41,13 +44,28 @@ public abstract class ServerWorldMixin implements ServerWorldAccessor {
     @Shadow
     public abstract PersistentStateManager getPersistentStateManager();
 
+    @Shadow
+    public abstract ServerWorld toServerWorld();
+
+    @Shadow
+    public abstract List<ServerPlayerEntity> getPlayers();
+
     @Unique
     private BlackoutManager blackoutManager;
+
+    @Unique
+    private SmilerEventHandler smilerEventHandler;
 
     @Nullable
     @Override
     public BlackoutManager blackoutManager() {
         return blackoutManager;
+    }
+
+    @Nullable
+    @Override
+    public SmilerEventHandler smilerEventHandler() {
+        return this.smilerEventHandler;
     }
 
     @Inject(method = "<init>", at = @At("TAIL"))
@@ -58,6 +76,7 @@ public abstract class ServerWorldMixin implements ServerWorldAccessor {
                         CallbackInfo ci) {
         if (worldKey.equals(CubliminalRegistrar.HABITABLE_ZONE_KEY)) {
             this.blackoutManager = this.getPersistentStateManager().getOrCreate(BlackoutManager.getPersistentStateType((ServerWorld)(Object)this), "blackouts");
+            this.smilerEventHandler = this.getPersistentStateManager().getOrCreate(SmilerEventHandler.getPersistentStateType((ServerWorld)(Object)this), "smiler_events");
         }
     }
 
@@ -82,12 +101,13 @@ public abstract class ServerWorldMixin implements ServerWorldAccessor {
 
                 if (attachedSections.contains(l) != lightsOff) {
                     this.blackoutManager.onChunkTick();
-                    this.blackoutManager.playSound(chunkPos, sectionY + 7, lightsOff);
                     if (lightsOff) {
                         attachedSections.add(l);
                     } else {
                         attachedSections.remove((Integer) l);
                     }
+
+                    boolean containsListeners = false;
 
                     for (int dx = 0; dx < 16; dx++) {
                         for (int dy = 0; dy < 16; dy++) {
@@ -96,9 +116,14 @@ public abstract class ServerWorldMixin implements ServerWorldAccessor {
                                 BlockState blockState = chunk.getBlockState(mutablePos);
                                 if (blockState.getBlock() instanceof BlackoutListener listener) {
                                     listener.blackoutUpdate(blockState, world, mutablePos, lightsOff, world.getRandom());
+                                    containsListeners = true;
                                 }
                             }
                         }
+                    }
+
+                    if (containsListeners) {
+                        this.blackoutManager.playSound(chunkPos, sectionY + 7, lightsOff);
                     }
                 }
             }
@@ -108,6 +133,13 @@ public abstract class ServerWorldMixin implements ServerWorldAccessor {
             }
 
             profiler.pop();
+        }
+    }
+
+    @Inject(method = "tick", at = @At(value = "TAIL"))
+    private void cubliminal$TickWorld(BooleanSupplier shouldKeepTicking, CallbackInfo ci) {
+        if (this.smilerEventHandler != null && !this.getPlayers().isEmpty()) {
+            this.smilerEventHandler.tickFromWorld();
         }
     }
 }

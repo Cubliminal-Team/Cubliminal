@@ -1,0 +1,49 @@
+{
+  "variants": {
+    "face=ceiling,facing=east": {
+      "model": "cubliminal:block/flat_steel_grate_top",
+      "y": 270
+    },
+    "face=ceiling,facing=north": {
+      "model": "cubliminal:block/flat_steel_grate_top",
+      "y": 180
+    },
+    "face=ceiling,facing=south": {
+      "model": "cubliminal:block/flat_steel_grate_top"
+    },
+    "face=ceiling,facing=west": {
+      "model": "cubliminal:block/flat_steel_grate_top",
+      "y": 90
+    },
+    "face=floor,facing=east": {
+      "model": "cubliminal:block/flat_steel_grate_bottom",
+      "y": 90
+    },
+    "face=floor,facing=north": {
+      "model": "cubliminal:block/flat_steel_grate_bottom"
+    },
+    "face=floor,facing=south": {
+      "model": "cubliminal:block/flat_steel_grate_bottom",
+      "y": 180
+    },
+    "face=floor,facing=west": {
+      "model": "cubliminal:block/flat_steel_grate_bottom",
+      "y": 270
+    },
+    "face=wall,facing=east": {
+      "model": "cubliminal:block/flat_steel_grate",
+      "y": 90
+    },
+    "face=wall,facing=north": {
+      "model": "cubliminal:block/flat_steel_grate"
+    },
+    "face=wall,facing=south": {
+      "model": "cubliminal:block/flat_steel_grate",
+      "y": 180
+    },
+    "face=wall,facing=west": {
+      "model": "cubliminal:block/flat_steel_grate",
+      "y": 270
+    }
+  }
+}

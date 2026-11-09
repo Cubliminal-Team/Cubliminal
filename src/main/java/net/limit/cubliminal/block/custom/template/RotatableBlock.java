@@ -7,7 +7,6 @@ import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
-import net.minecraft.state.property.EnumProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -28,7 +27,6 @@ public class RotatableBlock extends HorizontalFacingBlock implements Waterloggab
     private VoxelShape EAST_SHAPE = VoxelShapes.fullCube();
     private VoxelShape SOUTH_SHAPE = VoxelShapes.fullCube();
     private VoxelShape NORTH_SHAPE = VoxelShapes.fullCube();
-    public static final EnumProperty<Direction> FACING = HorizontalFacingBlock.FACING;
     public static final BooleanProperty WATERLOGGED = Properties.WATERLOGGED;
 
     @Override

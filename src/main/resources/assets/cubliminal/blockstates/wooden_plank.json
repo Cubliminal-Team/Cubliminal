@@ -1,56 +1,243 @@
 {
   "variants": {
-    "face=ceiling,facing=east": {
-      "model": "cubliminal:block/wooden_plank",
+    "face=ceiling,facing=east,variant=0": {
+      "model": "cubliminal:block/wooden_plank/wooden_plank_0",
       "x": 270,
       "y": 90
     },
-    "face=ceiling,facing=north": {
-      "model": "cubliminal:block/wooden_plank",
-      "x": 270
+    "face=ceiling,facing=east,variant=1": {
+      "model": "cubliminal:block/wooden_plank/wooden_plank_1",
+      "x": 270,
+      "y": 90
     },
-    "face=ceiling,facing=south": {
-      "model": "cubliminal:block/wooden_plank",
+    "face=ceiling,facing=east,variant=2": {
+      "model": "cubliminal:block/wooden_plank/wooden_plank_2",
+      "x": 270,
+      "y": 90
+    },
+    "face=ceiling,facing=east,variant=3": {
+      "model": "cubliminal:block/wooden_plank/wooden_plank_3",
+      "x": 270,
+      "y": 90
+    },
+    "face=ceiling,facing=north,variant=0": {
+      "model": "cubliminal:block/wooden_plank/wooden_plank_0",
+      "x": 270,
+      "y": 0
+    },
+    "face=ceiling,facing=north,variant=1": {
+      "model": "cubliminal:block/wooden_plank/wooden_plank_1",
+      "x": 270,
+      "y": 0
+    },
+    "face=ceiling,facing=north,variant=2": {
+      "model": "cubliminal:block/wooden_plank/wooden_plank_2",
+      "x": 270,
+      "y": 0
+    },
+    "face=ceiling,facing=north,variant=3": {
+      "model": "cubliminal:block/wooden_plank/wooden_plank_3",
+      "x": 270,
+      "y": 0
+    },
+    "face=ceiling,facing=south,variant=0": {
+      "model": "cubliminal:block/wooden_plank/wooden_plank_0",
       "x": 270,
       "y": 180
     },
-    "face=ceiling,facing=west": {
-      "model": "cubliminal:block/wooden_plank",
+    "face=ceiling,facing=south,variant=1": {
+      "model": "cubliminal:block/wooden_plank/wooden_plank_1",
+      "x": 270,
+      "y": 180
+    },
+    "face=ceiling,facing=south,variant=2": {
+      "model": "cubliminal:block/wooden_plank/wooden_plank_2",
+      "x": 270,
+      "y": 180
+    },
+    "face=ceiling,facing=south,variant=3": {
+      "model": "cubliminal:block/wooden_plank/wooden_plank_3",
+      "x": 270,
+      "y": 180
+    },
+    "face=ceiling,facing=west,variant=0": {
+      "model": "cubliminal:block/wooden_plank/wooden_plank_0",
       "x": 270,
       "y": 270
     },
-    "face=floor,facing=east": {
-      "model": "cubliminal:block/wooden_plank",
+    "face=ceiling,facing=west,variant=1": {
+      "model": "cubliminal:block/wooden_plank/wooden_plank_1",
+      "x": 270,
+      "y": 270
+    },
+    "face=ceiling,facing=west,variant=2": {
+      "model": "cubliminal:block/wooden_plank/wooden_plank_2",
+      "x": 270,
+      "y": 270
+    },
+    "face=ceiling,facing=west,variant=3": {
+      "model": "cubliminal:block/wooden_plank/wooden_plank_3",
+      "x": 270,
+      "y": 270
+    },
+    "face=floor,facing=east,variant=0": {
+      "model": "cubliminal:block/wooden_plank/wooden_plank_0",
       "x": 90,
       "y": 90
     },
-    "face=floor,facing=north": {
-      "model": "cubliminal:block/wooden_plank",
-      "x": 90
+    "face=floor,facing=east,variant=1": {
+      "model": "cubliminal:block/wooden_plank/wooden_plank_1",
+      "x": 90,
+      "y": 90
     },
-    "face=floor,facing=south": {
-      "model": "cubliminal:block/wooden_plank",
+    "face=floor,facing=east,variant=2": {
+      "model": "cubliminal:block/wooden_plank/wooden_plank_2",
+      "x": 90,
+      "y": 90
+    },
+    "face=floor,facing=east,variant=3": {
+      "model": "cubliminal:block/wooden_plank/wooden_plank_3",
+      "x": 90,
+      "y": 90
+    },
+    "face=floor,facing=north,variant=0": {
+      "model": "cubliminal:block/wooden_plank/wooden_plank_0",
+      "x": 90,
+      "y": 0
+    },
+    "face=floor,facing=north,variant=1": {
+      "model": "cubliminal:block/wooden_plank/wooden_plank_1",
+      "x": 90,
+      "y": 0
+    },
+    "face=floor,facing=north,variant=2": {
+      "model": "cubliminal:block/wooden_plank/wooden_plank_2",
+      "x": 90,
+      "y": 0
+    },
+    "face=floor,facing=north,variant=3": {
+      "model": "cubliminal:block/wooden_plank/wooden_plank_3",
+      "x": 90,
+      "y": 0
+    },
+    "face=floor,facing=south,variant=0": {
+      "model": "cubliminal:block/wooden_plank/wooden_plank_0",
       "x": 90,
       "y": 180
     },
-    "face=floor,facing=west": {
-      "model": "cubliminal:block/wooden_plank",
+    "face=floor,facing=south,variant=1": {
+      "model": "cubliminal:block/wooden_plank/wooden_plank_1",
+      "x": 90,
+      "y": 180
+    },
+    "face=floor,facing=south,variant=2": {
+      "model": "cubliminal:block/wooden_plank/wooden_plank_2",
+      "x": 90,
+      "y": 180
+    },
+    "face=floor,facing=south,variant=3": {
+      "model": "cubliminal:block/wooden_plank/wooden_plank_3",
+      "x": 90,
+      "y": 180
+    },
+    "face=floor,facing=west,variant=0": {
+      "model": "cubliminal:block/wooden_plank/wooden_plank_0",
       "x": 90,
       "y": 270
     },
-    "face=wall,facing=east": {
-      "model": "cubliminal:block/wooden_plank",
+    "face=floor,facing=west,variant=1": {
+      "model": "cubliminal:block/wooden_plank/wooden_plank_1",
+      "x": 90,
       "y": 270
     },
-    "face=wall,facing=north": {
-      "model": "cubliminal:block/wooden_plank",
+    "face=floor,facing=west,variant=2": {
+      "model": "cubliminal:block/wooden_plank/wooden_plank_2",
+      "x": 90,
+      "y": 270
+    },
+    "face=floor,facing=west,variant=3": {
+      "model": "cubliminal:block/wooden_plank/wooden_plank_3",
+      "x": 90,
+      "y": 270
+    },
+    "face=wall,facing=east,variant=0": {
+      "model": "cubliminal:block/wooden_plank/wooden_plank_0",
+      "x": 0,
+      "y": 270
+    },
+    "face=wall,facing=east,variant=1": {
+      "model": "cubliminal:block/wooden_plank/wooden_plank_1",
+      "x": 0,
+      "y": 270
+    },
+    "face=wall,facing=east,variant=2": {
+      "model": "cubliminal:block/wooden_plank/wooden_plank_2",
+      "x": 0,
+      "y": 270
+    },
+    "face=wall,facing=east,variant=3": {
+      "model": "cubliminal:block/wooden_plank/wooden_plank_3",
+      "x": 0,
+      "y": 270
+    },
+    "face=wall,facing=north,variant=0": {
+      "model": "cubliminal:block/wooden_plank/wooden_plank_0",
+      "x": 0,
       "y": 180
     },
-    "face=wall,facing=south": {
-      "model": "cubliminal:block/wooden_plank"
+    "face=wall,facing=north,variant=1": {
+      "model": "cubliminal:block/wooden_plank/wooden_plank_1",
+      "x": 0,
+      "y": 180
     },
-    "face=wall,facing=west": {
-      "model": "cubliminal:block/wooden_plank",
+    "face=wall,facing=north,variant=2": {
+      "model": "cubliminal:block/wooden_plank/wooden_plank_2",
+      "x": 0,
+      "y": 180
+    },
+    "face=wall,facing=north,variant=3": {
+      "model": "cubliminal:block/wooden_plank/wooden_plank_3",
+      "x": 0,
+      "y": 180
+    },
+    "face=wall,facing=south,variant=0": {
+      "model": "cubliminal:block/wooden_plank/wooden_plank_0",
+      "x": 0,
+      "y": 0
+    },
+    "face=wall,facing=south,variant=1": {
+      "model": "cubliminal:block/wooden_plank/wooden_plank_1",
+      "x": 0,
+      "y": 0
+    },
+    "face=wall,facing=south,variant=2": {
+      "model": "cubliminal:block/wooden_plank/wooden_plank_2",
+      "x": 0,
+      "y": 0
+    },
+    "face=wall,facing=south,variant=3": {
+      "model": "cubliminal:block/wooden_plank/wooden_plank_3",
+      "x": 0,
+      "y": 0
+    },
+    "face=wall,facing=west,variant=0": {
+      "model": "cubliminal:block/wooden_plank/wooden_plank_0",
+      "x": 0,
+      "y": 90
+    },
+    "face=wall,facing=west,variant=1": {
+      "model": "cubliminal:block/wooden_plank/wooden_plank_1",
+      "x": 0,
+      "y": 90
+    },
+    "face=wall,facing=west,variant=2": {
+      "model": "cubliminal:block/wooden_plank/wooden_plank_2",
+      "x": 0,
+      "y": 90
+    },
+    "face=wall,facing=west,variant=3": {
+      "model": "cubliminal:block/wooden_plank/wooden_plank_3",
+      "x": 0,
       "y": 90
     }
   }

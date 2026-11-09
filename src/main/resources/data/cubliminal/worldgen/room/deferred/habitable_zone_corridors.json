@@ -2,12 +2,12 @@
   "spacing": 1.0,
   "rooms": [
     {
-      "name": "aquila/small",
-      "weight": 0.3
+      "name": "habitable_zone_corridors/bookshelf",
+      "weight": 0.2
     },
     {
-      "name": "aquila/medium",
-      "weight": 0.3
+      "name": "habitable_zone_corridors/tent_small",
+      "weight": 0.5
     }
   ]
 }

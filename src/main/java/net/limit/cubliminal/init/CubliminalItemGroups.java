@@ -48,21 +48,20 @@ public class CubliminalItemGroups implements Initer {
                         entries.add(CubliminalBlocks.GRAY_ASPHALT_SLAB);
                         entries.add(CubliminalBlocks.GRAY_ASPHALT_STAIRS);
                         entries.add(CubliminalBlocks.WET_GRAY_ASPHALT);
-                        entries.add(CubliminalBlocks.WHITER_CONCRETE);
                         entries.add(CubliminalBlocks.WHITE_BRICKS);
                         entries.add(CubliminalBlocks.WHITE_BRICK_SLAB);
                         entries.add(CubliminalBlocks.CRACKED_WHITE_BRICKS);
-                        entries.add(CubliminalBlocks.CHAIN_BLOCK);
-                        entries.add(CubliminalBlocks.CHAIN_SLAB);
-                        entries.add(CubliminalBlocks.CHAIN_STAIRS);
-                        entries.add(CubliminalBlocks.CHAIN_WALL);
-                        entries.add(CubliminalBlocks.RED_CHAIN_WALL);
-                        entries.add(CubliminalBlocks.WHITE_METAL_PANE);
-                        entries.add(CubliminalBlocks.GRAY_METAL_PANE);
+                        entries.add(CubliminalBlocks.STEEL_GRATE);
+                        entries.add(CubliminalBlocks.STEEL_GRATE_SLAB);
+                        entries.add(CubliminalBlocks.STEEL_GRATE_STAIRS);
+                        entries.add(CubliminalBlocks.FLAT_STEEL_GRATE);
+                        entries.add(CubliminalBlocks.FLAT_RED_STEEL_GRATE);
+                        entries.add(CubliminalBlocks.CORRUGATED_IRON);
+                        entries.add(CubliminalBlocks.CORRUGATED_STEEL);
                         entries.add(CubliminalBlocks.VERTICAL_LIGHT_TUBE);
                         entries.add(CubliminalBlocks.FUSED_VERTICAL_LIGHT_TUBE);
-                        entries.add(CubliminalBlocks.HANGING_FLUORESCENT_LIGHTS);
-                        entries.add(CubliminalBlocks.FUSED_HANGING_FLUORESCENT_LIGHTS);
+                        //entries.add(CubliminalBlocks.HANGING_FLUORESCENT_LIGHTS);
+                        //entries.add(CubliminalBlocks.FUSED_HANGING_FLUORESCENT_LIGHTS);
                         entries.add(CubliminalBlocks.WALL_LIGHT_BULB);
                         entries.add(CubliminalBlocks.FUSED_WALL_LIGHT_BULB);
                         entries.add(CubliminalBlocks.LARGE_HANGING_LAMP);
@@ -109,7 +108,7 @@ public class CubliminalItemGroups implements Initer {
                         entries.add(CubliminalItems.NAILED_BAT);
                         entries.add(CubliminalItems.SILVER_INGOT);
                         entries.add(CubliminalBlocks.FLUX_CAPACITOR);
-
+                        entries.add(CubliminalItems.SMILER_SPAWN_EGG);
                     }).build());
 
 	@Override
@@ -117,7 +116,6 @@ public class CubliminalItemGroups implements Initer {
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.OPERATOR).register(entries -> {
             entries.addAfter(
                     Blocks.STRUCTURE_BLOCK,
-                    CubliminalBlocks.MULTISTRUCTURE_BLOCK,
                     CubliminalItems.ROOM_CREATOR_TOOL
             );
         });

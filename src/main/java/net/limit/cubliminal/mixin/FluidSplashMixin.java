@@ -1,7 +1,7 @@
 package net.limit.cubliminal.mixin;
 
 import net.limit.cubliminal.block.fluid.CustomFluidBlock;
-import net.limit.cubliminal.fluid.BackroomsFlowableFluid;
+import net.limit.cubliminal.fluid.CustomFlowableFluid;
 import net.minecraft.entity.Entity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
@@ -35,9 +35,9 @@ public abstract class FluidSplashMixin {
     )
     private ParticleEffect redirectSplashParticle(ParticleEffect original) {
         Entity self = (Entity) (Object) this;
-        Fluid fluid = getTouchingFluid(self, f -> f instanceof BackroomsFlowableFluid);
+        Fluid fluid = getTouchingFluid(self, f -> f instanceof CustomFlowableFluid);
 
-        if (fluid instanceof BackroomsFlowableFluid flowableFluid) {
+        if (fluid instanceof CustomFlowableFluid flowableFluid) {
             CustomFluidBlock.Settings settings = flowableFluid.getFluidBlock().getFluidSettings();
             CustomFluidBlock.FluidSplashParticleManager splashParticle = settings.getSplashParticles();
             if (original == ParticleTypes.SPLASH && splashParticle.getSplashParticle() != null) {

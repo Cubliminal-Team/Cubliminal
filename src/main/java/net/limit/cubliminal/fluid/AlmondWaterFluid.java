@@ -17,7 +17,7 @@ import net.minecraft.state.StateManager;
 import net.minecraft.world.WorldView;
 import org.jetbrains.annotations.Nullable;
 
-public class AlmondWaterFluid extends BackroomsFlowableFluid {
+public class AlmondWaterFluid extends CustomFlowableFluid {
 
     public AlmondWaterFluid() {
         super(SoundEvents.BLOCK_WATER_AMBIENT, SoundCategory.BLOCKS);

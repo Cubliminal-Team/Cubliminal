@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "cubliminal:block/steel_grate_slab"
+    },
+    "type=double": {
+      "model": "cubliminal:block/steel_grate"
+    },
+    "type=top": {
+      "model": "cubliminal:block/steel_grate_slab_top"
+    }
+  }
+}

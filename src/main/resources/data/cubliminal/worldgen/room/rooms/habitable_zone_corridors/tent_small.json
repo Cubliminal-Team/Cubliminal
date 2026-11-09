@@ -1,0 +1,22 @@
+{
+  "components": [
+    {
+      "pos": [
+        0,
+        0
+      ],
+      "size_x": 1,
+      "size_z": 1,
+      "templates": {
+        "room:corridors/tent_cauldrons": 1.0,
+        "room:corridors/tent_gray": 1.0,
+        "room:corridors/tent_cyan": 1.0,
+        "room:corridors/tent_smoker": 1.0
+      }
+    }
+  ],
+  "size_x": 1,
+  "size_z": 1,
+  "doors": "e_1",
+  "type": "cubliminal:composite"
+}

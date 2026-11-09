@@ -1,7 +1,0 @@
-{
-  "variants": {
-    "": {
-      "model": "cubliminal:block/chain_block"
-    }
-  }
-}

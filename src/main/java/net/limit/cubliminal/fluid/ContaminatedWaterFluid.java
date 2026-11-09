@@ -17,7 +17,7 @@ import net.minecraft.state.StateManager;
 import net.minecraft.world.WorldView;
 import org.jetbrains.annotations.Nullable;
 
-public class ContaminatedWaterFluid extends BackroomsFlowableFluid {
+public class ContaminatedWaterFluid extends CustomFlowableFluid {
 
     public ContaminatedWaterFluid() {
         super(SoundEvents.BLOCK_WATER_AMBIENT, SoundCategory.BLOCKS);

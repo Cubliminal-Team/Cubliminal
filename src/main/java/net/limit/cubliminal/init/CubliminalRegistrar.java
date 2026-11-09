@@ -116,7 +116,7 @@ public class CubliminalRegistrar implements LimlibRegistrar {
 		// worlds
 		getWorld(THE_LOBBY,
 				new LimlibWorld(
-						() -> new DimensionType(OptionalLong.of(15500), false, false, false, false, 1.0, false, false, Levels.LEVEL_0.min_y, Levels.LEVEL_0.world_height, Levels.LEVEL_0.world_height,
+						() -> new DimensionType(OptionalLong.of(15500), false, false, false, false, 1.0, true, false, Levels.LEVEL_0.min_y, Levels.LEVEL_0.world_height, Levels.LEVEL_0.world_height,
 								TagKey.of(RegistryKeys.BLOCK, THE_LOBBY), THE_LOBBY,
 								0f, new MonsterSettings(false, false, ConstantIntProvider.ZERO, 0)),
 						(registry) -> new DimensionOptions(
@@ -130,7 +130,7 @@ public class CubliminalRegistrar implements LimlibRegistrar {
 
 		getWorld(HABITABLE_ZONE,
 				new LimlibWorld(
-						() -> new DimensionType(OptionalLong.of(15500), false, false, false, false, 1.0, false, false, Levels.LEVEL_1.min_y, Levels.LEVEL_1.world_height, Levels.LEVEL_1.world_height,
+						() -> new DimensionType(OptionalLong.of(15500), false, false, false, false, 1.0, true, false, Levels.LEVEL_1.min_y, Levels.LEVEL_1.world_height, Levels.LEVEL_1.world_height,
 								TagKey.of(RegistryKeys.BLOCK, HABITABLE_ZONE), HABITABLE_ZONE,
 								0f, new MonsterSettings(false, false, ConstantIntProvider.ZERO, 0)),
 						(registry) -> new DimensionOptions(

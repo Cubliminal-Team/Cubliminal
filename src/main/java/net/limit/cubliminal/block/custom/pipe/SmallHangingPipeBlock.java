@@ -4,15 +4,17 @@ import com.mojang.serialization.MapCodec;
 import net.limit.cubliminal.block.custom.template.HorizontalConnectingBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockView;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Map;
 
 public class SmallHangingPipeBlock extends HorizontalConnectingBlock {
 
@@ -32,29 +34,38 @@ public class SmallHangingPipeBlock extends HorizontalConnectingBlock {
     @Nullable
     @Override
     public BlockState getPlacementState(ItemPlacementContext ctx) {
-        BlockView blockView = ctx.getWorld();
-        BlockPos blockPos = ctx.getBlockPos();
-        FluidState fluidState = ctx.getWorld().getFluidState(ctx.getBlockPos());
-        BlockState blockState1 = blockView.getBlockState(blockPos.north());
-        BlockState blockState2 = blockView.getBlockState(blockPos.south());
-        BlockState blockState3 = blockView.getBlockState(blockPos.west());
-        BlockState blockState4 = blockView.getBlockState(blockPos.east());
-        BlockState[] blockStates = new BlockState[]{blockState1, blockState2, blockState3, blockState4};
-        Boolean[] booleans = new Boolean[]{false, false, false, false, false};
-        for (int i = 0; i < 4; ++i) {
-            BlockState state = blockStates[i];
-            if (this.connectsTo(state)) {
-                booleans[i + 1] = true;
-                booleans[0] = !state.get(ATTACHED);
+        BlockView world = ctx.getWorld();
+        BlockPos pos = ctx.getBlockPos();
+        BlockState finalState = this.getDefaultState()
+                .with(WATERLOGGED, world.getFluidState(pos).getFluid() == Fluids.WATER)
+                .with(ATTACHED, true);
+        Map<Direction, BooleanProperty> properties = Map.of(
+                Direction.EAST, EAST, Direction.WEST, WEST, Direction.NORTH, NORTH, Direction.SOUTH, SOUTH
+        );
+        int connections = 0;
+        Direction connection = Direction.NORTH;
+        for (var entry : properties.entrySet()) {
+            BlockState neighbor = world.getBlockState(pos.offset(entry.getKey()));
+            boolean connects = this.connectsTo(neighbor);
+            finalState = finalState.with(entry.getValue(), connects);
+            if (connects) {
+                connections++;
+                connection = entry.getKey();
+                if (neighbor.get(ATTACHED)) {
+                    finalState = finalState.with(ATTACHED, false);
+                }
             }
         }
-        return this.getDefaultState()
-                .with(ATTACHED, booleans[0])
-                .with(NORTH, booleans[1])
-                .with(SOUTH, booleans[2])
-                .with(WEST, booleans[3])
-                .with(EAST, booleans[4])
-                .with(WATERLOGGED, fluidState.getFluid() == Fluids.WATER);
+
+        if (connections == 0) {
+            return finalState
+                    .with(properties.get(ctx.getHorizontalPlayerFacing()), true)
+                    .with(properties.get(ctx.getHorizontalPlayerFacing().getOpposite()), true);
+        } else if (connections == 1) {
+            return finalState.with(properties.get(connection.getOpposite()), true);
+        }
+
+        return finalState;
     }
 
     @Override

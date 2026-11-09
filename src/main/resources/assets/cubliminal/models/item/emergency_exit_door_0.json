@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "cubliminal:item/emergency_exit_door_0"
+    "layer0": "cubliminal:item/red_pushdoor"
   }
 }

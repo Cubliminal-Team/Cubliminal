@@ -2,7 +2,7 @@
 	"texture_size": [128, 128],
 	"textures": {
 		"2": "cubliminal:block/two_long_spruce_table",
-		"particle": "cubliminal:block/two_long_spruce_table"
+		"particle": "minecraft:block/spruce_planks"
 	},
 	"elements": [
 		{

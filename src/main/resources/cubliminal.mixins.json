@@ -8,6 +8,7 @@
     "ChunkSectionMixin",
     "ClearAllEffectsConsumeEffectMixin",
     "EntityMixin",
+    "ExplosionBehaviorMixin",
     "FluidAccessor",
     "FluidSplashMixin",
     "LivingEntityMixin",

@@ -2,7 +2,7 @@
 	"texture_size": [64, 64],
 	"textures": {
 		"0": "cubliminal:block/spruce_chair",
-		"particle": "cubliminal:block/spruce_chair"
+		"particle": "minecraft:block/spruce_planks"
 	},
 	"elements": [
 		{

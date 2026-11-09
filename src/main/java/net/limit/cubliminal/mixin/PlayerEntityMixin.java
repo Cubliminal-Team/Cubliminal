@@ -4,9 +4,8 @@ import com.llamalad7.mixinextras.sugar.Local;
 import net.limit.cubliminal.Cubliminal;
 import net.limit.cubliminal.access.PEAccessor;
 import net.limit.cubliminal.advancements.AdvancementHelper;
-import net.limit.cubliminal.block.entity.MultiStructureBlockEntity;
-import net.limit.cubliminal.event.backrooms.NoclipEngine;
-import net.limit.cubliminal.event.backrooms.SanityManager;
+import net.limit.cubliminal.event.noclip.NoclipEngine;
+import net.limit.cubliminal.event.sanity.SanityManager;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -101,11 +100,5 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PEAccess
 	private void canSwimInFluids(CallbackInfoReturnable<Boolean> cir) {
 		if (this.noclipEngine.isClipping()) cir.setReturnValue(false);
 	}
-
-
-	@Override
-	public void openUSBlockScreen(MultiStructureBlockEntity blockEntity) {
-	}
-
 
 }

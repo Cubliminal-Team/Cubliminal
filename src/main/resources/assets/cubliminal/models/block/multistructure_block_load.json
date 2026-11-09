@@ -1,6 +1,0 @@
-{
-  "parent": "minecraft:block/cube_all",
-  "textures": {
-    "all": "cubliminal:block/multistructure_block_load"
-  }
-}

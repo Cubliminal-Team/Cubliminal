@@ -1,7 +1,7 @@
 package net.limit.cubliminal.mixin;
 
 import net.limit.cubliminal.block.fluid.CustomFluidBlock;
-import net.limit.cubliminal.fluid.BackroomsFlowableFluid;
+import net.limit.cubliminal.fluid.CustomFlowableFluid;
 import net.limit.cubliminal.init.CubliminalFluids;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -41,7 +41,7 @@ public abstract class LivingEntityMixin {
     private void onTravel(Vec3d movementInput, CallbackInfo ci) {
         if (isSubmergedAtFeet(CubliminalFluids.CUSTOM_FLUIDS)) {
             // Checks to see if the fluid uses Project Backrooms custom implementations
-            if (this.fluidState.getFluid() instanceof BackroomsFlowableFluid backroomsFluid) {
+            if (this.fluidState.getFluid() instanceof CustomFlowableFluid backroomsFluid) {
                 Entity entity = (Entity)(Object) this;
                 // Gets the fluid block.
                 CustomFluidBlock fluidBlock = backroomsFluid.getFluidBlock();

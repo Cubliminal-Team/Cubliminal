@@ -1,38 +1,48 @@
 package net.limit.cubliminal.block.custom;
 
 import com.mojang.serialization.MapCodec;
+import net.limit.cubliminal.block.custom.template.VariableBlastResistance;
+import net.limit.cubliminal.block.entity.SocketBlockEntity;
 import net.limit.cubliminal.init.CubliminalBlocks;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.HorizontalFacingBlock;
+import net.minecraft.block.*;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.entity.ItemEntity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.stat.Stats;
+import net.minecraft.loot.context.LootContextParameters;
+import net.minecraft.loot.context.LootWorldContext;
 import net.minecraft.state.StateManager;
-import net.minecraft.state.property.BooleanProperty;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.state.property.EnumProperty;
+import net.minecraft.state.property.Properties;
+import net.minecraft.util.BlockMirror;
+import net.minecraft.util.BlockRotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldView;
 import net.minecraft.world.block.OrientationHelper;
 import net.minecraft.world.block.WireOrientation;
+import net.minecraft.world.explosion.Explosion;
 import org.jetbrains.annotations.Nullable;
 
-public class BlockWithSocket extends HorizontalFacingBlock {
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+
+public class BlockWithSocket extends BlockWithEntity implements BlockEntityProvider, VariableBlastResistance {
 
     public static final MapCodec<BlockWithSocket> CODEC = BlockWithSocket.createCodec(BlockWithSocket::new);
-    public static final BooleanProperty SOCKET = BooleanProperty.of("socket");
+    public static final EnumProperty<Direction> FACING = Properties.HORIZONTAL_FACING;
 
     public BlockWithSocket(Settings settings) {
         super(settings);
-        this.setDefaultState(this.getDefaultState().with(FACING, Direction.NORTH).with(SOCKET, false));
+        this.setDefaultState(this.getDefaultState().with(FACING, Direction.NORTH));
     }
 
     @Nullable
@@ -56,8 +66,20 @@ public class BlockWithSocket extends HorizontalFacingBlock {
     }
 
     @Override
+    protected BlockRenderType getRenderType(BlockState state) {
+        return BlockRenderType.MODEL;
+    }
+
+    @Override
+    protected boolean canPlaceAt(BlockState state, WorldView world, BlockPos pos) {
+        if (world.getBlockEntity(pos) != null || world.getBlockState(pos).getBlock() instanceof DoorBlock) return false;
+        Direction facing = state.get(FACING);
+        return WallTorchBlock.canPlaceAt(world, pos.offset(facing), facing);
+    }
+
+    @Override
     protected boolean emitsRedstonePower(BlockState state) {
-        return state.get(SOCKET);
+        return true;
     }
 
     @Override
@@ -75,21 +97,7 @@ public class BlockWithSocket extends HorizontalFacingBlock {
 
     @Override
     protected int getWeakRedstonePower(BlockState state, BlockView world, BlockPos pos, Direction direction) {
-        return state.get(SOCKET) && state.get(FACING) == direction.getOpposite() ? 15 : 0;
-    }
-
-    @Override
-    protected ActionResult onUseWithItem(ItemStack stack, BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-        if (stack.isOf(CubliminalBlocks.SOCKET.asItem()) && !state.get(SOCKET) && !player.isSneaking()) {
-            if (!world.isClient()) {
-                player.incrementStat(Stats.USED.getOrCreateStat(stack.getItem()));
-                stack.splitUnlessCreative(1, player);
-                world.setBlockState(pos, state.with(SOCKET, true).with(FACING, hit.getSide()));
-                world.playSound(null, pos, SoundEvents.BLOCK_CALCITE_PLACE, SoundCategory.BLOCKS, 1.0f, 1.0f);
-            }
-            return ActionResult.SUCCESS;
-        }
-        return ActionResult.PASS_TO_DEFAULT_BLOCK_ACTION;
+        return state.get(FACING) == direction.getOpposite() ? 15 : 0;
     }
 
     @Override
@@ -101,20 +109,124 @@ public class BlockWithSocket extends HorizontalFacingBlock {
 
     @Override
     protected void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
-        if (!state.isOf(newState.getBlock())) {
-            if (!world.isClient() && state.get(SOCKET)) {
-                this.updateNeighbors(world, pos, state.with(SOCKET, false));
-            }
+        super.onStateReplaced(state, world, pos, newState, moved);
+        if (!world.isClient() && !state.isOf(newState.getBlock())) {
+            this.updateNeighbors(world, pos, state);
         }
     }
 
     @Override
-    protected MapCodec<? extends HorizontalFacingBlock> getCodec() {
+    public void afterBreak(World world, PlayerEntity player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, ItemStack tool) {
+        super.afterBreak(world, player, pos, state, blockEntity, tool);
+        if (!world.isClient() && blockEntity instanceof SocketBlockEntity socketBlockEntity && socketBlockEntity.getSupport() != null) {
+            world.setBlockState(pos, socketBlockEntity.getSupport(), Block.NOTIFY_ALL_AND_REDRAW);
+            Direction lookDirection = player.getFacing().getOpposite();
+            ItemEntity itemEntity = new ItemEntity(
+                    world,
+                    pos.getX() + 0.5 + lookDirection.getOffsetX() * 0.65,
+                    pos.getY() + 0.1,
+                    pos.getZ() + 0.5 + lookDirection.getOffsetZ() * 0.65,
+                    new ItemStack(CubliminalBlocks.BLOCK_WITH_SOCKET)
+            );
+            itemEntity.setVelocity(
+                    0.05 * lookDirection.getOffsetX() + world.random.nextDouble() * 0.02, 0.05, 0.05 * lookDirection.getOffsetZ() + world.random.nextDouble() * 0.02
+            );
+            world.spawnEntity(itemEntity);
+        }
+    }
+
+    @Override
+    protected VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+        BlockState support = this.getSupportNullable(pos, world);
+        return support != null
+                ? support.getOutlineShape(world, pos, context)
+                : VoxelShapes.empty();
+    }
+
+    @Override
+    protected VoxelShape getCullingShape(BlockState state) {
+        return VoxelShapes.empty();
+    }
+
+    @Override
+    protected VoxelShape getCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+        BlockState support = this.getSupportNullable(pos, world);
+        return support != null
+                ? support.getCollisionShape(world, pos, context)
+                : VoxelShapes.empty();
+    }
+
+    @Nullable
+    private BlockState getSupportNullable(BlockPos pos, BlockView world) {
+        return world.getBlockEntity(pos) instanceof SocketBlockEntity entity ? entity.getSupport() : null;
+    }
+
+    @Override
+    public Optional<Float> getBlastResistance(Explosion explosion, BlockView world, BlockPos pos, BlockState blockState, FluidState fluidState) {
+        if (blockState.isAir() && fluidState.isEmpty()) {
+            return Optional.empty();
+        }
+
+        float blockResistance = world.getBlockEntity(pos) instanceof SocketBlockEntity entity && entity.getSupport() != null
+                ? entity.getSupport().getBlock().getBlastResistance()
+                : blockState.getBlock().getBlastResistance();
+
+        return Optional.of(Math.max(blockResistance, fluidState.getBlastResistance()));
+    }
+
+    @Override
+    protected List<ItemStack> getDroppedStacks(BlockState state, LootWorldContext.Builder builder) {
+        if (
+                builder.getOptional(LootContextParameters.BLOCK_ENTITY) instanceof SocketBlockEntity socketBlockEntity
+                && socketBlockEntity.getSupport() != null
+                && !(builder.getOptional(LootContextParameters.THIS_ENTITY) instanceof LivingEntity)
+        ) {
+            List<ItemStack> drops = super.getDroppedStacks(state, builder);
+            drops.addAll(socketBlockEntity.getSupport().getDroppedStacks(builder));
+            return drops;
+        }
+
+        return Collections.emptyList();
+    }
+
+    @Override
+    protected float getAmbientOcclusionLightLevel(BlockState state, BlockView world, BlockPos pos) {
+        return world.getBlockEntity(pos) instanceof SocketBlockEntity entity && entity.getSupport() != null
+                ? entity.getSupport().getAmbientOcclusionLightLevel(world, pos)
+                : super.getAmbientOcclusionLightLevel(state, world, pos);
+    }
+
+    @Override
+    protected void spawnBreakParticles(World world, PlayerEntity player, BlockPos pos, BlockState state) {
+        super.spawnBreakParticles(world, player, pos, state);
+        if (player.isCreative() && world.getBlockEntity(pos) instanceof SocketBlockEntity entity) {
+            super.spawnBreakParticles(world, player, pos, entity.getSupport());
+        }
+    }
+
+    @Nullable
+    @Override
+    public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+        return new SocketBlockEntity(pos, state);
+    }
+
+    @Override
+    protected BlockState rotate(BlockState state, BlockRotation rotation) {
+        return state.with(FACING, rotation.rotate(state.get(FACING)));
+    }
+
+    @Override
+    protected BlockState mirror(BlockState state, BlockMirror mirror) {
+        return state.rotate(mirror.getRotation(state.get(FACING)));
+    }
+
+    @Override
+    protected MapCodec<? extends BlockWithEntity> getCodec() {
         return CODEC;
     }
 
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        builder.add(FACING, SOCKET);
+        builder.add(FACING);
     }
 }

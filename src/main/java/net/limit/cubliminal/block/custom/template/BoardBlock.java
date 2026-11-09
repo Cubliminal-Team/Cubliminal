@@ -80,7 +80,7 @@ public class BoardBlock extends WallMountedBlock implements Waterloggable {
             return state.with(WATERLOGGED, fluidState.getFluid() == Fluids.WATER);
         }
 
-        return state;
+        return null;
     }
 
     @Override

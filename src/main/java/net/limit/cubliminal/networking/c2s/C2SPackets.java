@@ -18,7 +18,6 @@ public class C2SPackets implements Initer {
         PayloadTypeRegistry.playC2S().register(NoClipC2SPayload.ID, NoClipC2SPayload.CODEC);
         PayloadTypeRegistry.playS2C().register(NoClipSyncPayload.ID, NoClipSyncPayload.CODEC);
         PayloadTypeRegistry.playS2C().register(SanitySyncPayload.ID, SanitySyncPayload.CODEC);
-        PayloadTypeRegistry.playC2S().register(MultistructureBlockC2SPayload.ID, MultistructureBlockC2SPayload.PAYLOAD_CODEC);
         PayloadTypeRegistry.playS2C().register(WrittenDocScreenPayload.ID, WrittenDocScreenPayload.CODEC);
         PayloadTypeRegistry.playC2S().register(DocUpdateC2SPayload.ID, DocUpdateC2SPayload.PACKET_CODEC);
         PayloadTypeRegistry.playC2S().register(SaveSelectionC2SPayload.ID, SaveSelectionC2SPayload.PACKET_CODEC);
@@ -28,7 +27,6 @@ public class C2SPackets implements Initer {
 
     public static void registerGlobalReceivers() {
         ServerPlayNetworking.registerGlobalReceiver(NoClipC2SPayload.ID, NoClipC2SPayload::receive);
-        ServerPlayNetworking.registerGlobalReceiver(MultistructureBlockC2SPayload.ID, MultistructureBlockC2SPayload::receive);
         ServerPlayNetworking.registerGlobalReceiver(DocUpdateC2SPayload.ID, DocUpdateC2SPayload::receive);
         ServerPlayNetworking.registerGlobalReceiver(SaveSelectionC2SPayload.ID, SaveSelectionC2SPayload::receive);
         ServerPlayNetworking.registerGlobalReceiver(SaveRoomC2SPayload.ID, SaveRoomC2SPayload::receive);

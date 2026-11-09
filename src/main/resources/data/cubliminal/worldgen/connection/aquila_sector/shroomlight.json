@@ -1,9 +1,0 @@
-{
-  "room": "shroomlight",
-  "placement": {
-    "spacing": 5,
-    "separation": 3,
-    "salt": 69863201,
-    "type": "cubliminal:random_spread"
-  }
-}

@@ -1,0 +1,8 @@
+{
+	"parent": "block/cube_all",
+	"textures": {
+		"all": "cubliminal:block/yellow_carpeted_wall",
+		"down": "cubliminal:block/yellow_wallpapers",
+		"up": "cubliminal:block/damp_carpet"
+	}
+}

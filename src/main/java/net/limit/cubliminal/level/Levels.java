@@ -7,7 +7,7 @@ import net.minecraft.util.math.BlockPos;
 public class Levels {
 
     public static Level LEVEL_0 = new Level(Cubliminal.id("the_lobby"), 32, 0, 1, 7, 8, 8);
-    public static LevelWithMaze LEVEL_1 = new LevelWithMaze(Cubliminal.id("habitable_zone"), 48, 0, 3, 16, 16, 16, 16, 16, 0);
+    public static LevelWithMaze LEVEL_1 = new LevelWithMaze(Cubliminal.id("habitable_zone"), 48, 0, 3, 16, 9, 9, 16, 16, 0);
 
     public static Level[] ALL = {
             LEVEL_0, LEVEL_1

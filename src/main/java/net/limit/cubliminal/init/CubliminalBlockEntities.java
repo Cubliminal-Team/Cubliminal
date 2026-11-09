@@ -20,14 +20,14 @@ public class CubliminalBlockEntities implements Initer {
 	public static final BlockEntityType<FluxCapacitorBlockEntity> FLUX_CAPACITOR_BLOCK_ENTITY =
 			register("flux_capacitor", FabricBlockEntityTypeBuilder.create(FluxCapacitorBlockEntity::new, CubliminalBlocks.FLUX_CAPACITOR).build());
 
+	public static final BlockEntityType<SocketBlockEntity> SOCKET_BLOCK_ENTITY =
+			register("socket", FabricBlockEntityTypeBuilder.create(SocketBlockEntity::new, CubliminalBlocks.BLOCK_WITH_SOCKET).build());
+
 	public static final BlockEntityType<SinkBlockEntity> SINK_BLOCK_ENTITY =
 			register("sink", FabricBlockEntityTypeBuilder.create(SinkBlockEntity::new, CubliminalBlocks.SINK).build());
 
 	public static final BlockEntityType<ShowerBlockEntity> SHOWER_BLOCK_ENTITY =
 			register("shower", FabricBlockEntityTypeBuilder.create(ShowerBlockEntity::new, CubliminalBlocks.SHOWER).build());
-
-	public static final BlockEntityType<MultiStructureBlockEntity> MULTISTRUCTURE_BLOCK_ENTITY =
-			register("multistructure_block", FabricBlockEntityTypeBuilder.create(MultiStructureBlockEntity::new, CubliminalBlocks.MULTISTRUCTURE_BLOCK).build());
 
 	public static final BlockEntityType<WrittenDocumentBlockEntity> WRITTEN_DOCUMENT_BLOCK_ENTITY =
 			register("written_document", FabricBlockEntityTypeBuilder.create(WrittenDocumentBlockEntity::new, CubliminalBlocks.WRITTEN_DOCUMENT).build());

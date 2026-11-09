@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/door_top_left_open",
+  "textures": {
+    "bottom": "cubliminal:block/red_pushdoor_bottom",
+    "top": "cubliminal:block/red_pushdoor_top"
+  }
+}

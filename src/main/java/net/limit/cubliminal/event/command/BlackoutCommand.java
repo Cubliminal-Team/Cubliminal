@@ -4,7 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import net.limit.cubliminal.access.ServerWorldAccessor;
-import net.limit.cubliminal.event.backrooms.BlackoutManager;
+import net.limit.cubliminal.event.blackout.BlackoutManager;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.command.CommandManager;

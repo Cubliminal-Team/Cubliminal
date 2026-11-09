@@ -41,6 +41,10 @@ public class CubliminalItems implements Initer {
             settings -> new BucketItem(CubliminalFluids.BLACK_SLUDGE, settings),
             new Item.Settings().recipeRemainder(Items.BUCKET).maxCount(1));
 
+    public static final Item SMILER_SPAWN_EGG = register("smiler_spawn_egg",
+            settings -> new SpawnEggItem(CubliminalEntities.SMILER, 0x000000, 0xFFFFFF, settings),
+            new Item.Settings());
+
     public static final Item ROOM_CREATOR_TOOL = register("room_creator_tool", RoomCreatorToolItem::new,
             new Item.Settings().rarity(Rarity.EPIC).maxCount(1));
 

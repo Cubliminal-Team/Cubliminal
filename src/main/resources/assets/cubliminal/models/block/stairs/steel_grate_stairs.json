@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/stairs",
+  "textures": {
+    "bottom": "cubliminal:block/steel_grate",
+    "side": "cubliminal:block/steel_grate",
+    "top": "cubliminal:block/steel_grate"
+  }
+}
